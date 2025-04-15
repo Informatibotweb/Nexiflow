@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nexiflow™ by Nexiquar</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+    :root {
+      --bg-light: #f0f0f0;
+      --text-light: #111;
+      --card-light: #ffffff;
+
+      --bg-dark: #1e1e1e;
+      --text-dark: #f9f9f9;
+      --card-dark: #2a2a2a;
+
+      --primary: #4CAF50;
+      --secondary: #2196F3;
+      --border-radius: 20px;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Quicksand', sans-serif;
+      transition: background 0.3s, color 0.3s;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body.dark-mode {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    header, footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 2px solid #ccc;
+      border-radius: var(--border-radius);
+    }
+
+    h1 {
+      font-size: 2rem;
+      border-radius: 50px;
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    .theme-toggle {
+      background-color: #ddd;
+    }
+
+    .add-button {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .change-name {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .input-area {
+      display: none;
+      padding: 1rem;
+      border-bottom: 1px solid #ccc;
+      flex-direction: column;
+      gap: 0.5rem;
+      border-radius: var(--border-radius);
+    }
+
+    .input-area.active {
+      display: flex;
+    }
+
+    #postText, #userName {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #aaa;
+      border-radius: var(--border-radius);
+    }
+
+    #publishBtn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .posts {
+      padding: 1rem;
+    }
+
+    .post {
+      background-color: var(--card-light);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    body.dark-mode .post {
+      background-color: var(--card-dark);
+    }
+
+    .date {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      color: gray;
+    }
+
+    .like-btn {
+      margin-top: 0.5rem;
+      background-color: transparent;
+      color: red;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .comment-btn, .delete-btn {
+      position: absolute;
+      bottom: 10px;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: 12px;
+    }
+
+    .comment-btn {
+      right: 60px;
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .delete-btn {
+      right: 10px;
+      background-color: red;
+      color: white;
+    }
+
+    footer {
+      justify-content: center;
+      border-top: 2px solid #ccc;
+      margin-top: 2rem;
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      padding: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
+    <h1>Nexiflow™</h1>
+    <button class="add-button" onclick="toggleInput()">➕</button>
+  </header>
+
+  <div id="welcomeMessage" style="padding: 1rem; font-weight: bold;"></div>
+
+  <div class="input-area" id="inputArea">
+    <div id="nameInputWrapper">
+      <input type="text" id="userName" placeholder="Nome e Cognome" />
+    </div>
+    <button class="change-name" style="display:none" onclick="resetName()">Cambia Nome</button>
+    <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
+    <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
+  </div>
+
+  <div class="posts" id="postsContainer"></div>
+
+  <footer>
+    © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
+  </footer>
+
+  <script>
+    const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
+    const BIN_ID = "67fe4e4f8a456b796689d908";
+    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Master-Key": API_KEY
+    };
+
+    const userName = document.getElementById("userName");
+    const postText = document.getElementById("postText");
+    const publishBtn = document.getElementById("publishBtn");
+    const nameInputWrapper = document.getElementById("nameInputWrapper");
+    const changeNameBtn = document.querySelector(".change-name");
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const postsContainer = document.getElementById("postsContainer");
+
+    function toggleInput() {
+      document.getElementById("inputArea").classList.toggle("active");
+      postText.focus();
+    }
+
+    function checkInputs() {
+      const nameOk = userName.value.trim().length >= 3;
+      const textOk = postText.value.trim().length >= 3;
+      publishBtn.disabled = !(nameOk && textOk);
+    }
+
+    function resetName() {
+      localStorage.removeItem("userName");
+      nameInputWrapper.style.display = "block";
+      changeNameBtn.style.display = "none";
+      userName.value = "";
+      welcomeMessage.textContent = "";
+      userName.focus();
+      checkInputs();
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      body.classList.toggle("dark-mode");
+      localStorage.setItem("theme", body.classList.contains("dark-mode") ? "dark" : "light");
+    }
+
+    async function fetchPosts() {
+      try {
+        const res = await fetch(BASE_URL + "/latest", { headers });
+        const data = await res.json();
+        renderPosts(data.record.posts);
+      } catch (err) {
+        console.error("Errore nel caricamento post:", err);
+      }
+    }
+
+function renderPosts(posts) {
+  postsContainer.innerHTML = "";
+  // Inverti l'ordine dei post per visualizzare quelli più recenti per primi
+  posts.reverse().forEach((post, index) => {
+    const div = document.createElement("div");
+    div.className = "post";
+    div.innerHTML = `
+      <strong>${post.name}</strong>: ${post.text}
+      <div class="date">${post.date}</div>
+      <button class="commen-btn" onclick="aler('Commenti in arrivo!')"></button>
+      <button class="delete-btn" onclick="deletePost(${index})">🗑️</button>
+    `;
+    postsContainer.appendChild(div);
+  });
+}
+
+      
+    async function publishPost() {
+      const name = userName.value.trim();
+      const text = postText.value.trim();
+      const date = new Date().toLocaleString();
+      const newPost = { name, text, date };
+
+      try {
+        const res = await fetch(BASE_URL + "/latest", { headers });
+        const data = await res.json();
+        const posts = data.record.posts || [];
+        posts.push(newPost);
+
+        await fetch(BASE_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ posts })
+        });
+
+        postText.value = "";
+        checkInputs();
+        fetchPosts();
+      } catch (err) {
+        alert("Errore nel salvataggio.");
+        console.error(err);
+      }
+    }
+
+    async function deletePost(index, creatorName) {
+      const loggedInUser = localStorage.getItem("userName");
+
+      // Check if the logged-in user is the creator of the post
+      if (loggedInUser !== creatorName) {
+        alert("Non puoi eliminare un post che non hai creato.");
+        return;
+      }
+
+      try {
+        const res = await fetch(BASE_URL + "/latest", { headers });
+        const data = await res.json();
+        const posts = data.record.posts || [];
+        posts.splice(posts.length - 1 - index, 1);
+
+        await fetch(BASE_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ posts })
+        });
+
+        fetchPosts();
+      } catch (err) {
+        alert("Errore durante l'eliminazione del post.");
+        console.error(err);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+      }
+      const savedName = localStorage.getItem("userName");
+      if (savedName) {
+        userName.value = savedName;
+        nameInputWrapper.style.display = "none";
+        changeNameBtn.style.display = "block";
+        welcomeMessage.textContent = `👋 Benvenuto ${savedName}!`;
+      }
+      checkInputs();
+      fetchPosts();
+    });
+
+    userName.addEventListener("input", checkInputs);
+    postText.addEventListener("input", checkInputs);
+    userName.addEventListener("change", () => {
+      localStorage.setItem("userName", userName.value.trim());
+    });
+  </script>
+</body>
+</html>
