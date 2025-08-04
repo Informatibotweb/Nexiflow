@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-BHXQ3M8FYD"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-BHXQ3M8FYD'); </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BHXQ3M8FYD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BHXQ3M8FYD');
+  </script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nexiflow™ by Nexiquar</title>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
 
@@ -12,11 +20,9 @@
       --bg-light: #f0f0f0;
       --text-light: #111;
       --card-light: #ffffff;
-
       --bg-dark: #1e1e1e;
       --text-dark: #f9f9f9;
       --card-dark: #2a2a2a;
-
       --primary: #4CAF50;
       --secondary: #2196F3;
       --border-radius: 20px;
@@ -35,13 +41,20 @@
       color: var(--text-dark);
     }
 
-    header, footer {
+    header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1rem;
       border-bottom: 2px solid #ccc;
       border-radius: var(--border-radius);
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     h1 {
@@ -51,6 +64,12 @@
       background-color: var(--primary);
       color: white;
       font-family: 'Quicksand', sans-serif;
+      transform: scale(0);
+      animation: popIn 0.5s forwards 0.5s;
+    }
+    
+    @keyframes popIn {
+        to { transform: scale(1); }
     }
 
     button {
@@ -59,20 +78,31 @@
       border-radius: var(--border-radius);
       cursor: pointer;
       font-family: 'Quicksand', sans-serif;
+      transition: transform 0.2s, background-color 0.2s;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
     }
 
     .theme-toggle {
       background-color: #ddd;
     }
 
-    .add-button {
+    .header-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .add-button, .change-name-header, .video-button {
       background-color: var(--primary);
       color: white;
     }
-
-    .change-name {
-      background-color: var(--secondary);
-      color: white;
+    
+    #logo {
+        height: 80px;
+        width: auto;
+        transition: opacity 0.5s;
     }
 
     .input-area {
@@ -86,20 +116,70 @@
 
     .input-area.active {
       display: flex;
+      animation: slideDown 0.5s forwards;
     }
 
-    #postText, #userName {
+    @keyframes slideDown {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    #postText, #userName, .video-input, .embed-input, #newVideoDescription, #newVideoEmbedCode {
       padding: 0.5rem;
       font-size: 1rem;
       border: 1px solid #aaa;
       border-radius: var(--border-radius);
+      transition: border-color 0.3s;
     }
 
-    #publishBtn:disabled {
+    #postText:focus, #userName:focus, .video-input:focus, .embed-input:focus, #newVideoDescription:focus, #newVideoEmbedCode:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    #publishBtn:disabled, #publishVideoBtn:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
+    
+    .post-type-selector, .video-format-selector, .video-type-selector {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .post-type-selector button.active, .video-format-selector button.active, .video-type-selector button.active {
+        background-color: var(--primary);
+        color: white;
+    }
+    
+    .post-type-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .post-embed {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .post-embed iframe {
+        width: 100%;
+        max-width: 560px;
+        height: 315px;
+        border: none;
+        border-radius: var(--border-radius);
+    }
 
+    /* Stili per video Shorts incorporati */
+    .post-embed .vertical-video {
+        width: 100%;
+        max-width: 315px; /* Inverti le dimensioni */
+        height: 560px;
+    }
+    
     .posts {
       padding: 1rem;
     }
@@ -111,6 +191,30 @@
       border-radius: var(--border-radius);
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       position: relative;
+      transition: transform 0.3s ease;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+    
+    .post:hover {
+        transform: translateY(-5px);
+    }
+    
+    .post-actions {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 5px;
+    }
+    
+    .post-actions button {
+        background-color: rgba(0,0,0,0.5);
+        color: white;
+        padding: 5px 8px;
+        border-radius: 50%;
+        font-size: 1rem;
+        line-height: 1;
     }
 
     body.dark-mode .post {
@@ -122,33 +226,106 @@
       margin-top: 0.5rem;
       color: gray;
     }
+    
+    .post-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        position: relative;
+    }
+    
+    .vote-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .vote-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: transform 0.2s;
+    }
 
-    .like-btn {
-      margin-top: 0.5rem;
-      background-color: transparent;
-      color: red;
-      font-size: 1rem;
-      cursor: pointer;
+    .vote-btn:hover {
+        transform: scale(1.2);
+    }
+
+    .vote-btn:active {
+        transform: scale(0.9);
+    }
+    
+    .vote-count {
+        font-size: 1rem;
+        font-weight: bold;
+        margin: 0 5px;
     }
 
     .comment-btn, .delete-btn {
-      position: absolute;
-      bottom: 10px;
       font-size: 0.8rem;
       padding: 0.3rem 0.6rem;
       border-radius: 12px;
     }
 
     .comment-btn {
-      right: 60px;
       background-color: var(--secondary);
       color: white;
     }
 
     .delete-btn {
-      right: 10px;
       background-color: red;
       color: white;
+    }
+    
+    .comments-section {
+        margin-top: 1rem;
+        border-top: 1px solid #ddd;
+        padding-top: 1rem;
+    }
+    
+    .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .comment {
+        background-color: #f9f9f9;
+        padding: 0.5rem;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        word-wrap: break-word;
+    }
+    
+    body.dark-mode .comment {
+        background-color: #3b3b3b;
+    }
+    
+    .comment-form {
+        display: flex;
+        margin-top: 1rem;
+        gap: 0.5rem;
+    }
+    
+    .comment-input {
+        flex-grow: 1;
+        padding: 0.5rem;
+        border-radius: var(--border-radius);
+        border: 1px solid #aaa;
+    }
+    
+    .comment-input:focus {
+        outline: none;
+        border-color: var(--secondary);
+    }
+    
+    .comment-submit-btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--secondary);
+        color: white;
+        border-radius: var(--border-radius);
     }
 
     footer {
@@ -159,108 +336,579 @@
       font-size: 0.9rem;
       padding: 1rem;
     }
+    
+    .emoji-rain-up, .emoji-rain-down {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    
+    .emoji {
+        position: absolute;
+        font-size: 1.2rem;
+        opacity: 0;
+    }
+    
+    @keyframes fly-up {
+        from { transform: translateY(0) scale(1); opacity: 1; }
+        to { transform: translateY(-100px) scale(1.5); opacity: 0; }
+    }
+    
+    @keyframes fly-down {
+        from { transform: translateY(0) scale(1); opacity: 1; }
+        to { transform: translateY(100px) scale(0.5); opacity: 0; }
+    }
+    
+    /* Stili per la finestra modale */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.9);
+        animation: fadeInModal 0.3s forwards;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .modal-content {
+        position: relative;
+        margin: auto;
+        padding: 20px;
+        width: 90%;
+        max-width: 900px;
+        background-color: var(--card-dark);
+        border-radius: var(--border-radius);
+    }
+    
+    /* Stile di base per iframe nella modale */
+    .modal-content iframe {
+        width: 100%;
+        height: 80vh; 
+        max-height: 900px;
+        border: none;
+        border-radius: var(--border-radius);
+    }
+
+    /* Stile specifico per i video orizzontali (16:9) */
+    .modal-content .horizontal-video {
+        aspect-ratio: 16 / 9;
+        max-width: 100%;
+        width: auto;
+    }
+    
+    /* Stile specifico per i video verticali (Shorts) */
+    .modal-content .vertical-video {
+        aspect-ratio: 9 / 16;
+        height: 100%;
+        max-height: 80vh;
+        width: auto;
+    }
+    
+    .close-modal {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+    
+    @keyframes fadeInModal {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    /* Stili per la pagina dei video */
+    #videoPage {
+        display: none;
+        padding: 1rem;
+    }
+
+    .video-page-header {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 1rem;
+    }
+    
+    .video-page-header .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .video-type-selector {
+        display: flex;
+        gap: 10px;
+    }
+    
+    #videoGrid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+        padding-top: 1rem;
+    }
+    
+    #videoGrid.shorts-grid {
+        justify-content: flex-start;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 2rem;
+        white-space: nowrap;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #videoGrid.shorts-grid .video-page-item {
+      flex: 0 0 auto;
+      width: 300px; /* Larghezza fissa per gli shorts */
+      scroll-snap-align: center;
+      height: 500px;
+    }
+    
+    .video-page-item {
+        background-color: var(--card-light);
+        border-radius: var(--border-radius);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+    }
+
+    .video-page-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .video-page-item .video-content {
+        cursor: pointer;
+    }
+    
+    .video-page-item iframe {
+        width: 100%;
+        height: 200px; 
+        border: none;
+    }
+
+    .video-page-item .vertical-video {
+        aspect-ratio: 9 / 16;
+        height: auto;
+        max-height: 500px;
+    }
+
+    .video-page-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 5px;
+        z-index: 10;
+    }
+    
+    .video-page-actions button {
+        background-color: rgba(0,0,0,0.6);
+        color: white;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        font-size: 1rem;
+    }
+    
+    /* Stili per le interazioni nella sezione video */
+    .video-item-footer {
+        padding: 10px;
+    }
+
+    .video-item-footer .vote-buttons {
+        margin-top: 10px;
+    }
+
   </style>
 </head>
 <body>
   <header>
     <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
-    <h1>Nexiflow™</h1>
-    <button class="add-button" onclick="toggleInput()">➕</button>
+    <img id="logo" src="logo1.png" alt="Nexiflow Logo">
+    <div class="header-buttons">
+      <button class="change-name-header" onclick="resetName()">📝</button>
+      <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
+      <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
+    </div>
   </header>
 
   <div id="welcomeMessage" style="padding: 1rem; font-weight: bold;"></div>
-
+  
   <div class="input-area" id="inputArea">
     <div id="nameInputWrapper">
       <input type="text" id="userName" placeholder="Nome e Cognome" />
     </div>
-    <button class="change-name" style="display:none" onclick="resetName()">Cambia Nome</button>
-    <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
+    
+    <div class="post-type-selector">
+        <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
+        <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
+        <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
+    </div>
+
+    <div id="post-text-fields" class="post-type-fields">
+        <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
+    </div>
+    <div id="post-video-fields" class="post-type-fields" style="display:none;">
+        <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
+        <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
+    </div>
+    <div id="post-embed-fields" class="post-type-fields" style="display:none;">
+        <input type="text" id="embedDescription" placeholder="Scrivi una descrizione per il video..." />
+        <div class="video-format-selector">
+            <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
+            <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
+        </div>
+        <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
+    </div>
+
     <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
   </div>
 
-  <div class="posts" id="postsContainer"></div>
+  <div id="mainContent">
+    <div class="posts" id="postsContainer"></div>
+  </div>
+
+  <div id="videoPage">
+    <div class="video-page-header">
+      <div class="header-row">
+        <button onclick="showMainContent()">← Torna alla bacheca</button>
+        <div class="video-type-selector">
+          <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
+          <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+        </div>
+        <button onclick="toggleVideoInput()">➕ Aggiungi Video</button>
+      </div>
+    </div>
+    <div id="videoInputArea" class="input-area">
+        <div class="post-type-fields">
+            <input type="text" id="newVideoDescription" placeholder="Scrivi una descrizione per il video..." />
+            <div class="video-format-selector">
+                <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
+                <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+            </div>
+            <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..."></textarea>
+        </div>
+        <button id="publishVideoBtn" onclick="publishNewVideo()" disabled>Pubblica Video</button>
+    </div>
+    <div class="video-page-container" id="videoGrid"></div>
+  </div>
 
   <footer>
     © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
   </footer>
+  
+  <div id="videoModal" class="modal">
+    <span class="close-modal" onclick="closeModal()">×</span>
+    <div class="modal-content">
+      <div id="modalVideoContainer"></div>
+    </div>
+  </div>
 
   <script>
     const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
     const BIN_ID = "67fe4e4f8a456b796689d908";
+    const VIDEO_BIN_ID = "689076be7b4b8670d8acc5b2";
+    
     const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
     const headers = {
       "Content-Type": "application/json",
       "X-Master-Key": API_KEY
     };
 
-    const userName = document.getElementById("userName");
+    const userNameInput = document.getElementById("userName");
     const postText = document.getElementById("postText");
     const publishBtn = document.getElementById("publishBtn");
     const nameInputWrapper = document.getElementById("nameInputWrapper");
-    const changeNameBtn = document.querySelector(".change-name");
     const welcomeMessage = document.getElementById("welcomeMessage");
     const postsContainer = document.getElementById("postsContainer");
+    const logoElement = document.getElementById("logo");
+    
+    const postTypeButtons = document.querySelectorAll('.post-type-selector button');
+    const textFields = document.getElementById('post-text-fields');
+    const videoFields = document.getElementById('post-video-fields');
+    const embedFields = document.getElementById('post-embed-fields');
+    const videoLinkInput = document.getElementById('videoLink');
+    const embedCodeInput = document.getElementById('embedCode');
+    const videoDescriptionInput = document.getElementById('videoDescription');
+    const embedDescriptionInput = document.getElementById('embedDescription');
+    const embedFormatButtons = document.querySelectorAll('.video-format-selector button');
+
+    const videoPage = document.getElementById('videoPage');
+    const mainContent = document.getElementById('mainContent');
+    const videoGrid = document.getElementById('videoGrid');
+    const videoTypeButtons = document.querySelectorAll('.video-page-header .video-type-selector button');
+    const videoInputArea = document.getElementById('videoInputArea');
+    const newVideoDescriptionInput = document.getElementById('newVideoDescription');
+    const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
+    const newVideoFormatButtons = document.querySelectorAll('#videoInputArea .video-format-selector button');
+    const publishVideoBtn = document.getElementById('publishVideoBtn');
+
+    let nightLogoTimer = null;
+    let currentPostType = 'text';
+    let currentEmbedFormat = 'horizontal'; 
+    let currentVideoPageFormat = 'vertical';
+    let newVideoFormat = 'horizontal';
+    let isLoadingVideos = false;
+
+    const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
+    const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
+    
+    let allVideos = [];
+
+    function setPostType(type, button) {
+      currentPostType = type;
+      postTypeButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      textFields.style.display = 'none';
+      videoFields.style.display = 'none';
+      embedFields.style.display = 'none';
+      
+      if (type === 'text') {
+        textFields.style.display = 'flex';
+        postText.focus();
+      } else if (type === 'video') {
+        videoFields.style.display = 'flex';
+        videoDescriptionInput.focus();
+      } else if (type === 'embed') {
+        embedFields.style.display = 'flex';
+        embedDescriptionInput.focus();
+      }
+      checkInputs();
+    }
+
+    function setVideoFormat(format) {
+      currentEmbedFormat = format;
+      embedFormatButtons.forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`embed-format-${format}`).classList.add('active');
+    }
+    
+    function setNewVideoFormat(format) {
+        newVideoFormat = format;
+        newVideoFormatButtons.forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`new-video-format-${format}`).classList.add('active');
+    }
 
     function toggleInput() {
       document.getElementById("inputArea").classList.toggle("active");
-      postText.focus();
+      if (document.getElementById("inputArea").classList.contains("active")) {
+        if (currentPostType === 'text') {
+          postText.focus();
+        } else if (currentPostType === 'video') {
+          videoDescriptionInput.focus();
+        } else if (currentPostType === 'embed') {
+          embedDescriptionInput.focus();
+        }
+      }
+    }
+
+    function toggleVideoInput() {
+        videoInputArea.classList.toggle('active');
+        if (videoInputArea.classList.contains('active')) {
+            newVideoDescriptionInput.focus();
+        }
     }
 
     function checkInputs() {
-      const nameOk = userName.value.trim().length >= 3;
-      const textOk = postText.value.trim().length >= 3;
-      publishBtn.disabled = !(nameOk && textOk);
+      const nameOk = userNameInput.value.trim().length >= 3;
+      let postContentOk = false;
+      
+      if (currentPostType === 'text') {
+        postContentOk = postText.value.trim().length >= 3;
+      } else if (currentPostType === 'video') {
+        postContentOk = videoLinkInput.value.trim() !== '';
+      } else if (currentPostType === 'embed') {
+        postContentOk = embedCodeInput.value.trim() !== '';
+      }
+
+      publishBtn.disabled = !(nameOk && postContentOk);
     }
 
+    function checkNewVideoInputs() {
+        const nameOk = userNameInput.value.trim().length >= 3;
+        const videoOk = newVideoEmbedCodeInput.value.trim() !== '';
+        publishVideoBtn.disabled = !(nameOk && videoOk);
+    }
+    
     function resetName() {
       localStorage.removeItem("userName");
       nameInputWrapper.style.display = "block";
-      changeNameBtn.style.display = "none";
-      userName.value = "";
+      document.querySelector(".change-name-header").style.display = "none";
+      userNameInput.value = "";
       welcomeMessage.textContent = "";
-      userName.focus();
+      userNameInput.focus();
       checkInputs();
     }
 
     function toggleTheme() {
       const body = document.body;
       body.classList.toggle("dark-mode");
-      localStorage.setItem("theme", body.classList.contains("dark-mode") ? "dark" : "light");
+      const isDarkMode = body.classList.contains("dark-mode");
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+      
+      updateLogo(isDarkMode);
+    }
+    
+    function updateLogo(isDarkMode) {
+        if (nightLogoTimer) {
+            clearTimeout(nightLogoTimer);
+            nightLogoTimer = null;
+        }
+
+        if (isDarkMode) {
+            logoElement.src = "logo2.png";
+            nightLogoTimer = setTimeout(() => {
+                logoElement.src = "logo3.png";
+            }, 30000);
+        } else {
+            logoElement.src = "logo1.png";
+        }
     }
 
     async function fetchPosts() {
       try {
         const res = await fetch(BASE_URL + "/latest", { headers });
+        if (!res.ok) throw new Error("Errore nel recupero dei post");
         const data = await res.json();
         renderPosts(data.record.posts);
       } catch (err) {
         console.error("Errore nel caricamento post:", err);
       }
     }
+    
+    function createVideoEmbed(url) {
+        let embedHtml = null;
+        let isVertical = false;
 
-function renderPosts(posts) {
-  postsContainer.innerHTML = "";
-  // Inverti l'ordine dei post per visualizzare quelli più recenti per primi
-  posts.reverse().forEach((post, index) => {
-    const div = document.createElement("div");
-    div.className = "post";
-    div.innerHTML = `
-      <strong>${post.name}</strong>: ${post.text}
-      <div class="date">${post.date}</div>
-      <button class="commen-btn" onclick="aler('Commenti in arrivo!')"></button>
-      <button class="delete-btn" onclick="deletePost(${index})">🗑️</button>
-    `;
-    postsContainer.appendChild(div);
-  });
-}
+        const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|shorts\/)([^"&?\/ ]{11})/);
+        if (youtubeMatch) {
+            const videoId = youtubeMatch[1];
+            isVertical = url.includes('shorts');
+            embedHtml = `<iframe class="${isVertical ? 'vertical-video' : 'horizontal-video'}" src="https://www.youtube.com/embed/${videoId}?&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+        
+        return { embedHtml, isVertical };
+    }
 
-      
+    function renderPosts(posts) {
+      postsContainer.innerHTML = "";
+      [...posts].reverse().forEach((post) => {
+        const div = document.createElement("div");
+        div.className = "post";
+        const upCount = post.votes ? post.votes.up || 0 : 0;
+        const downCount = post.votes ? post.votes.down || 0 : 0;
+        
+        let postContentHtml = `<strong>${post.name}</strong>: ${post.text || ''}`;
+        let embedCodeToCopy = null;
+        let embedFormat = null;
+
+        if (post.type === 'video' && post.videoLink) {
+            const { embedHtml, isVertical } = createVideoEmbed(post.videoLink);
+            if (embedHtml) {
+                postContentHtml += `<div class="post-embed">${embedHtml}</div>`;
+                embedCodeToCopy = embedHtml;
+                embedFormat = isVertical ? 'vertical' : 'horizontal';
+            } else {
+                postContentHtml += `<br><a href="${post.videoLink}" target="_blank">Apri video</a>`;
+            }
+        } else if (post.type === 'embed' && post.embedCode) {
+            embedFormat = post.videoFormat;
+            const videoFormatClass = embedFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
+            const embedHtml = post.embedCode.replace(/<iframe/g, `<iframe class="${videoFormatClass}"`);
+            postContentHtml += `<div class="post-embed">${embedHtml}</div>`;
+            embedCodeToCopy = embedHtml;
+        }
+        
+        const actionsHtml = embedCodeToCopy ? `
+          <div class="post-actions">
+            <button onclick="openModal('${encodeURIComponent(embedCodeToCopy)}', '${embedFormat}')">🔍</button>
+            <button onclick="copyToClipboard('${encodeURIComponent(embedCodeToCopy)}')">🔗</button>
+          </div>
+        ` : '';
+
+        div.innerHTML = `
+          ${actionsHtml}
+          ${postContentHtml}
+          <div class="date">${post.date}</div>
+          <div class="post-footer">
+              <div class="vote-buttons">
+                  <button class="vote-btn" onclick="handleVote('up', ${post.id}, this, 'post')">👍</button>
+                  <span class="vote-count up-votes-count">${upCount}</span>
+                  <button class="vote-btn" onclick="handleVote('down', ${post.id}, this, 'post')">👎</button>
+                  <span class="vote-count down-votes-count">${downCount}</span>
+              </div>
+              <div>
+                  <button class="comment-btn" onclick="toggleComments(${post.id}, 'post')">💬</button>
+                  <button class="delete-btn" onclick="deletePost(${post.id})">🗑️</button>
+              </div>
+          </div>
+          <div class="emoji-rain-up" data-post-id="${post.id}"></div>
+          <div class="emoji-rain-down" data-post-id="${post.id}"></div>
+          
+          <div class="comments-section" id="comments-post-${post.id}" style="display:none;">
+              <div class="comment-list">
+                  ${post.comments ? post.comments.map(comment => `<div class="comment"><strong>${comment.name}</strong>: ${comment.text}</div>`).join('') : ''}
+              </div>
+              <div class="comment-form">
+                  <input type="text" class="comment-input" placeholder="Scrivi un commento..." onkeydown="if(event.key === 'Enter') addComment(${post.id}, this.value, this, 'post')" />
+                  <button class="comment-submit-btn" onclick="addComment(${post.id}, this.previousElementSibling.value, this.previousElementSibling, 'post')">Invia</button>
+              </div>
+          </div>
+        `;
+        postsContainer.appendChild(div);
+      });
+    }
+
     async function publishPost() {
-      const name = userName.value.trim();
-      const text = postText.value.trim();
+      const name = userNameInput.value.trim();
       const date = new Date().toLocaleString();
-      const newPost = { name, text, date };
+      const postId = Date.now();
+      
+      const deletePassword = prompt("Crea una password per eliminare questo post:");
+      if (!deletePassword) {
+        alert("Devi creare una password per pubblicare.");
+        return;
+      }
+      
+      let newPost;
+      if (currentPostType === 'text') {
+        const text = postText.value.trim();
+        if (text.length < 3) return alert("Il post deve contenere almeno 3 caratteri.");
+        newPost = { id: postId, name, text, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'text' };
+      } else if (currentPostType === 'video') {
+        const videoLink = videoLinkInput.value.trim();
+        const text = videoDescriptionInput.value.trim();
+        if (!videoLink) return alert("Devi inserire un link per il video.");
+        newPost = { id: postId, name, text, videoLink, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'video' };
+      } else if (currentPostType === 'embed') {
+        const embedCode = embedCodeInput.value.trim();
+        const text = embedDescriptionInput.value.trim();
+        if (!embedCode) return alert("Devi inserire il codice di incorporazione.");
+        newPost = { id: postId, name, text, embedCode, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'embed', videoFormat: currentEmbedFormat };
+      } else {
+        return;
+      }
 
       try {
         const res = await fetch(BASE_URL + "/latest", { headers });
@@ -275,6 +923,10 @@ function renderPosts(posts) {
         });
 
         postText.value = "";
+        videoDescriptionInput.value = "";
+        videoLinkInput.value = "";
+        embedDescriptionInput.value = "";
+        embedCodeInput.value = "";
         checkInputs();
         fetchPosts();
       } catch (err) {
@@ -283,53 +935,425 @@ function renderPosts(posts) {
       }
     }
 
-    async function deletePost(index, creatorName) {
-      const loggedInUser = localStorage.getItem("userName");
+    async function deletePost(postId) {
+        const password = prompt("Inserisci la password per eliminare il post:");
+        if (!password) return;
 
-      // Check if the logged-in user is the creator of the post
-      if (loggedInUser !== creatorName) {
-        alert("Non puoi eliminare un post che non hai creato.");
-        return;
-      }
+        if (!confirm("Sei sicuro di voler eliminare questo post?")) {
+            return;
+        }
+        
+        try {
+            const res = await fetch(BASE_URL + "/latest", { headers });
+            const data = await res.json();
+            let posts = data.record.posts || [];
+            
+            const postToDelete = posts.find(post => post.id === postId);
+            if (postToDelete && postToDelete.password === password) {
+                posts = posts.filter(post => post.id !== postId);
 
-      try {
-        const res = await fetch(BASE_URL + "/latest", { headers });
-        const data = await res.json();
-        const posts = data.record.posts || [];
-        posts.splice(posts.length - 1 - index, 1);
+                await fetch(BASE_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ posts })
+                });
 
-        await fetch(BASE_URL, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({ posts })
+                fetchPosts();
+            } else {
+                alert("Password errata o post non trovato.");
+            }
+        } catch (err) {
+            alert("Errore durante l'eliminazione del post.");
+            console.error(err);
+        }
+    }
+    
+    function toggleComments(id, type) {
+        const commentsSection = document.getElementById(`comments-${type}-${id}`);
+        if (commentsSection) {
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+    
+    async function addComment(id, commentText, inputElement, type) {
+        const name = localStorage.getItem("userName");
+        const trimmedComment = commentText.trim();
+        
+        if (!name) {
+            alert("Devi inserire il tuo nome per commentare.");
+            return;
+        }
+        
+        if (trimmedComment.length < 3) {
+            alert("Il commento deve contenere almeno 3 caratteri.");
+            return;
+        }
+        
+        const newComment = { name, text: trimmedComment };
+        const url = type === 'post' ? BASE_URL : VIDEO_URL;
+        
+        try {
+            const res = await fetch(url + "/latest", { headers });
+            const data = await res.json();
+            const items = type === 'post' ? data.record.posts || [] : data.record.videos || [];
+            
+            const itemIndex = items.findIndex(item => item.id === id);
+            if (itemIndex !== -1) {
+                if (!items[itemIndex].comments) {
+                    items[itemIndex].comments = [];
+                }
+                items[itemIndex].comments.push(newComment);
+                
+                const body = type === 'post' ? { posts: items } : { videos: items };
+                await fetch(url, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify(body)
+                });
+                
+                if (type === 'post') {
+                  fetchPosts();
+                } else {
+                  fetchAndRenderVideos();
+                }
+            }
+        } catch (err) {
+            console.error("Errore nell'aggiunta del commento:", err);
+        }
+    }
+
+    async function handleVote(type, id, button, itemType) {
+        const url = itemType === 'post' ? BASE_URL : VIDEO_URL;
+        
+        try {
+            const res = await fetch(url + "/latest", { headers });
+            const data = await res.json();
+            let items = itemType === 'post' ? data.record.posts || [] : data.record.videos || [];
+            
+            const itemIndex = items.findIndex(item => item.id === id);
+            if (itemIndex !== -1) {
+                if (!items[itemIndex].votes) {
+                    items[itemIndex].votes = { up: 0, down: 0 };
+                }
+                items[itemIndex].votes[type]++;
+                
+                const body = itemType === 'post' ? { posts: items } : { videos: items };
+                await fetch(url, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify(body)
+                });
+                
+                const itemElement = button.closest(itemType === 'post' ? '.post' : '.video-page-item');
+                const countSpan = itemElement.querySelector(`.${type}-votes-count`);
+                countSpan.textContent = items[itemIndex].votes[type];
+                
+                showEmojis(type, button, itemElement);
+            }
+        } catch (err) {
+            console.error("Errore nel voto:", err);
+        }
+    }
+
+    function showEmojis(type, button, itemElement) {
+        const emojis = type === 'up' ? UP_EMOJIS : DOWN_EMOJIS;
+        const container = itemElement.querySelector(type === 'up' ? '.emoji-rain-up' : '.emoji-rain-down');
+        const buttonRect = button.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        emojis.forEach(emojiChar => {
+            const emojiEl = document.createElement('span');
+            emojiEl.classList.add('emoji');
+            emojiEl.textContent = emojiChar;
+            
+            const startX = buttonRect.left + buttonRect.width / 2;
+            const startY = buttonRect.top + buttonRect.height / 2;
+            
+            emojiEl.style.left = `${startX - containerRect.left}px`;
+            emojiEl.style.top = `${startY - containerRect.top}px`;
+            
+            container.appendChild(emojiEl);
+            
+            const delay = Math.random() * 0.2;
+            const duration = 1.5 + Math.random();
+            const endX = (Math.random() - 0.5) * 100;
+            const endY = type === 'up' ? -100 - (Math.random() * 50) : 100 + (Math.random() * 50);
+
+            emojiEl.animate([
+                { transform: `translate(0, 0) scale(1)`, opacity: 1 },
+                { transform: `translate(${endX}px, ${endY}px) scale(1.5)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                delay: delay * 1000,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+            
+            setTimeout(() => emojiEl.remove(), (duration + delay) * 1000);
         });
+    }
 
-        fetchPosts();
-      } catch (err) {
-        alert("Errore durante l'eliminazione del post.");
-        console.error(err);
-      }
+    // Funzioni per la finestra modale e copia
+    function openModal(embedCode, videoFormat) {
+        const modal = document.getElementById("videoModal");
+        const modalVideoContainer = document.getElementById("modalVideoContainer");
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = decodeURIComponent(embedCode);
+        const iframe = tempDiv.querySelector('iframe');
+
+        if (iframe) {
+            iframe.classList.remove('horizontal-video', 'vertical-video');
+            
+            if (videoFormat === 'vertical') {
+                iframe.classList.add('vertical-video');
+            } else {
+                iframe.classList.add('horizontal-video');
+            }
+
+            modalVideoContainer.innerHTML = '';
+            modalVideoContainer.appendChild(iframe);
+        } else {
+            modalVideoContainer.innerHTML = decodeURIComponent(embedCode);
+        }
+        
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("videoModal");
+        modal.style.display = "none";
+        document.getElementById("modalVideoContainer").innerHTML = "";
+    }
+
+    async function copyToClipboard(embedCode) {
+        try {
+            await navigator.clipboard.writeText(decodeURIComponent(embedCode));
+            alert('Codice di incorporazione copiato negli appunti!');
+        } catch (err) {
+            console.error('Errore nel copiare il codice:', err);
+            alert('Errore nel copiare il codice. Copialo manualmente.');
+        }
+    }
+
+    // Funzioni per la pagina dei video
+    function showVideoPage() {
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'block';
+        videoInputArea.classList.remove('active');
+        fetchAndRenderVideos();
+    }
+    
+    function showMainContent() {
+        videoPage.style.display = 'none';
+        mainContent.style.display = 'block';
+        document.getElementById("inputArea").classList.remove("active");
+    }
+
+    async function fetchAndRenderVideos() {
+        if (isLoadingVideos) return;
+        isLoadingVideos = true;
+        try {
+            const res = await fetch(VIDEO_URL + "/latest", { headers });
+            if (!res.ok) throw new Error("Errore nel recupero dei video");
+            const data = await res.json();
+            allVideos = data.record.videos || [];
+            showVideos(currentVideoPageFormat);
+        } catch (err) {
+            console.error("Errore nel caricamento video:", err);
+            return [];
+        } finally {
+            isLoadingVideos = false;
+        }
+    }
+
+    function showVideos(format, button = null) {
+        if (button) {
+            videoTypeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            currentVideoPageFormat = format;
+        }
+        
+        videoGrid.innerHTML = '';
+        const filteredVideos = allVideos.filter(v => v.videoFormat === format);
+
+        // Aggiungi la classe per lo scorrimento infinito
+        if (format === 'vertical') {
+            videoGrid.classList.add('shorts-grid');
+        } else {
+            videoGrid.classList.remove('shorts-grid');
+        }
+
+        [...filteredVideos].reverse().forEach(video => {
+            const upCount = video.votes ? video.votes.up || 0 : 0;
+            const downCount = video.votes ? video.votes.down || 0 : 0;
+
+            const videoItem = document.createElement('div');
+            videoItem.className = 'video-page-item';
+            
+            const iframeClass = video.videoFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
+            let html = video.embedCode.replace(/<iframe/g, `<iframe class="${iframeClass}"`);
+            
+            videoItem.innerHTML = `
+                <div class="video-page-actions">
+                    <button onclick="deleteVideo(${video.id})">🗑️</button>
+                </div>
+                <div class="video-content" onclick="openModal('${encodeURIComponent(html)}', '${video.videoFormat}')">
+                    ${html}
+                </div>
+                <div class="video-item-footer">
+                    <strong>${video.name}</strong>: ${video.description || ''}
+                    <div class="date">${video.date}</div>
+                    <div class="post-footer">
+                        <div class="vote-buttons">
+                            <button class="vote-btn" onclick="handleVote('up', ${video.id}, this, 'video')">👍</button>
+                            <span class="vote-count up-votes-count">${upCount}</span>
+                            <button class="vote-btn" onclick="handleVote('down', ${video.id}, this, 'video')">👎</button>
+                            <span class="vote-count down-votes-count">${downCount}</span>
+                        </div>
+                        <button class="comment-btn" onclick="toggleComments(${video.id}, 'video')">💬</button>
+                    </div>
+                    <div class="emoji-rain-up" data-video-id="${video.id}"></div>
+                    <div class="emoji-rain-down" data-video-id="${video.id}"></div>
+
+                    <div class="comments-section" id="comments-video-${video.id}" style="display:none;">
+                        <div class="comment-list">
+                            ${video.comments ? video.comments.map(comment => `<div class="comment"><strong>${comment.name}</strong>: ${comment.text}</div>`).join('') : ''}
+                        </div>
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Scrivi un commento..." onkeydown="if(event.key === 'Enter') addComment(${video.id}, this.value, this, 'video')" />
+                            <button class="comment-submit-btn" onclick="addComment(${video.id}, this.previousElementSibling.value, this.previousElementSibling, 'video')">Invia</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            videoGrid.appendChild(videoItem);
+        });
+    }
+
+    async function publishNewVideo() {
+        const name = localStorage.getItem("userName");
+        if (!name) {
+            alert("Devi inserire il tuo nome per pubblicare i video.");
+            return;
+        }
+        
+        const deletePassword = prompt("Crea una password per eliminare questo video:");
+        if (!deletePassword) {
+          alert("Devi creare una password per pubblicare.");
+          return;
+        }
+
+        const embedCode = newVideoEmbedCodeInput.value.trim();
+        const description = newVideoDescriptionInput.value.trim();
+        const videoFormat = newVideoFormat;
+
+        if (!embedCode) {
+            alert("Devi inserire il link o il codice di incorporazione.");
+            return;
+        }
+
+        const newVideo = {
+            id: Date.now(),
+            name,
+            description,
+            embedCode,
+            videoFormat,
+            date: new Date().toLocaleString(),
+            password: deletePassword,
+            votes: { up: 0, down: 0 },
+            comments: []
+        };
+
+        try {
+            const res = await fetch(VIDEO_URL + "/latest", { headers });
+            const data = await res.json();
+            const videos = data.record.videos || [];
+            videos.push(newVideo);
+
+            await fetch(VIDEO_URL, {
+                method: "PUT",
+                headers,
+                body: JSON.stringify({ videos })
+            });
+
+            newVideoEmbedCodeInput.value = "";
+            newVideoDescriptionInput.value = "";
+            checkNewVideoInputs();
+            fetchAndRenderVideos();
+        } catch (err) {
+            alert("Errore nel salvataggio del video.");
+            console.error(err);
+        }
+    }
+    
+    async function deleteVideo(videoId) {
+        const password = prompt("Inserisci la password per eliminare il video:");
+        if (!password) return;
+
+        if (!confirm("Sei sicuro di voler eliminare questo video?")) {
+            return;
+        }
+        
+        try {
+            const res = await fetch(VIDEO_URL + "/latest", { headers });
+            const data = await res.json();
+            let videos = data.record.videos || [];
+            
+            const videoToDelete = videos.find(video => video.id === videoId);
+            if (videoToDelete && videoToDelete.password === password) {
+                videos = videos.filter(video => video.id !== videoId);
+
+                await fetch(VIDEO_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ videos })
+                });
+
+                fetchAndRenderVideos();
+            } else {
+                alert("Password errata o video non trovato.");
+            }
+        } catch (err) {
+            alert("Errore durante l'eliminazione del video.");
+            console.error(err);
+        }
     }
 
     window.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("theme") === "dark") {
+      const savedTheme = localStorage.getItem("theme");
+      const isDarkMode = savedTheme === "dark";
+      if (isDarkMode) {
         document.body.classList.add("dark-mode");
       }
+      updateLogo(isDarkMode);
+      
       const savedName = localStorage.getItem("userName");
       if (savedName) {
-        userName.value = savedName;
+        userNameInput.value = savedName;
         nameInputWrapper.style.display = "none";
-        changeNameBtn.style.display = "block";
+        document.querySelector(".change-name-header").style.display = "block";
         welcomeMessage.textContent = `👋 Benvenuto ${savedName}!`;
       }
       checkInputs();
       fetchPosts();
+      
+      setPostType('text', document.getElementById('post-type-text'));
+      setNewVideoFormat('horizontal'); // Default per la pagina video
+      document.getElementById('publishVideoBtn').disabled = true;
     });
 
-    userName.addEventListener("input", checkInputs);
+    userNameInput.addEventListener("input", () => {
+      checkInputs();
+      checkNewVideoInputs();
+    });
     postText.addEventListener("input", checkInputs);
-    userName.addEventListener("change", () => {
-      localStorage.setItem("userName", userName.value.trim());
+    videoLinkInput.addEventListener("input", checkInputs);
+    embedCodeInput.addEventListener("input", checkInputs);
+    newVideoEmbedCodeInput.addEventListener("input", checkNewVideoInputs);
+
+    userNameInput.addEventListener("change", () => {
+      localStorage.setItem("userName", userNameInput.value.trim());
     });
   </script>
 </body>
