@@ -44,6 +44,12 @@
       color: var(--text-dark);
     }
 
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: var(--spacing);
+    }
+    
     header {
       display: flex;
       flex-wrap: wrap;
@@ -57,6 +63,7 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+      margin-bottom: var(--spacing);
     }
 
     @keyframes fadeIn {
@@ -108,10 +115,28 @@
       gap: 15px;
     }
     
-    .add-button, .change-name-header, .video-button {
+    .add-button, .change-name-header, .video-button, .logout-button {
       background: var(--primary);
       color: white;
       font-size: 1rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 0.5rem;
+        background: rgba(0,0,0,0.05);
+        border-radius: var(--border-radius);
+    }
+    
+    .profile-pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
     }
     
     #logo {
@@ -217,6 +242,27 @@
       transition: transform 0.5s ease, box-shadow 0.5s ease;
       opacity: 0;
       animation: fadeIn 0.5s forwards;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .post-header .user-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: inherit;
+        font-weight: bold;
+    }
+
+    .post-header .profile-pic {
+        width: 40px;
+        height: 40px;
     }
     
     body.dark-mode .post {
@@ -601,6 +647,10 @@
         body {
             font-size: 0.9rem;
         }
+        
+        .container {
+            padding: var(--spacing);
+        }
 
         header {
             flex-direction: column;
@@ -686,87 +736,222 @@
             max-width: 100%;
         }
     }
+
+    /* Stili per la nuova pagina utente */
+    #userProfilePage {
+        display: none;
+        padding: 2rem;
+    }
+
+    .profile-info {
+        text-align: center;
+        margin-bottom: 2rem;
+        background-color: var(--card-light);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+
+    body.dark-mode .profile-info {
+        background-color: var(--card-dark);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    
+    .profile-info img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-info h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-info p {
+        font-size: 1.1rem;
+        color: #666;
+    }
+    
+    body.dark-mode .profile-info p {
+        color: #ccc;
+    }
+
+    .user-posts-list .post, .user-videos-list .video-page-item {
+        margin-bottom: 1.5rem;
+    }
+
+    #registerPage, #loginPage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+
+    .auth-card {
+        background-color: var(--card-light);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    body.dark-mode .auth-card {
+        background-color: var(--card-dark);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    
+    .auth-card input, .auth-card select {
+        padding: 0.8rem;
+        font-size: 1rem;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: 10px;
+        background: rgba(0,0,0,0.05);
+        color: inherit;
+    }
+    
+    body.dark-mode .auth-card input, body.dark-mode .auth-card select {
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .auth-card h2 {
+        text-align: center;
+        margin-bottom: 0;
+    }
+    
   </style>
 </head>
 <body>
-  <header>
-    <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
-    <img id="logo" src="logo1.png" alt="Nexiflow Logo">
-    <div class="header-buttons">
-      <button class="change-name-header" onclick="resetName()">📝</button>
-      <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
-      <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
-    </div>
-  </header>
+  <div class="container">
+    
+    <div id="authContent">
+        <div id="loginPage">
+            <div class="auth-card">
+                <h2>Accedi</h2>
+                <input type="text" id="loginEmail" placeholder="Email" />
+                <input type="password" id="loginPassword" placeholder="Password" />
+                <button onclick="loginUser()">Accedi</button>
+                <p>Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a></p>
+            </div>
+        </div>
 
-  <div id="welcomeMessage" style="padding: 1.5rem; font-weight: bold; font-size: 1.2rem;"></div>
-  
-  <div class="input-area" id="inputArea">
-    <div id="nameInputWrapper">
-      <input type="text" id="userName" placeholder="Nome e Cognome" />
+        <div id="registerPage" style="display: none;">
+            <div class="auth-card">
+                <h2>Registrati</h2>
+                <input type="text" id="registerName" placeholder="Nome" />
+                <input type="email" id="registerEmail" placeholder="Email" />
+                <input type="password" id="registerPassword" placeholder="Password" />
+                <label for="profilePicSelect">Scegli un'immagine profilo:</label>
+                <select id="profilePicSelect">
+                    <option value="profilo1.png">Profilo 1</option>
+                    <option value="profilo2.png">Profilo 2</option>
+                    <option value="profilo3.png">Profilo 3</option>
+                    <option value="profilo4.png">Profilo 4</option>
+                </select>
+                <button onclick="registerUser()">Registrati</button>
+                <p>Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a></p>
+            </div>
+        </div>
     </div>
     
-    <div class="post-type-selector">
-        <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
-        <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
-        <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
-        <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
-    </div>
-
-    <div id="post-text-fields" class="post-type-fields">
-        <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
-    </div>
-    <div id="post-video-fields" class="post-type-fields" style="display:none;">
-        <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
-        <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
-    </div>
-    <div id="post-embed-fields" class="post-type-fields" style="display:none;">
-        <input type="text" id="embedDescription" placeholder="Scrivi una descrizione per il video..." />
-        <div class="video-format-selector">
-            <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
-            <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
-        </div>
-        <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
-    </div>
-    <div id="post-twitter-fields" class="post-type-fields" style="display:none;">
-        <input type="text" id="twitterLink" placeholder="Incolla qui il link del post (es. https://x.com/...)" />
-    </div>
-
-    <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
-  </div>
-
-  <div id="mainContent">
-    <div class="posts" id="postsContainer"></div>
-  </div>
-
-  <div id="videoPage">
-    <div class="video-page-header">
-      <div class="header-row">
-        <button onclick="showMainContent()">← Torna alla bacheca</button>
-        <div class="video-type-selector">
-          <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
-          <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
-        </div>
-        <button onclick="toggleVideoInput()">➕ Aggiungi Video</button>
-      </div>
-    </div>
-    <div id="videoInputArea" class="input-area">
-        <div class="post-type-fields">
-            <input type="text" id="newVideoDescription" placeholder="Scrivi una descrizione per il video..." />
-            <div class="video-format-selector">
-                <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
-                <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+    <div id="appContent" style="display: none;">
+        <header>
+            <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
+            <img id="logo" src="logo1.png" alt="Nexiflow Logo">
+            <div class="header-buttons">
+                <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
+                <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
+                <button class="logout-button" onclick="logoutUser()">Logout</button>
             </div>
-            <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..."></textarea>
-        </div>
-        <button id="publishVideoBtn" onclick="publishNewVideo()" disabled>Pubblica Video</button>
-    </div>
-    <div class="video-page-container" id="videoGrid"></div>
-  </div>
+        </header>
 
-  <footer>
-    © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
-  </footer>
+        <div id="welcomeMessage" class="user-info">
+            <img id="userProfilePic" class="profile-pic" />
+            <span id="userNameDisplay"></span>
+        </div>
+        
+        <div class="input-area" id="inputArea">
+            <div class="post-type-selector">
+                <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
+                <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
+                <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
+                <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
+            </div>
+
+            <div id="post-text-fields" class="post-type-fields">
+                <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
+            </div>
+            <div id="post-video-fields" class="post-type-fields" style="display:none;">
+                <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
+                <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
+            </div>
+            <div id="post-embed-fields" class="post-type-fields" style="display:none;">
+                <input type="text" id="embedDescription" placeholder="Scrivi una descrizione per il video..." />
+                <div class="video-format-selector">
+                    <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
+                    <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
+                </div>
+                <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
+            </div>
+            <div id="post-twitter-fields" class="post-type-fields" style="display:none;">
+                <input type="text" id="twitterLink" placeholder="Incolla qui il link del post (es. https://x.com/...)" />
+            </div>
+
+            <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
+        </div>
+
+        <div id="mainContent">
+            <div class="posts" id="postsContainer"></div>
+        </div>
+
+        <div id="videoPage">
+            <div class="video-page-header">
+                <div class="header-row">
+                    <button onclick="showMainContent()">← Torna alla bacheca</button>
+                    <div class="video-type-selector">
+                        <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
+                        <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+                    </div>
+                    <button onclick="toggleVideoInput()">➕ Aggiungi Video</button>
+                </div>
+            </div>
+            <div id="videoInputArea" class="input-area">
+                <div class="post-type-fields">
+                    <input type="text" id="newVideoDescription" placeholder="Scrivi una descrizione per il video..." />
+                    <div class="video-format-selector">
+                        <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
+                        <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+                    </div>
+                    <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..."></textarea>
+                </div>
+                <button id="publishVideoBtn" onclick="publishNewVideo()" disabled>Pubblica Video</button>
+            </div>
+            <div class="video-page-container" id="videoGrid"></div>
+        </div>
+
+        <div id="userProfilePage">
+            <button onclick="showMainContent()">← Torna alla bacheca</button>
+            <div class="profile-info" id="profileInfo"></div>
+            <h3>Post di questo utente:</h3>
+            <div class="posts user-posts-list" id="userPostsContainer"></div>
+            <h3>Video di questo utente:</h3>
+            <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
+        </div>
+        
+    </div>
+
+    <footer>
+      © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
+    </footer>
+  
+  </div>
   
   <div id="videoModal" class="modal">
     <span class="close-modal" onclick="closeModal()">×</span>
@@ -776,21 +961,35 @@
   </div>
 
   <script>
+    // Inserisci qui le tue API KEY e i BIN ID.
+    // Ricorda di creare un NUOVO BIN ID per gli utenti!
     const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
     const BIN_ID = "67fe4e4f8a456b796689d908";
     const VIDEO_BIN_ID = "689076be7b4b8670d8acc5b2";
+    const USER_BIN_ID = "687ac68274f7b01b5c73cedf";
     
     const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
     const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
+    const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
     const headers = {
       "Content-Type": "application/json",
       "X-Master-Key": API_KEY
     };
 
-    const userNameInput = document.getElementById("userName");
+    const registerNameInput = document.getElementById("registerName");
+    const registerEmailInput = document.getElementById("registerEmail");
+    const registerPasswordInput = document.getElementById("registerPassword");
+    const loginEmailInput = document.getElementById("loginEmail");
+    const loginPasswordInput = document.getElementById("loginPassword");
+    const profilePicSelect = document.getElementById("profilePicSelect");
+
+    const appContent = document.getElementById("appContent");
+    const authContent = document.getElementById("authContent");
+    const loginPage = document.getElementById("loginPage");
+    const registerPage = document.getElementById("registerPage");
+    
     const postText = document.getElementById("postText");
     const publishBtn = document.getElementById("publishBtn");
-    const nameInputWrapper = document.getElementById("nameInputWrapper");
     const welcomeMessage = document.getElementById("welcomeMessage");
     const postsContainer = document.getElementById("postsContainer");
     const logoElement = document.getElementById("logo");
@@ -817,17 +1016,152 @@
     const newVideoFormatButtons = document.querySelectorAll('#videoInputArea .video-format-selector button');
     const publishVideoBtn = document.getElementById('publishVideoBtn');
 
+    const userProfilePage = document.getElementById('userProfilePage');
+    const profileInfoDiv = document.getElementById('profileInfo');
+    const userPostsContainer = document.getElementById('userPostsContainer');
+    const userVideosContainer = document.getElementById('userVideosContainer');
+
     let nightLogoTimer = null;
     let currentPostType = 'text';
     let currentEmbedFormat = 'horizontal'; 
     let currentVideoPageFormat = 'vertical';
     let newVideoFormat = 'horizontal';
     let isLoadingVideos = false;
+    let currentUser = null;
+    let usersData = {}; // Cache per i dati utente
+    
+    let allPosts = [];
+    let allVideos = [];
+    let allUsers = [];
 
     const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
     const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
+
+    async function loadAllData() {
+        try {
+            const [postsRes, videosRes, usersRes] = await Promise.all([
+                fetch(BASE_URL + "/latest", { headers }),
+                fetch(VIDEO_URL + "/latest", { headers }),
+                fetch(USER_URL + "/latest", { headers })
+            ]);
+
+            const postsData = await postsRes.json();
+            const videosData = await videosRes.json();
+            const usersDataRaw = await usersRes.json();
+
+            allPosts = postsData.record.posts || [];
+            allVideos = videosData.record.videos || [];
+            allUsers = usersDataRaw.record.users || [];
+            
+            // Crea una mappa per un accesso rapido ai dati utente
+            usersData = allUsers.reduce((map, user) => {
+                map[user.email] = user;
+                return map;
+            }, {});
+            
+            renderPosts(allPosts);
+        } catch (err) {
+            console.error("Errore nel caricamento dei dati:", err);
+            // In caso di errore, prova a renderizzare solo i post (potrebbero non avere le info utente)
+            try {
+              const res = await fetch(BASE_URL + "/latest", { headers });
+              const data = await res.json();
+              allPosts = data.record.posts || [];
+              renderPosts(allPosts);
+            } catch (error) {
+              console.error("Fallito il caricamento dei post.", error);
+            }
+        }
+    }
+
+    // Funzioni di autenticazione
+    function showLoginPage() {
+        loginPage.style.display = 'flex';
+        registerPage.style.display = 'none';
+        loginEmailInput.focus();
+    }
     
-    let allVideos = [];
+    function showRegisterPage() {
+        loginPage.style.display = 'none';
+        registerPage.style.display = 'flex';
+        registerNameInput.focus();
+    }
+
+    async function registerUser() {
+        const name = registerNameInput.value.trim();
+        const email = registerEmailInput.value.trim();
+        const password = registerPasswordInput.value.trim();
+        const profilePic = profilePicSelect.value;
+        
+        if (!name || !email || !password) {
+            alert("Compila tutti i campi!");
+            return;
+        }
+
+        if (allUsers.find(u => u.email === email)) {
+            alert("Esiste già un utente con questa email.");
+            return;
+        }
+
+        const newUser = { name, email, password, profilePic, bio: "" };
+        
+        try {
+            allUsers.push(newUser);
+            await fetch(USER_URL, {
+                method: "PUT",
+                headers,
+                body: JSON.stringify({ users: allUsers })
+            });
+            alert("Registrazione completata! Ora puoi accedere.");
+            showLoginPage();
+        } catch(err) {
+            alert("Errore durante la registrazione.");
+            console.error(err);
+        }
+    }
+
+    async function loginUser() {
+        const email = loginEmailInput.value.trim();
+        const password = loginPasswordInput.value.trim();
+        
+        const user = allUsers.find(u => u.email === email && u.password === password);
+        
+        if (user) {
+            currentUser = user;
+            localStorage.setItem("currentUserEmail", email);
+            alert(`Benvenuto, ${currentUser.name}!`);
+            showAppContent();
+        } else {
+            alert("Credenziali non valide.");
+        }
+    }
+
+    function logoutUser() {
+        currentUser = null;
+        localStorage.removeItem("currentUserEmail");
+        showAuthContent();
+    }
+    
+    function showAuthContent() {
+        authContent.style.display = 'block';
+        appContent.style.display = 'none';
+        showLoginPage();
+    }
+    
+    function showAppContent() {
+        authContent.style.display = 'none';
+        appContent.style.display = 'block';
+        updateUserInfo();
+        showMainContent();
+    }
+
+    function updateUserInfo() {
+        if (currentUser) {
+            document.getElementById("userNameDisplay").textContent = currentUser.name;
+            document.getElementById("userProfilePic").src = currentUser.profilePic;
+            welcomeMessage.style.display = 'flex';
+        }
+    }
 
     function setPostType(type, button) {
       currentPostType = type;
@@ -890,7 +1224,6 @@
     }
 
     function checkInputs() {
-      const nameOk = userNameInput.value.trim().length >= 3;
       let postContentOk = false;
       
       if (currentPostType === 'text') {
@@ -903,23 +1236,12 @@
         postContentOk = twitterLinkInput.value.trim() !== '';
       }
 
-      publishBtn.disabled = !(nameOk && postContentOk);
+      publishBtn.disabled = !postContentOk;
     }
 
     function checkNewVideoInputs() {
-        const nameOk = userNameInput.value.trim().length >= 3;
         const videoOk = newVideoEmbedCodeInput.value.trim() !== '';
-        publishVideoBtn.disabled = !(nameOk && videoOk);
-    }
-    
-    function resetName() {
-      localStorage.removeItem("userName");
-      nameInputWrapper.style.display = "block";
-      document.querySelector(".change-name-header").style.display = "none";
-      userNameInput.value = "";
-      welcomeMessage.textContent = "";
-      userNameInput.focus();
-      checkInputs();
+        publishVideoBtn.disabled = !videoOk;
     }
 
     function toggleTheme() {
@@ -962,17 +1284,6 @@
             twttr.widgets.load(postsContainer);
         }
     }
-
-    async function fetchPosts() {
-      try {
-        const res = await fetch(BASE_URL + "/latest", { headers });
-        if (!res.ok) throw new Error("Errore nel recupero dei post");
-        const data = await res.json();
-        renderPosts(data.record.posts);
-      } catch (err) {
-        console.error("Errore nel caricamento post:", err);
-      }
-    }
     
     function createVideoEmbed(url) {
         let embedHtml = null;
@@ -988,22 +1299,23 @@
         return { embedHtml, isVertical };
     }
 
-    function renderPosts(posts) {
-      postsContainer.innerHTML = "";
-      [...posts].reverse().forEach((post) => {
+    function renderPosts(postsToRender, container = postsContainer) {
+      container.innerHTML = "";
+      [...postsToRender].reverse().forEach((post) => {
         const div = document.createElement("div");
         div.className = "post";
         const upCount = post.votes ? post.votes.up || 0 : 0;
         const downCount = post.votes ? post.votes.down || 0 : 0;
+        const user = usersData[post.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo4.png', email: null };
         
-        let postContentHtml = post.text ? `<p><strong>${post.name}</strong>: ${post.text}</p>` : `<p><strong>${post.name}</strong></p>`;
+        let postContentHtml = post.text ? `<p>${post.text}</p>` : '';
         let embedCodeToCopy = null;
         let embedFormat = null;
         
         if (post.type === 'twitter' && post.tweetUrl) {
             postContentHtml += `<div class="post-twitter-embed"><blockquote class="twitter-tweet" data-dnt="true" data-theme="${document.body.classList.contains('dark-mode') ? 'dark' : 'light'}"><a href="${post.tweetUrl}"></a></blockquote></div>`;
-            loadTwitterWidgets(); // Ensure the Twitter script is loaded
-            setTimeout(renderTwitterPosts, 1000); // Wait for the content to be in the DOM
+            loadTwitterWidgets();
+            setTimeout(renderTwitterPosts, 1000);
         } else if ((post.type === 'video' && post.videoLink) || (post.type === 'embed' && post.embedCode)) {
             embedFormat = post.videoFormat;
             const videoFormatClass = embedFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
@@ -1020,6 +1332,12 @@
         ` : '';
 
         div.innerHTML = `
+          <div class="post-header">
+            <a href="#" class="user-link" onclick="showUserProfilePage('${user.email}')">
+                <img src="${user.profilePic}" class="profile-pic" alt="${user.name}" />
+                <span>${user.name}</span>
+            </a>
+          </div>
           ${actionsHtml}
           ${postContentHtml}
           <div class="date">${post.date}</div>
@@ -1048,12 +1366,11 @@
               </div>
           </div>
         `;
-        postsContainer.appendChild(div);
+        container.appendChild(div);
       });
     }
 
     async function publishPost() {
-      const name = userNameInput.value.trim();
       const date = new Date().toLocaleString();
       const postId = Date.now();
       
@@ -1067,7 +1384,7 @@
       if (currentPostType === 'text') {
         const text = postText.value.trim();
         if (text.length < 3) return alert("Il post deve contenere almeno 3 caratteri.");
-        newPost = { id: postId, name, text, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'text' };
+        newPost = { id: postId, userEmail: currentUser.email, text, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'text' };
       } else if (currentPostType === 'video') {
         const videoLink = videoLinkInput.value.trim();
         const text = videoDescriptionInput.value.trim();
@@ -1077,30 +1394,27 @@
             alert("Il link del video non è valido.");
             return;
         }
-        newPost = { id: postId, name, text, videoLink, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'video', embedCode: embedHtml, videoFormat: isVertical ? 'vertical' : 'horizontal' };
+        newPost = { id: postId, userEmail: currentUser.email, text, videoLink, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'video', embedCode: embedHtml, videoFormat: isVertical ? 'vertical' : 'horizontal' };
       } else if (currentPostType === 'embed') {
         const embedCode = embedCodeInput.value.trim();
         const text = embedDescriptionInput.value.trim();
         if (!embedCode) return alert("Devi inserire il codice di incorporazione.");
-        newPost = { id: postId, name, text, embedCode, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'embed', videoFormat: currentEmbedFormat };
+        newPost = { id: postId, userEmail: currentUser.email, text, embedCode, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'embed', videoFormat: currentEmbedFormat };
       } else if (currentPostType === 'twitter') {
         const tweetUrl = twitterLinkInput.value.trim();
         if (!tweetUrl) return alert("Devi inserire il link del post di Twitter (X).");
-        newPost = { id: postId, name, date, tweetUrl, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'twitter' };
+        newPost = { id: postId, userEmail: currentUser.email, date, tweetUrl, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'twitter' };
       } else {
         return;
       }
 
       try {
-        const res = await fetch(BASE_URL + "/latest", { headers });
-        const data = await res.json();
-        const posts = data.record.posts || [];
-        posts.push(newPost);
+        allPosts.push(newPost);
 
         await fetch(BASE_URL, {
           method: "PUT",
           headers,
-          body: JSON.stringify({ posts })
+          body: JSON.stringify({ posts: allPosts })
         });
 
         postText.value = "";
@@ -1110,7 +1424,7 @@
         embedCodeInput.value = "";
         twitterLinkInput.value = "";
         checkInputs();
-        fetchPosts();
+        renderPosts(allPosts);
       } catch (err) {
         alert("Errore nel salvataggio.");
         console.error(err);
@@ -1126,21 +1440,17 @@
         }
         
         try {
-            const res = await fetch(BASE_URL + "/latest", { headers });
-            const data = await res.json();
-            let posts = data.record.posts || [];
-            
-            const postToDelete = posts.find(post => post.id === postId);
+            const postToDelete = allPosts.find(post => post.id === postId);
             if (postToDelete && postToDelete.password === password) {
-                posts = posts.filter(post => post.id !== postId);
+                allPosts = allPosts.filter(post => post.id !== postId);
 
                 await fetch(BASE_URL, {
                     method: "PUT",
                     headers,
-                    body: JSON.stringify({ posts })
+                    body: JSON.stringify({ posts: allPosts })
                 });
 
-                fetchPosts();
+                renderPosts(allPosts);
             } else {
                 alert("Password errata o post non trovato.");
             }
@@ -1158,35 +1468,26 @@
     }
     
     async function addComment(id, commentText, inputElement, type) {
-        const name = localStorage.getItem("userName");
         const trimmedComment = commentText.trim();
-        
-        if (!name) {
-            alert("Devi inserire il tuo nome per commentare.");
-            return;
-        }
         
         if (trimmedComment.length < 3) {
             alert("Il commento deve contenere almeno 3 caratteri.");
             return;
         }
         
-        const newComment = { name, text: trimmedComment };
+        const newComment = { name: currentUser.name, text: trimmedComment };
+        const items = type === 'post' ? allPosts : allVideos;
         const url = type === 'post' ? BASE_URL : VIDEO_URL;
         
-        try {
-            const res = await fetch(url + "/latest", { headers });
-            const data = await res.json();
-            const items = type === 'post' ? data.record.posts || [] : data.record.videos || [];
+        const itemIndex = items.findIndex(item => item.id === id);
+        if (itemIndex !== -1) {
+            if (!items[itemIndex].comments) {
+                items[itemIndex].comments = [];
+            }
+            items[itemIndex].comments.push(newComment);
             
-            const itemIndex = items.findIndex(item => item.id === id);
-            if (itemIndex !== -1) {
-                if (!items[itemIndex].comments) {
-                    items[itemIndex].comments = [];
-                }
-                items[itemIndex].comments.push(newComment);
-                
-                const body = type === 'post' ? { posts: items } : { videos: items };
+            const body = type === 'post' ? { posts: items } : { videos: items };
+            try {
                 await fetch(url, {
                     method: "PUT",
                     headers,
@@ -1194,32 +1495,29 @@
                 });
                 
                 if (type === 'post') {
-                  fetchPosts();
+                  renderPosts(allPosts);
                 } else {
-                  fetchAndRenderVideos();
+                  showVideos(currentVideoPageFormat);
                 }
+            } catch (err) {
+                console.error("Errore nell'aggiunta del commento:", err);
             }
-        } catch (err) {
-            console.error("Errore nell'aggiunta del commento:", err);
         }
     }
 
     async function handleVote(type, id, button, itemType) {
         const url = itemType === 'post' ? BASE_URL : VIDEO_URL;
+        const items = itemType === 'post' ? allPosts : allVideos;
         
-        try {
-            const res = await fetch(url + "/latest", { headers });
-            const data = await res.json();
-            let items = itemType === 'post' ? data.record.posts || [] : data.record.videos || [];
+        const itemIndex = items.findIndex(item => item.id === id);
+        if (itemIndex !== -1) {
+            if (!items[itemIndex].votes) {
+                items[itemIndex].votes = { up: 0, down: 0 };
+            }
+            items[itemIndex].votes[type]++;
             
-            const itemIndex = items.findIndex(item => item.id === id);
-            if (itemIndex !== -1) {
-                if (!items[itemIndex].votes) {
-                    items[itemIndex].votes = { up: 0, down: 0 };
-                }
-                items[itemIndex].votes[type]++;
-                
-                const body = itemType === 'post' ? { posts: items } : { videos: items };
+            const body = itemType === 'post' ? { posts: items } : { videos: items };
+            try {
                 await fetch(url, {
                     method: "PUT",
                     headers,
@@ -1231,9 +1529,9 @@
                 countSpan.textContent = items[itemIndex].votes[type];
                 
                 showEmojis(type, button, itemElement);
+            } catch (err) {
+                console.error("Errore nel voto:", err);
             }
-        } catch (err) {
-            console.error("Errore nel voto:", err);
         }
     }
 
@@ -1322,12 +1620,14 @@
     function showVideoPage() {
         mainContent.style.display = 'none';
         videoPage.style.display = 'block';
-        videoInputArea.classList.remove('active');
+        userProfilePage.style.display = 'none';
+        document.getElementById('inputArea').classList.remove('active');
         fetchAndRenderVideos();
     }
     
     function showMainContent() {
         videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
         mainContent.style.display = 'block';
         document.getElementById("inputArea").classList.remove("active");
     }
@@ -1336,10 +1636,6 @@
         if (isLoadingVideos) return;
         isLoadingVideos = true;
         try {
-            const res = await fetch(VIDEO_URL + "/latest", { headers });
-            if (!res.ok) throw new Error("Errore nel recupero dei video");
-            const data = await res.json();
-            allVideos = data.record.videos || [];
             showVideos(currentVideoPageFormat);
         } catch (err) {
             console.error("Errore nel caricamento video:", err);
@@ -1349,26 +1645,26 @@
         }
     }
 
-    function showVideos(format, button = null) {
+    function showVideos(format, button = null, container = videoGrid) {
         if (button) {
             videoTypeButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             currentVideoPageFormat = format;
         }
         
-        videoGrid.innerHTML = '';
+        container.innerHTML = '';
         const filteredVideos = allVideos.filter(v => v.videoFormat === format);
 
-        // Aggiungi la classe per lo scorrimento infinito
         if (format === 'vertical') {
-            videoGrid.classList.add('shorts-grid');
+            container.classList.add('shorts-grid');
         } else {
-            videoGrid.classList.remove('shorts-grid');
+            container.classList.remove('shorts-grid');
         }
 
         [...filteredVideos].reverse().forEach(video => {
             const upCount = video.votes ? video.votes.up || 0 : 0;
             const downCount = video.votes ? video.votes.down || 0 : 0;
+            const user = usersData[video.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo1.png', email: null };
 
             const videoItem = document.createElement('div');
             videoItem.className = 'video-page-item';
@@ -1384,7 +1680,13 @@
                     ${html}
                 </div>
                 <div class="video-item-footer">
-                    <strong>${video.name}</strong>: ${video.description || ''}
+                    <div class="post-header">
+                        <a href="#" class="user-link" onclick="showUserProfilePage('${user.email}')">
+                            <img src="${user.profilePic}" class="profile-pic" alt="${user.name}" />
+                            <span><strong>${user.name}</strong></span>
+                        </a>
+                    </div>
+                    ${video.description || ''}
                     <div class="date">${video.date}</div>
                     <div class="post-footer">
                         <div class="vote-buttons">
@@ -1409,17 +1711,11 @@
                     </div>
                 </div>
             `;
-            videoGrid.appendChild(videoItem);
+            container.appendChild(videoItem);
         });
     }
 
     async function publishNewVideo() {
-        const name = localStorage.getItem("userName");
-        if (!name) {
-            alert("Devi inserire il tuo nome per pubblicare i video.");
-            return;
-        }
-        
         const deletePassword = prompt("Crea una password per eliminare questo video:");
         if (!deletePassword) {
           alert("Devi creare una password per pubblicare.");
@@ -1432,7 +1728,6 @@
         let embedCode = null;
         let isLink = false;
 
-        // Controlla se l'input è un link di YouTube
         const youtubeMatch = inputValue.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|shorts\/)([^"&?\/ ]{11})/);
         if (youtubeMatch) {
             isLink = true;
@@ -1440,7 +1735,6 @@
             videoFormat = inputValue.includes('shorts') ? 'vertical' : 'horizontal';
             embedCode = `<iframe class="${videoFormat}-video" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         } else if (inputValue.includes('<iframe')) {
-            // Se non è un link, controlla se è un iframe
             embedCode = inputValue;
         } else {
             alert("L'input non è un link di YouTube valido né un codice iframe.");
@@ -1449,7 +1743,7 @@
 
         const newVideo = {
             id: Date.now(),
-            name,
+            userEmail: currentUser.email,
             description,
             embedCode,
             videoFormat,
@@ -1460,21 +1754,18 @@
         };
 
         try {
-            const res = await fetch(VIDEO_URL + "/latest", { headers });
-            const data = await res.json();
-            const videos = data.record.videos || [];
-            videos.push(newVideo);
+            allVideos.push(newVideo);
 
             await fetch(VIDEO_URL, {
                 method: "PUT",
                 headers,
-                body: JSON.stringify({ videos })
+                body: JSON.stringify({ videos: allVideos })
             });
 
             newVideoEmbedCodeInput.value = "";
             newVideoDescriptionInput.value = "";
             checkNewVideoInputs();
-            fetchAndRenderVideos();
+            showVideos(currentVideoPageFormat);
         } catch (err) {
             alert("Errore nel salvataggio del video.");
             console.error(err);
@@ -1490,21 +1781,17 @@
         }
         
         try {
-            const res = await fetch(VIDEO_URL + "/latest", { headers });
-            const data = await res.json();
-            let videos = data.record.videos || [];
-            
-            const videoToDelete = videos.find(video => video.id === videoId);
+            const videoToDelete = allVideos.find(video => video.id === videoId);
             if (videoToDelete && videoToDelete.password === password) {
-                videos = videos.filter(video => video.id !== videoId);
+                allVideos = allVideos.filter(video => video.id !== videoId);
 
                 await fetch(VIDEO_URL, {
                     method: "PUT",
                     headers,
-                    body: JSON.stringify({ videos })
+                    body: JSON.stringify({ videos: allVideos })
                 });
 
-                fetchAndRenderVideos();
+                showVideos(currentVideoPageFormat);
             } else {
                 alert("Password errata o video non trovato.");
             }
@@ -1513,8 +1800,36 @@
             console.error(err);
         }
     }
+    
+    function showUserProfilePage(userEmail) {
+        const user = usersData[userEmail];
+        if (!user) {
+            alert("Utente non trovato!");
+            return;
+        }
 
-    window.addEventListener("DOMContentLoaded", () => {
+        // Prepara la pagina profilo
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'block';
+
+        // Mostra le info dell'utente
+        profileInfoDiv.innerHTML = `
+            <img src="${user.profilePic}" alt="${user.name}" />
+            <h2>${user.name}</h2>
+            <p>${user.bio || 'Nessuna descrizione.'}</p>
+        `;
+
+        // Filtra e mostra i post dell'utente
+        const userPosts = allPosts.filter(p => p.userEmail === userEmail);
+        renderPosts(userPosts, userPostsContainer);
+
+        // Filtra e mostra i video dell'utente
+        const userVideos = allVideos.filter(v => v.userEmail === userEmail);
+        showVideos(currentVideoPageFormat, null, userVideosContainer);
+    }
+    
+    window.addEventListener("DOMContentLoaded", async () => {
       const savedTheme = localStorage.getItem("theme");
       const isDarkMode = savedTheme === "dark";
       if (isDarkMode) {
@@ -1522,26 +1837,33 @@
       }
       updateLogo(isDarkMode);
       
-      const savedName = localStorage.getItem("userName");
-      if (savedName) {
-        userNameInput.value = savedName;
-        nameInputWrapper.style.display = "none";
-        document.querySelector(".change-name-header").style.display = "block";
-        welcomeMessage.textContent = `👋 Benvenuto ${savedName}!`;
+      const savedUserEmail = localStorage.getItem("currentUserEmail");
+      
+      if (savedUserEmail) {
+        try {
+          // Carica tutti i dati prima di controllare l'utente
+          await loadAllData();
+          currentUser = allUsers.find(u => u.email === savedUserEmail);
+          if (currentUser) {
+            showAppContent();
+          } else {
+            // Utente salvato non trovato, mostra login
+            showAuthContent();
+          }
+        } catch (err) {
+          console.error("Errore nel caricare i dati all'avvio", err);
+          showAuthContent(); // In caso di errore, mostra la pagina di login
+        }
+      } else {
+        // Nessun utente salvato, carica i dati e mostra la pagina di login
+        await loadAllData();
+        showAuthContent();
       }
-      checkInputs();
-      fetchPosts();
       
       setPostType('text', document.getElementById('post-type-text'));
-      setNewVideoFormat('horizontal'); // Default per la pagina video
-      document.getElementById('publishVideoBtn').disabled = true;
+      setNewVideoFormat('horizontal');
     });
 
-    userNameInput.addEventListener("input", () => {
-      localStorage.setItem("userName", userNameInput.value.trim());
-      checkInputs();
-      checkNewVideoInputs();
-    });
     postText.addEventListener("input", checkInputs);
     videoLinkInput.addEventListener("input", checkInputs);
     embedCodeInput.addEventListener("input", checkInputs);
