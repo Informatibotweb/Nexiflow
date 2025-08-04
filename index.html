@@ -139,7 +139,7 @@
         to { transform: translateY(0); opacity: 1; }
     }
 
-    #postText, #userName, .video-input, .embed-input, #newVideoDescription, #newVideoEmbedCode {
+    #postText, #userName, .video-input, .embed-input, #newVideoDescription, #newVideoEmbedCode, #twitterLink {
       padding: 1rem;
       font-size: 1.1rem;
       border: 1px solid rgba(255, 255, 255, 0.2);
@@ -149,7 +149,7 @@
       transition: border-color 0.3s, box-shadow 0.3s;
     }
 
-    #postText:focus, #userName:focus, .video-input:focus, .embed-input:focus, #newVideoDescription:focus, #newVideoEmbedCode:focus {
+    #postText:focus, #userName:focus, .video-input:focus, .embed-input:focus, #newVideoDescription:focus, #newVideoEmbedCode:focus, #twitterLink:focus {
         outline: none;
         border-color: var(--accent);
         box-shadow: 0 0 10px var(--accent);
@@ -616,6 +616,7 @@
         <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
         <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
         <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
+        <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
     </div>
 
     <div id="post-text-fields" class="post-type-fields">
@@ -632,6 +633,9 @@
             <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
         </div>
         <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
+    </div>
+    <div id="post-twitter-fields" class="post-type-fields" style="display:none;">
+        <input type="text" id="twitterLink" placeholder="Incolla il link del post di Twitter (X)..." />
     </div>
 
     <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
@@ -701,8 +705,10 @@
     const textFields = document.getElementById('post-text-fields');
     const videoFields = document.getElementById('post-video-fields');
     const embedFields = document.getElementById('post-embed-fields');
+    const twitterFields = document.getElementById('post-twitter-fields');
     const videoLinkInput = document.getElementById('videoLink');
     const embedCodeInput = document.getElementById('embedCode');
+    const twitterLinkInput = document.getElementById('twitterLink');
     const videoDescriptionInput = document.getElementById('videoDescription');
     const embedDescriptionInput = document.getElementById('embedDescription');
     const embedFormatButtons = document.querySelectorAll('.video-format-selector button');
@@ -737,6 +743,7 @@
       textFields.style.display = 'none';
       videoFields.style.display = 'none';
       embedFields.style.display = 'none';
+      twitterFields.style.display = 'none';
       
       if (type === 'text') {
         textFields.style.display = 'flex';
@@ -747,6 +754,9 @@
       } else if (type === 'embed') {
         embedFields.style.display = 'flex';
         embedDescriptionInput.focus();
+      } else if (type === 'twitter') {
+        twitterFields.style.display = 'flex';
+        twitterLinkInput.focus();
       }
       checkInputs();
     }
@@ -772,6 +782,8 @@
           videoDescriptionInput.focus();
         } else if (currentPostType === 'embed') {
           embedDescriptionInput.focus();
+        } else if (currentPostType === 'twitter') {
+          twitterLinkInput.focus();
         }
       }
     }
@@ -793,6 +805,8 @@
         postContentOk = videoLinkInput.value.trim() !== '';
       } else if (currentPostType === 'embed') {
         postContentOk = embedCodeInput.value.trim() !== '';
+      } else if (currentPostType === 'twitter') {
+        postContentOk = twitterLinkInput.value.trim() !== '';
       }
 
       publishBtn.disabled = !(nameOk && postContentOk);
@@ -838,6 +852,22 @@
             logoElement.src = "logo1.png";
         }
     }
+    
+    function loadTwitterWidgets() {
+        if (!document.getElementById('twitter-wjs')) {
+            const script = document.createElement('script');
+            script.id = 'twitter-wjs';
+            script.src = 'https://platform.twitter.com/widgets.js';
+            script.async = true;
+            document.body.appendChild(script);
+        }
+    }
+    
+    function renderTwitterPosts() {
+        if (typeof twttr !== 'undefined' && twttr.widgets) {
+            twttr.widgets.load(postsContainer);
+        }
+    }
 
     async function fetchPosts() {
       try {
@@ -875,8 +905,12 @@
         let postContentHtml = `<strong>${post.name}</strong>: ${post.text || ''}`;
         let embedCodeToCopy = null;
         let embedFormat = null;
-
-        if ((post.type === 'video' && post.embedCode) || (post.type === 'embed' && post.embedCode)) {
+        
+        if (post.type === 'twitter' && post.tweetUrl) {
+            postContentHtml += `<div class="post-twitter-embed"><blockquote class="twitter-tweet" data-dnt="true" data-theme="${document.body.classList.contains('dark-mode') ? 'dark' : 'light'}"><a href="${post.tweetUrl}"></a></blockquote></div>`;
+            loadTwitterWidgets(); // Ensure the Twitter script is loaded
+            setTimeout(renderTwitterPosts, 1000); // Wait for the content to be in the DOM
+        } else if ((post.type === 'video' && post.videoLink) || (post.type === 'embed' && post.embedCode)) {
             embedFormat = post.videoFormat;
             const videoFormatClass = embedFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
             const embedHtml = post.embedCode.replace(/<iframe/g, `<iframe class="${videoFormatClass}"`);
@@ -955,6 +989,10 @@
         const text = embedDescriptionInput.value.trim();
         if (!embedCode) return alert("Devi inserire il codice di incorporazione.");
         newPost = { id: postId, name, text, embedCode, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'embed', videoFormat: currentEmbedFormat };
+      } else if (currentPostType === 'twitter') {
+        const tweetUrl = twitterLinkInput.value.trim();
+        if (!tweetUrl) return alert("Devi inserire il link del post di Twitter (X).");
+        newPost = { id: postId, name, date, tweetUrl, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'twitter' };
       } else {
         return;
       }
@@ -976,6 +1014,7 @@
         videoLinkInput.value = "";
         embedDescriptionInput.value = "";
         embedCodeInput.value = "";
+        twitterLinkInput.value = "";
         checkInputs();
         fetchPosts();
       } catch (err) {
@@ -1411,6 +1450,7 @@
     postText.addEventListener("input", checkInputs);
     videoLinkInput.addEventListener("input", checkInputs);
     embedCodeInput.addEventListener("input", checkInputs);
+    twitterLinkInput.addEventListener("input", checkInputs);
     newVideoEmbedCodeInput.addEventListener("input", checkNewVideoInputs);
 
     userNameInput.addEventListener("change", () => {
