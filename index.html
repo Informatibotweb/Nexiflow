@@ -227,7 +227,7 @@
     }
     
     body.dark-mode .post:hover {
-        box-shadow: 0 15px 40px rgba(255,255,255,0.1);
+      box-shadow: 0 15px 40px rgba(255,255,255,0.1);
     }
     
     .post-actions {
@@ -858,7 +858,7 @@
         if (youtubeMatch) {
             const videoId = youtubeMatch[1];
             isVertical = url.includes('shorts');
-            embedHtml = `<iframe class="${isVertical ? 'vertical-video' : 'horizontal-video'}" src="https://www.youtube.com/embed/${videoId}?&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+            embedHtml = `<iframe class="${isVertical ? 'vertical-video' : 'horizontal-video'}" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         }
         
         return { embedHtml, isVertical };
@@ -876,16 +876,7 @@
         let embedCodeToCopy = null;
         let embedFormat = null;
 
-        if (post.type === 'video' && post.videoLink) {
-            const { embedHtml, isVertical } = createVideoEmbed(post.videoLink);
-            if (embedHtml) {
-                postContentHtml += `<div class="post-embed">${embedHtml}</div>`;
-                embedCodeToCopy = embedHtml;
-                embedFormat = isVertical ? 'vertical' : 'horizontal';
-            } else {
-                postContentHtml += `<br><a href="${post.videoLink}" target="_blank">Apri video</a>`;
-            }
-        } else if (post.type === 'embed' && post.embedCode) {
+        if ((post.type === 'video' && post.embedCode) || (post.type === 'embed' && post.embedCode)) {
             embedFormat = post.videoFormat;
             const videoFormatClass = embedFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
             const embedHtml = post.embedCode.replace(/<iframe/g, `<iframe class="${videoFormatClass}"`);
@@ -953,7 +944,12 @@
         const videoLink = videoLinkInput.value.trim();
         const text = videoDescriptionInput.value.trim();
         if (!videoLink) return alert("Devi inserire un link per il video.");
-        newPost = { id: postId, name, text, videoLink, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'video' };
+        const { embedHtml, isVertical } = createVideoEmbed(videoLink);
+        if (!embedHtml) {
+            alert("Il link del video non è valido.");
+            return;
+        }
+        newPost = { id: postId, name, text, videoLink, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'video', embedCode: embedHtml, videoFormat: isVertical ? 'vertical' : 'horizontal' };
       } else if (currentPostType === 'embed') {
         const embedCode = embedCodeInput.value.trim();
         const text = embedDescriptionInput.value.trim();
@@ -1297,12 +1293,24 @@
           return;
         }
 
-        const embedCode = newVideoEmbedCodeInput.value.trim();
+        const inputValue = newVideoEmbedCodeInput.value.trim();
         const description = newVideoDescriptionInput.value.trim();
-        const videoFormat = newVideoFormat;
+        let videoFormat = newVideoFormat;
+        let embedCode = null;
+        let isLink = false;
 
-        if (!embedCode) {
-            alert("Devi inserire il link o il codice di incorporazione.");
+        // Controlla se l'input è un link di YouTube
+        const youtubeMatch = inputValue.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|shorts\/)([^"&?\/ ]{11})/);
+        if (youtubeMatch) {
+            isLink = true;
+            const videoId = youtubeMatch[1];
+            videoFormat = inputValue.includes('shorts') ? 'vertical' : 'horizontal';
+            embedCode = `<iframe class="${videoFormat}-video" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        } else if (inputValue.includes('<iframe')) {
+            // Se non è un link, controlla se è un iframe
+            embedCode = inputValue;
+        } else {
+            alert("L'input non è un link di YouTube valido né un codice iframe.");
             return;
         }
 
