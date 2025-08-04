@@ -14,30 +14,31 @@
   <title>Nexiflow™ by Nexiquar</title>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
 
     :root {
-      --bg-light: #f0f0f0;
+      --bg-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
       --text-light: #111;
       --card-light: #ffffff;
-      --bg-dark: #1e1e1e;
-      --text-dark: #f9f9f9;
+      --bg-dark: linear-gradient(135deg, #1e1e1e, #0c0c0c);
+      --text-dark: #f0f0f0;
       --card-dark: #2a2a2a;
       --primary: #4CAF50;
       --secondary: #2196F3;
+      --accent: #ff416c;
       --border-radius: 20px;
     }
 
     body {
       margin: 0;
       font-family: 'Quicksand', sans-serif;
-      transition: background 0.3s, color 0.3s;
-      background-color: var(--bg-light);
+      transition: background 0.5s ease, color 0.5s ease;
+      background: var(--bg-light);
       color: var(--text-light);
     }
 
     body.dark-mode {
-      background-color: var(--bg-dark);
+      background: var(--bg-dark);
       color: var(--text-dark);
     }
 
@@ -45,11 +46,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem;
-      border-bottom: 2px solid #ccc;
+      padding: 1.5rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
       border-radius: var(--border-radius);
       opacity: 0;
       animation: fadeIn 1s forwards;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
 
     @keyframes fadeIn {
@@ -58,12 +62,12 @@
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       border-radius: 50px;
       padding: 0.5rem 1rem;
       background-color: var(--primary);
       color: white;
-      font-family: 'Quicksand', sans-serif;
+      font-family: 'Roboto Mono', monospace;
       transform: scale(0);
       animation: popIn 0.5s forwards 0.5s;
     }
@@ -73,45 +77,56 @@
     }
 
     button {
-      padding: 0.5rem 1rem;
+      padding: 0.7rem 1.2rem;
       border: none;
       border-radius: var(--border-radius);
       cursor: pointer;
       font-family: 'Quicksand', sans-serif;
-      transition: transform 0.2s, background-color 0.2s;
+      font-weight: bold;
+      transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
     }
 
     button:hover {
-        transform: translateY(-2px);
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    body.dark-mode button:hover {
+        box-shadow: 0 5px 20px rgba(255,255,255,0.1);
     }
 
     .theme-toggle {
-      background-color: #ddd;
+      background: #ddd;
+      font-size: 1.5rem;
     }
 
     .header-buttons {
       display: flex;
-      gap: 10px;
+      gap: 15px;
     }
     
     .add-button, .change-name-header, .video-button {
-      background-color: var(--primary);
+      background: var(--primary);
       color: white;
+      font-size: 1rem;
     }
     
     #logo {
-        height: 80px;
+        height: 100px;
         width: auto;
         transition: opacity 0.5s;
     }
 
     .input-area {
       display: none;
-      padding: 1rem;
-      border-bottom: 1px solid #ccc;
+      padding: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 1rem;
       border-radius: var(--border-radius);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
     .input-area.active {
@@ -120,55 +135,60 @@
     }
 
     @keyframes slideDown {
-        from { transform: translateY(-20px); opacity: 0; }
+        from { transform: translateY(-30px); opacity: 0; }
         to { transform: translateY(0); opacity: 1; }
     }
 
     #postText, #userName, .video-input, .embed-input, #newVideoDescription, #newVideoEmbedCode {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #aaa;
+      padding: 1rem;
+      font-size: 1.1rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: var(--border-radius);
-      transition: border-color 0.3s;
+      background: rgba(0,0,0,0.1);
+      color: inherit;
+      transition: border-color 0.3s, box-shadow 0.3s;
     }
 
     #postText:focus, #userName:focus, .video-input:focus, .embed-input:focus, #newVideoDescription:focus, #newVideoEmbedCode:focus {
         outline: none;
-        border-color: var(--primary);
+        border-color: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
     }
 
     #publishBtn:disabled, #publishVideoBtn:disabled {
-      background-color: #ccc;
+      background-color: #555;
       cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
     }
     
     .post-type-selector, .video-format-selector, .video-type-selector {
         display: flex;
-        gap: 10px;
-        margin-bottom: 10px;
+        gap: 15px;
+        margin-bottom: 15px;
     }
     
     .post-type-selector button.active, .video-format-selector button.active, .video-type-selector button.active {
-        background-color: var(--primary);
+        background: var(--accent);
         color: white;
     }
     
     .post-type-fields {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 15px;
     }
     
     .post-embed {
-      margin-top: 10px;
+      margin-top: 20px;
       display: flex;
       justify-content: center;
     }
     
     .post-embed iframe {
         width: 100%;
-        max-width: 560px;
-        height: 315px;
+        max-width: 720px;
+        height: 405px;
         border: none;
         border-radius: var(--border-radius);
     }
@@ -176,81 +196,93 @@
     /* Stili per video Shorts incorporati */
     .post-embed .vertical-video {
         width: 100%;
-        max-width: 315px; /* Inverti le dimensioni */
-        height: 560px;
+        max-width: 405px;
+        height: 720px;
     }
     
     .posts {
-      padding: 1rem;
+      padding: 2rem;
     }
 
     .post {
       background-color: var(--card-light);
-      padding: 1rem;
-      margin-bottom: 1rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
       border-radius: var(--border-radius);
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
       position: relative;
-      transition: transform 0.3s ease;
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
       opacity: 0;
       animation: fadeIn 0.5s forwards;
     }
     
+    body.dark-mode .post {
+      background-color: var(--card-dark);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+    
     .post:hover {
-        transform: translateY(-5px);
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    
+    body.dark-mode .post:hover {
+        box-shadow: 0 15px 40px rgba(255,255,255,0.1);
     }
     
     .post-actions {
         position: absolute;
-        top: 1rem;
-        right: 1rem;
+        top: 1.5rem;
+        right: 1.5rem;
         display: flex;
-        gap: 5px;
+        gap: 10px;
     }
     
     .post-actions button {
         background-color: rgba(0,0,0,0.5);
         color: white;
-        padding: 5px 8px;
+        padding: 8px 12px;
         border-radius: 50%;
-        font-size: 1rem;
+        font-size: 1.2rem;
         line-height: 1;
+        transition: transform 0.3s ease, background-color 0.3s ease;
     }
 
-    body.dark-mode .post {
-      background-color: var(--card-dark);
+    .post-actions button:hover {
+        transform: scale(1.2) translateY(-2px);
+        background-color: var(--accent);
     }
 
     .date {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-      color: gray;
+      font-size: 1rem;
+      margin-top: 1rem;
+      color: #999;
     }
     
     .post-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-top: 1rem;
+        margin-top: 1.5rem;
         position: relative;
     }
     
     .vote-buttons {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
     }
     
     .vote-btn {
         background: none;
         border: none;
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         transition: transform 0.2s;
     }
 
     .vote-btn:hover {
-        transform: scale(1.2);
+        transform: scale(1.3);
     }
 
     .vote-btn:active {
@@ -258,15 +290,15 @@
     }
     
     .vote-count {
-        font-size: 1rem;
+        font-size: 1.2rem;
         font-weight: bold;
         margin: 0 5px;
     }
 
     .comment-btn, .delete-btn {
-      font-size: 0.8rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: 12px;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
     }
 
     .comment-btn {
@@ -275,45 +307,49 @@
     }
 
     .delete-btn {
-      background-color: red;
+      background-color: #d32f2f;
       color: white;
     }
     
     .comments-section {
-        margin-top: 1rem;
+        margin-top: 1.5rem;
         border-top: 1px solid #ddd;
-        padding-top: 1rem;
+        padding-top: 1.5rem;
     }
     
     .comment-list {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
+        gap: 1rem;
     }
     
     .comment {
         background-color: #f9f9f9;
-        padding: 0.5rem;
-        border-radius: 10px;
-        font-size: 0.9rem;
+        padding: 1rem;
+        border-radius: 15px;
+        font-size: 1rem;
         word-wrap: break-word;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
     
     body.dark-mode .comment {
         background-color: #3b3b3b;
+        box-shadow: 0 2px 10px rgba(255,255,255,0.05);
     }
     
     .comment-form {
         display: flex;
-        margin-top: 1rem;
-        gap: 0.5rem;
+        margin-top: 1.5rem;
+        gap: 1rem;
     }
     
     .comment-input {
         flex-grow: 1;
-        padding: 0.5rem;
+        padding: 1rem;
         border-radius: var(--border-radius);
         border: 1px solid #aaa;
+        background-color: rgba(0,0,0,0.1);
+        color: inherit;
     }
     
     .comment-input:focus {
@@ -322,19 +358,20 @@
     }
     
     .comment-submit-btn {
-        padding: 0.5rem 1rem;
+        padding: 1rem 1.5rem;
         background-color: var(--secondary);
         color: white;
         border-radius: var(--border-radius);
     }
 
     footer {
+      display: flex;
       justify-content: center;
-      border-top: 2px solid #ccc;
-      margin-top: 2rem;
+      border-top: 2px solid rgba(255, 255, 255, 0.1);
+      margin-top: 3rem;
       border-radius: var(--border-radius);
-      font-size: 0.9rem;
-      padding: 1rem;
+      font-size: 1rem;
+      padding: 2rem;
     }
     
     .emoji-rain-up, .emoji-rain-down {
@@ -349,18 +386,19 @@
     
     .emoji {
         position: absolute;
-        font-size: 1.2rem;
+        font-size: 2rem;
         opacity: 0;
+        text-shadow: 0 0 5px white;
     }
     
     @keyframes fly-up {
         from { transform: translateY(0) scale(1); opacity: 1; }
-        to { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        to { transform: translateY(-150px) scale(2); opacity: 0; }
     }
     
     @keyframes fly-down {
         from { transform: translateY(0) scale(1); opacity: 1; }
-        to { transform: translateY(100px) scale(0.5); opacity: 0; }
+        to { transform: translateY(150px) scale(0.5); opacity: 0; }
     }
     
     /* Stili per la finestra modale */
@@ -373,7 +411,7 @@
         width: 100%;
         height: 100%;
         overflow: auto;
-        background-color: rgba(0,0,0,0.9);
+        background-color: rgba(0,0,0,0.95);
         animation: fadeInModal 0.3s forwards;
         justify-content: center;
         align-items: center;
@@ -382,18 +420,19 @@
     .modal-content {
         position: relative;
         margin: auto;
-        padding: 20px;
+        padding: 30px;
         width: 90%;
-        max-width: 900px;
+        max-width: 1200px;
         background-color: var(--card-dark);
         border-radius: var(--border-radius);
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
     }
     
     /* Stile di base per iframe nella modale */
     .modal-content iframe {
         width: 100%;
         height: 80vh; 
-        max-height: 900px;
+        max-height: 1000px;
         border: none;
         border-radius: var(--border-radius);
     }
@@ -415,13 +454,17 @@
     
     .close-modal {
         position: absolute;
-        top: 15px;
-        right: 35px;
+        top: 20px;
+        right: 40px;
         color: #f1f1f1;
-        font-size: 40px;
+        font-size: 50px;
         font-weight: bold;
         transition: 0.3s;
         cursor: pointer;
+    }
+    
+    .close-modal:hover {
+        color: var(--accent);
     }
     
     @keyframes fadeInModal {
@@ -432,14 +475,14 @@
     /* Stili per la pagina dei video */
     #videoPage {
         display: none;
-        padding: 1rem;
+        padding: 2rem;
     }
 
     .video-page-header {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        margin-bottom: 1rem;
+        gap: 15px;
+        margin-bottom: 2rem;
     }
     
     .video-page-header .header-row {
@@ -450,15 +493,15 @@
 
     .video-type-selector {
         display: flex;
-        gap: 10px;
+        gap: 15px;
     }
     
     #videoGrid {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 2rem;
         justify-content: center;
-        padding-top: 1rem;
+        padding-top: 2rem;
     }
     
     #videoGrid.shorts-grid {
@@ -466,7 +509,7 @@
         display: flex;
         flex-direction: row;
         overflow-x: auto;
-        padding-bottom: 2rem;
+        padding-bottom: 3rem;
         white-space: nowrap;
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
@@ -474,9 +517,9 @@
 
     #videoGrid.shorts-grid .video-page-item {
       flex: 0 0 auto;
-      width: 300px; /* Larghezza fissa per gli shorts */
+      width: 350px; /* Larghezza fissa per gli shorts */
       scroll-snap-align: center;
-      height: 500px;
+      height: 600px;
     }
     
     .video-page-item {
@@ -484,12 +527,22 @@
         border-radius: var(--border-radius);
         position: relative;
         overflow: hidden;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: transform 0.2s;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+    
+    body.dark-mode .video-page-item {
+      background-color: var(--card-dark);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
 
     .video-page-item:hover {
-        transform: translateY(-5px);
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    
+    body.dark-mode .video-page-item:hover {
+      box-shadow: 0 15px 40px rgba(255,255,255,0.1);
     }
     
     .video-page-item .video-content {
@@ -498,22 +551,22 @@
     
     .video-page-item iframe {
         width: 100%;
-        height: 200px; 
+        height: 250px; 
         border: none;
     }
 
     .video-page-item .vertical-video {
         aspect-ratio: 9 / 16;
         height: auto;
-        max-height: 500px;
+        max-height: 600px;
     }
 
     .video-page-actions {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 15px;
+        right: 15px;
         display: flex;
-        gap: 5px;
+        gap: 10px;
         z-index: 10;
     }
     
@@ -521,22 +574,22 @@
         background-color: rgba(0,0,0,0.6);
         color: white;
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 0;
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
     
     /* Stili per le interazioni nella sezione video */
     .video-item-footer {
-        padding: 10px;
+        padding: 1.5rem;
     }
 
     .video-item-footer .vote-buttons {
-        margin-top: 10px;
+        margin-top: 1.5rem;
     }
 
   </style>
@@ -552,7 +605,7 @@
     </div>
   </header>
 
-  <div id="welcomeMessage" style="padding: 1rem; font-weight: bold;"></div>
+  <div id="welcomeMessage" style="padding: 1.5rem; font-weight: bold; font-size: 1.2rem;"></div>
   
   <div class="input-area" id="inputArea">
     <div id="nameInputWrapper">
@@ -1076,12 +1129,12 @@
             
             const delay = Math.random() * 0.2;
             const duration = 1.5 + Math.random();
-            const endX = (Math.random() - 0.5) * 100;
-            const endY = type === 'up' ? -100 - (Math.random() * 50) : 100 + (Math.random() * 50);
+            const endX = (Math.random() - 0.5) * 150;
+            const endY = type === 'up' ? -150 - (Math.random() * 80) : 150 + (Math.random() * 80);
 
             emojiEl.animate([
                 { transform: `translate(0, 0) scale(1)`, opacity: 1 },
-                { transform: `translate(${endX}px, ${endY}px) scale(1.5)`, opacity: 0 }
+                { transform: `translate(${endX}px, ${endY}px) scale(2)`, opacity: 0 }
             ], {
                 duration: duration * 1000,
                 delay: delay * 1000,
