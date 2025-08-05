@@ -115,7 +115,7 @@
       gap: 15px;
     }
     
-    .add-button, .change-name-header, .video-button, .logout-button, .settings-button, .channels-button {
+    .add-button, .change-name-header, .video-button, .logout-button, .settings-button {
       background: var(--primary);
       color: white;
       font-size: 1rem;
@@ -215,18 +215,6 @@
         width: 40px;
         height: 40px;
         border-radius: 50%;
-    }
-    
-    .search-result-item.channel-result .channel-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: var(--secondary);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
     }
 
     .input-area {
@@ -335,25 +323,13 @@
       margin-bottom: 15px;
     }
 
-    .post-header .user-link, .post-header .channel-link {
+    .post-header .user-link {
         display: flex;
         align-items: center;
         gap: 10px;
         text-decoration: none;
         color: inherit;
         font-weight: bold;
-    }
-    
-    .post-header .channel-link .channel-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: var(--secondary);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
     }
 
     .post-header .profile-pic {
@@ -846,7 +822,7 @@
     }
 
     /* Stili per la nuova pagina utente */
-    #userProfilePage, #channelPage, #channelsPage {
+    #userProfilePage {
         display: none;
         padding: 2rem;
     }
@@ -859,17 +835,8 @@
         border-radius: var(--border-radius);
         box-shadow: 0 8px 30px rgba(0,0,0,0.1);
     }
-    
-    .channel-info {
-        text-align: center;
-        margin-bottom: 2rem;
-        background-color: var(--card-light);
-        padding: 2rem;
-        border-radius: var(--border-radius);
-        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-    }
 
-    body.dark-mode .profile-info, body.dark-mode .channel-info {
+    body.dark-mode .profile-info {
         background-color: var(--card-dark);
         box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
@@ -882,17 +849,17 @@
         margin-bottom: 1rem;
     }
     
-    .profile-info h2, .channel-info h2 {
+    .profile-info h2 {
         font-size: 2rem;
         margin-bottom: 0.5rem;
     }
 
-    .profile-info p, .channel-info p {
+    .profile-info p {
         font-size: 1.1rem;
         color: #666;
     }
     
-    body.dark-mode .profile-info p, body.dark-mode .channel-info p {
+    body.dark-mode .profile-info p {
         color: #ccc;
     }
     
@@ -953,6 +920,36 @@
         text-align: center;
         margin-bottom: 0;
     }
+
+    /* Stili per la selezione visiva del profilo */
+    .profile-pic-selector {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0.5rem;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: var(--border-radius);
+    }
+
+    .profile-pic-option {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+        border: 3px solid transparent;
+    }
+    
+    .profile-pic-option:hover {
+        transform: scale(1.1);
+    }
+
+    .profile-pic-option.selected {
+        border: 3px solid var(--accent);
+        transform: scale(1.1);
+        box-shadow: 0 0 10px var(--accent);
+    }
     
     /* Stili per la pagina impostazioni */
     #settingsPage {
@@ -974,150 +971,6 @@
         background-color: var(--card-dark);
         box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
-
-    .profile-pic-selector {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin-top: 10px;
-    }
-    
-    .profile-pic-selector img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        cursor: pointer;
-        border: 3px solid transparent;
-        transition: border-color 0.3s, transform 0.2s;
-    }
-    
-    .profile-pic-selector img:hover {
-        transform: scale(1.1);
-        border-color: var(--primary);
-    }
-
-    .profile-pic-selector img.selected {
-        border-color: var(--accent);
-        box-shadow: 0 0 10px var(--accent);
-        transform: scale(1.1);
-    }
-
-    /* Stili per la pagina dei canali */
-    #channelsPage {
-        display: none;
-        padding: 2rem;
-    }
-    
-    .channels-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 2rem;
-    }
-
-    .channel-card {
-        background-color: var(--card-light);
-        padding: 1.5rem;
-        border-radius: var(--border-radius);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        text-align: center;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-    }
-    
-    body.dark-mode .channel-card {
-        background-color: var(--card-dark);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-
-    .channel-card:hover {
-        transform: translateY(-5px) scale(1.03);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-    }
-    
-    .channel-card h3 {
-        margin-top: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .channel-card p {
-        font-size: 0.9rem;
-        color: #777;
-    }
-    
-    body.dark-mode .channel-card p {
-        color: #bbb;
-    }
-    
-    .channel-card .channel-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background-color: var(--secondary);
-        color: white;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Stili per la pagina del singolo canale */
-    #channelPage .channel-info .channel-icon {
-        width: 80px;
-        height: 80px;
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background-color: var(--secondary);
-        color: white;
-    }
-    
-    .channel-admin-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 2rem;
-    }
-    
-    .channel-admin-buttons button {
-        background: var(--accent);
-        color: white;
-    }
-    
-    .channel-posts-container {
-        margin-top: 2rem;
-    }
-    
-    .channel-admin-section {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid rgba(0,0,0,0.1);
-    }
-    
-    .channel-admin-section input {
-        width: 100%;
-        padding: 0.5rem;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-        margin-top: 10px;
-    }
-    
-    .input-area-destination {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-    
-    .input-area-destination select {
-        flex-grow: 1;
-        padding: 0.7rem;
-        border-radius: var(--border-radius);
-        border: 1px solid rgba(0,0,0,0.2);
-    }
-    
   </style>
 </head>
 <body>
@@ -1142,10 +995,10 @@
                 <input type="password" id="registerPassword" placeholder="Password" />
                 <label for="profilePicSelector">Scegli un'immagine profilo:</label>
                 <div class="profile-pic-selector" id="registerProfilePicSelector">
-                    <img src="profilo1.png" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
-                    <img src="profilo2.png" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
-                    <img src="profilo3.png" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
-                    <img src="profilo4.png" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
                 </div>
                 <button onclick="registerUser()">Registrati</button>
                 <p>Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a></p>
@@ -1158,11 +1011,10 @@
             <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
             <img id="logo" src="logo1.png" alt="Nexiflow Logo">
             <div class="header-buttons">
-                <button class="channels-button" onclick="showChannelsPage()"># Canali</button>
                 <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
                 <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
                 <div id="searchArea">
-                    <input type="text" id="searchInput" placeholder="Cerca utenti/canali..." />
+                    <input type="text" id="searchInput" placeholder="Cerca utenti..." />
                     <div id="searchResults"></div>
                 </div>
                 <button class="settings-button" onclick="showSettingsPage()">⚙️</button>
@@ -1176,13 +1028,6 @@
         </div>
         
         <div class="input-area" id="inputArea">
-            <div class="input-area-destination">
-                <label for="postDestination">Pubblica su:</label>
-                <select id="postDestination">
-                    <option value="main">Bacheca Principale</option>
-                </select>
-            </div>
-            
             <div class="post-type-selector">
                 <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
                 <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
@@ -1245,1336 +1090,1083 @@
             <button onclick="showMainContent()">← Torna alla bacheca</button>
             <div class="profile-info" id="profileInfo"></div>
             <div class="profile-content">
-                <div>
-                    <h3>Post di questo utente:</h3>
-                    <div class="posts user-posts-list" id="userPostsContainer"></div>
-                </div>
-                <div>
-                    <h3>Video di questo utente:</h3>
-                    <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
-                </div>
+              <div>
+                <h3>Post di questo utente:</h3>
+                <div class="posts user-posts-list" id="userPostsContainer"></div>
+              </div>
+              <div>
+                <h3>Video di questo utente:</h3>
+                <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
+              </div>
             </div>
-        </div>
-
-        <div id="channelsPage">
-            <div class="header-row">
-                <button onclick="showMainContent()">← Torna alla bacheca</button>
-                <button onclick="showCreateChannelForm()">➕ Crea un nuovo canale</button>
-            </div>
-            
-            <div id="createChannelForm" class="input-area">
-                <input type="text" id="newChannelName" placeholder="Nome del canale" />
-                <textarea id="newChannelDescription" rows="3" placeholder="Descrizione del canale..."></textarea>
-                <button onclick="createChannel()">Crea Canale</button>
-            </div>
-            
-            <h3>Tutti i canali</h3>
-            <div class="channels-grid" id="channelsGrid"></div>
         </div>
         
-        <div id="channelPage">
-            <button onclick="showChannelsPage()">← Torna ai canali</button>
-            <div class="channel-info" id="channelInfo"></div>
-            <div class="channel-posts-container" id="channelPostsContainer"></div>
-        </div>
-
         <div id="settingsPage">
             <button onclick="showMainContent()">← Torna alla bacheca</button>
             <h3>Modifica Profilo</h3>
             <div id="settingsForm" class="auth-card">
                 <label for="editName">Nome:</label>
                 <input type="text" id="editName" />
+                
                 <label for="editProfilePic">Immagine Profilo:</label>
-                <div class="profile-pic-selector" id="settingsProfilePicSelector">
-                    <img src="profilo1.png" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
-                    <img src="profilo2.png" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
-                    <img src="profilo3.png" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
-                    <img src="profilo4.png" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
+                <div class="profile-pic-selector" id="editProfilePicSelector">
+                    <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
                 </div>
+                
                 <label for="editBio">Bio:</label>
                 <textarea id="editBio" rows="4"></textarea>
+                
                 <button onclick="saveSettings()">Salva Modifiche</button>
             </div>
         </div>
+        
     </div>
-    
-    <footer>
-        © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
-    </footer>
-  </div>
 
+    <footer>
+      © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
+    </footer>
+  
+  </div>
+  
   <div id="videoModal" class="modal">
     <span class="close-modal" onclick="closeModal()">×</span>
     <div class="modal-content">
-        <div id="modalVideoContainer"></div>
+      <div id="modalVideoContainer"></div>
     </div>
   </div>
 
-<script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-<script>
-// Inserisci qui le tue API KEY e i BIN ID.
-const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
-const BIN_ID = "67fe4e4f8a456b796689d908";
-const VIDEO_BIN_ID = "689076be7b4b8670d8acc5b2";
-const USER_BIN_ID = "687ac68274f7b01b5c73cedf";
-const CHANNEL_BIN_ID = "6891ad147b4b8670d8ad87a0";
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
-const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
-const CHANNEL_URL = `https://api.jsonbin.io/v3/b/${CHANNEL_BIN_ID}`;
-
-const headers = {
-  "Content-Type": "application/json",
-  "X-Master-Key": API_KEY
-};
-
-const registerNameInput = document.getElementById("registerName");
-const registerEmailInput = document.getElementById("registerEmail");
-const registerPasswordInput = document.getElementById("registerPassword");
-const loginEmailInput = document.getElementById("loginEmail");
-const loginPasswordInput = document.getElementById("loginPassword");
-const appContent = document.getElementById("appContent");
-const authContent = document.getElementById("authContent");
-const loginPage = document.getElementById("loginPage");
-const registerPage = document.getElementById("registerPage");
-const postText = document.getElementById("postText");
-const publishBtn = document.getElementById("publishBtn");
-const welcomeMessage = document.getElementById("welcomeMessage");
-const postsContainer = document.getElementById("postsContainer");
-const logoElement = document.getElementById("logo");
-const postTypeButtons = document.querySelectorAll('.post-type-selector button');
-const textFields = document.getElementById('post-text-fields');
-const videoFields = document.getElementById('post-video-fields');
-const embedFields = document.getElementById('post-embed-fields');
-const twitterFields = document.getElementById('post-twitter-fields');
-const videoLinkInput = document.getElementById('videoLink');
-const embedCodeInput = document.getElementById('embedCode');
-const twitterLinkInput = document.getElementById('twitterLink');
-const videoDescriptionInput = document.getElementById('videoDescription');
-const embedDescriptionInput = document.getElementById('embedDescription');
-const embedFormatButtons = document.querySelectorAll('.video-format-selector button');
-const videoPage = document.getElementById('videoPage');
-const mainContent = document.getElementById('mainContent');
-const videoGrid = document.getElementById('videoGrid');
-const videoTypeButtons = document.querySelectorAll('.video-page-header .video-type-selector button');
-const videoInputArea = document.getElementById('videoInputArea');
-const newVideoDescriptionInput = document.getElementById('newVideoDescription');
-const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
-const newVideoFormatButtons = document.querySelectorAll('#videoInputArea .video-format-selector button');
-const publishVideoBtn = document.getElementById('publishVideoBtn');
-const userProfilePage = document.getElementById('userProfilePage');
-const profileInfoDiv = document.getElementById('profileInfo');
-const userPostsContainer = document.getElementById('userPostsContainer');
-const userVideosContainer = document.getElementById('userVideosContainer');
-const searchInput = document.getElementById('searchInput');
-const searchResults = document.getElementById('searchResults');
-const settingsPage = document.getElementById('settingsPage');
-const editNameInput = document.getElementById('editName');
-const editBioInput = document.getElementById('editBio');
-const postDestinationSelect = document.getElementById('postDestination');
-const channelsPage = document.getElementById('channelsPage');
-const channelsGrid = document.getElementById('channelsGrid');
-const createChannelForm = document.getElementById('createChannelForm');
-const newChannelNameInput = document.getElementById('newChannelName');
-const newChannelDescriptionInput = document.getElementById('newChannelDescription');
-const channelPage = document.getElementById('channelPage');
-const channelInfoDiv = document.getElementById('channelInfo');
-const channelPostsContainer = document.getElementById('channelPostsContainer');
-
-let nightLogoTimer = null;
-let currentPostType = 'text';
-let currentEmbedFormat = 'horizontal';
-let currentVideoPageFormat = 'vertical';
-let newVideoFormat = 'horizontal';
-let isLoadingVideos = false;
-let currentUser = null;
-let usersData = {}; // Cache per i dati utente
-let allPosts = [];
-let allVideos = [];
-let allUsers = [];
-let allChannels = [];
-let currentChannelId = null;
-
-const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
-const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
-
-async function loadAllData() {
-    try {
-        const [postsRes, videosRes, usersRes, channelsRes] = await Promise.all([
-            fetch(BASE_URL + "/latest", { headers }),
-            fetch(VIDEO_URL + "/latest", { headers }),
-            fetch(USER_URL + "/latest", { headers }),
-            fetch(CHANNEL_URL + "/latest", { headers })
-        ]);
-
-        const postsData = await postsRes.json();
-        const videosData = await videosRes.json();
-        const usersDataRaw = await usersRes.json();
-        const channelsData = await channelsRes.json();
-
-        // Controllo e assegno i dati, usando array vuoti come fallback
-        allPosts = (postsData && postsData.record && postsData.record.posts) || [];
-        allVideos = (videosData && videosData.record && videosData.record.videos) || [];
-        allUsers = (usersDataRaw && usersDataRaw.record && usersDataRaw.record.users) || [];
-        allChannels = (channelsData && channelsData.record && channelsData.record.channels) || [];
-
-        usersData = allUsers.reduce((map, user) => {
-            map[user.email] = user;
-            return map;
-        }, {});
-
-        const savedUserEmail = localStorage.getItem("currentUserEmail");
-        if (savedUserEmail) {
-            currentUser = allUsers.find(u => u.email === savedUserEmail);
-            if (currentUser) {
-                showAppContent();
-            } else {
-                showAuthContent();
-            }
-        } else {
-            showAuthContent();
-        }
-
-        renderPosts(allPosts.filter(p => !p.channelId));
-        updatePostDestinationDropdown();
-
-    } catch (err) {
-        console.error("Errore nel caricamento dei dati:", err);
-        // In caso di errore, mostro la pagina di login e un messaggio all'utente
-        alert("Errore nel caricamento dei dati dal server. Riprova più tardi.");
-        showAuthContent();
-    }
-}
-
-// Funzioni di autenticazione
-function showLoginPage() {
-    loginPage.style.display = 'flex';
-    registerPage.style.display = 'none';
-    loginEmailInput.focus();
-}
-
-function showRegisterPage() {
-    loginPage.style.display = 'none';
-    registerPage.style.display = 'flex';
-    registerNameInput.focus();
-    // Seleziona il primo profilo di default
-    document.querySelector('#registerProfilePicSelector img').classList.add('selected');
-}
-
-async function registerUser() {
-    const name = registerNameInput.value.trim();
-    const email = registerEmailInput.value.trim();
-    const password = registerPasswordInput.value.trim();
-    const profilePic = document.querySelector('#registerProfilePicSelector .selected')?.dataset.value;
-
-    if (!name || !email || !password || !profilePic) {
-        alert("Compila tutti i campi e seleziona un'immagine profilo!");
-        return;
-    }
-
-    if (allUsers.find(u => u.email === email)) {
-        alert("Esiste già un utente con questa email.");
-        return;
-    }
-
-    const newUser = { name, email, password, profilePic, bio: "" };
+  <script>
+    // Inserisci qui le tue API KEY e i BIN ID.
+    // Ricorda di creare un NUOVO BIN ID per gli utenti!
+    const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
+    const BIN_ID = "67fe4e4f8a456b796689d908";
+    const VIDEO_BIN_ID = "689076be7b4b8670d8acc5b2";
+    const USER_BIN_ID = "687ac68274f7b01b5c73cedf";
     
-    try {
-        allUsers.push(newUser);
-        await fetch(USER_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ users: allUsers })
-        });
-        alert("Registrazione completata! Ora puoi accedere.");
-        showLoginPage();
-    } catch(err) {
-        alert("Errore durante la registrazione.");
-        console.error(err);
-    }
-}
-
-async function loginUser() {
-    const email = loginEmailInput.value.trim();
-    const password = loginPasswordInput.value.trim();
-
-    const user = allUsers.find(u => u.email === email && u.password === password);
-
-    if (user) {
-        currentUser = user;
-        localStorage.setItem("currentUserEmail", email);
-        alert(`Benvenuto, ${currentUser.name}!`);
-        showAppContent();
-    } else {
-        alert("Credenziali non valide.");
-    }
-}
-
-function logoutUser() {
-    currentUser = null;
-    localStorage.removeItem("currentUserEmail");
-    showAuthContent();
-}
-
-function showAuthContent() {
-    authContent.style.display = 'block';
-    appContent.style.display = 'none';
-    showLoginPage();
-}
-
-function showAppContent() {
-    authContent.style.display = 'none';
-    appContent.style.display = 'block';
-    updateUserInfo();
-    updatePostDestinationDropdown();
-    showMainContent();
-}
-
-function updateUserInfo() {
-    if (currentUser) {
-        document.getElementById("userNameDisplay").textContent = currentUser.name;
-        document.getElementById("userProfilePic").src = currentUser.profilePic;
-        welcomeMessage.style.display = 'flex';
-    }
-}
-
-function updatePostDestinationDropdown() {
-    postDestinationSelect.innerHTML = '<option value="main">Bacheca Principale</option>';
-    if (currentUser) {
-        const adminChannels = allChannels.filter(c => c.adminEmails.includes(currentUser.email));
-        adminChannels.forEach(channel => {
-            const option = document.createElement('option');
-            option.value = channel.id;
-            option.textContent = `Canale: ${channel.name}`;
-            postDestinationSelect.appendChild(option);
-        });
-    }
-}
-
-function setPostType(type, button) {
-    currentPostType = type;
-    postTypeButtons.forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-    textFields.style.display = 'none';
-    videoFields.style.display = 'none';
-    embedFields.style.display = 'none';
-    twitterFields.style.display = 'none';
-
-    if (type === 'text') {
-        textFields.style.display = 'flex';
-        postText.focus();
-    } else if (type === 'video') {
-        videoFields.style.display = 'flex';
-        videoDescriptionInput.focus();
-    } else if (type === 'embed') {
-        embedFields.style.display = 'flex';
-        embedDescriptionInput.focus();
-    } else if (type === 'twitter') {
-        twitterFields.style.display = 'flex';
-        twitterLinkInput.focus();
-    }
-    checkInputs();
-}
-
-function setVideoFormat(format) {
-    currentEmbedFormat = format;
-    embedFormatButtons.forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`embed-format-${format}`).classList.add('active');
-}
-
-function setNewVideoFormat(format) {
-    newVideoFormat = format;
-    newVideoFormatButtons.forEach(btn => btn.classList.remove('active'));
-    document.getElementById(`new-video-format-${format}`).classList.add('active');
-}
-
-function toggleInput() {
-    document.getElementById("inputArea").classList.toggle("active");
-    if (document.getElementById("inputArea").classList.contains("active")) {
-        if (currentPostType === 'text') {
-            postText.focus();
-        } else if (currentPostType === 'video') {
-            videoDescriptionInput.focus();
-        } else if (currentPostType === 'embed') {
-            embedDescriptionInput.focus();
-        } else if (currentPostType === 'twitter') {
-            twitterLinkInput.focus();
-        }
-    }
-}
-
-function toggleVideoInput() {
-    videoInputArea.classList.toggle('active');
-    if (videoInputArea.classList.contains('active')) {
-        newVideoDescriptionInput.focus();
-    }
-}
-
-function checkInputs() {
-    let postContentOk = false;
-    if (currentPostType === 'text') {
-        postContentOk = postText.value.trim().length >= 3;
-    } else if (currentPostType === 'video') {
-        postContentOk = videoLinkInput.value.trim() !== '';
-    } else if (currentPostType === 'embed') {
-        postContentOk = embedCodeInput.value.trim() !== '';
-    } else if (currentPostType === 'twitter') {
-        postContentOk = twitterLinkInput.value.trim() !== '';
-    }
-    publishBtn.disabled = !postContentOk;
-}
-
-function checkNewVideoInputs() {
-    const videoOk = newVideoEmbedCodeInput.value.trim() !== '';
-    publishVideoBtn.disabled = !videoOk;
-}
-
-function toggleTheme() {
-    const body = document.body;
-    body.classList.toggle("dark-mode");
-    const isDarkMode = body.classList.contains("dark-mode");
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-    updateLogo(isDarkMode);
-    if (mainContent.style.display === 'block') {
-        renderPosts(allPosts.filter(p => !p.channelId));
-    }
-    if (videoPage.style.display === 'block') {
-        showVideos(currentVideoPageFormat);
-    }
-    if (window.twttr) {
-      window.twttr.widgets.load();
-    }
-}
-
-function updateLogo(isDarkMode) {
-    if (nightLogoTimer) {
-        clearTimeout(nightLogoTimer);
-        nightLogoTimer = null;
-    }
-    if (isDarkMode) {
-        logoElement.src = "logo2.png";
-        nightLogoTimer = setTimeout(() => {
-            logoElement.src = "logo3.png";
-        }, 1000);
-    } else {
-        logoElement.src = "logo1.png";
-    }
-}
-
-function showMainContent() {
-    mainContent.style.display = 'block';
-    videoPage.style.display = 'none';
-    userProfilePage.style.display = 'none';
-    settingsPage.style.display = 'none';
-    channelsPage.style.display = 'none';
-    channelPage.style.display = 'none';
-    renderPosts(allPosts.filter(p => !p.channelId));
-}
-
-function showVideoPage() {
-    mainContent.style.display = 'none';
-    videoPage.style.display = 'block';
-    userProfilePage.style.display = 'none';
-    settingsPage.style.display = 'none';
-    channelsPage.style.display = 'none';
-    channelPage.style.display = 'none';
-    showVideos('vertical', document.getElementById('video-type-shorts'));
-}
-
-async function showVideos(type, button) {
-    if (isLoadingVideos) return;
-    isLoadingVideos = true;
-
-    currentVideoPageFormat = type;
-    videoTypeButtons.forEach(btn => btn.classList.remove('active'));
-    if (button) {
-        button.classList.add('active');
-    }
-
-    videoGrid.innerHTML = '';
-    videoGrid.className = 'video-page-container';
-    if (type === 'vertical') {
-        videoGrid.classList.add('shorts-grid');
-    }
-    
-    // Aggiungo un controllo per i dati
-    const videosToRender = Array.isArray(allVideos) ? allVideos : [];
-    const filteredVideos = videosToRender.filter(video => video.format === type);
-
-    if (filteredVideos.length === 0) {
-        videoGrid.innerHTML = `<p style="text-align:center;">Nessun video trovato in questo formato.</p>`;
-        isLoadingVideos = false;
-        return;
-    }
-    
-    filteredVideos.forEach(video => {
-        const videoElement = createVideoItem(video);
-        videoGrid.appendChild(videoElement);
-    });
-
-    if (window.twttr) {
-      window.twttr.widgets.load();
-    }
-
-    isLoadingVideos = false;
-}
-
-function createVideoItem(video) {
-    const videoItem = document.createElement('div');
-    videoItem.classList.add('video-page-item');
-    if (document.body.classList.contains("dark-mode")) {
-      videoItem.classList.add('dark-mode');
-    }
-
-    const user = usersData[video.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo1.png' };
-
-    videoItem.innerHTML = `
-        <div class="video-content" onclick="openModal('${video.embedCode}', '${video.format}')">
-            ${video.format === 'vertical'
-                ? `<iframe src="${video.embedCode}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="vertical-video"></iframe>`
-                : `<iframe src="${video.embedCode}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-            }
-        </div>
-        <div class="video-item-footer">
-            <div class="post-header">
-                <a href="#" class="user-link" onclick="event.preventDefault(); showUserProfilePage('${user.email}')">
-                    <img src="${user.profilePic}" alt="Immagine profilo" class="profile-pic">
-                    <span class="user-name">${user.name}</span>
-                </a>
-            </div>
-            <p>${video.text}</p>
-            <div class="video-item-actions post-footer">
-                <div class="vote-buttons">
-                    <button class="vote-btn upvote-btn" data-video-id="${video.id}" onclick="voteVideo(event, '${video.id}', 'up')">👍</button>
-                    <span class="vote-count" id="video-vote-count-${video.id}">${video.votes || 0}</span>
-                    <button class="vote-btn downvote-btn" data-video-id="${video.id}" onclick="voteVideo(event, '${video.id}', 'down')">👎</button>
-                </div>
-                ${currentUser && currentUser.email === video.userEmail ? `<button class="delete-btn" onclick="deleteVideo('${video.id}')">Elimina</button>` : ''}
-            </div>
-        </div>
-    `;
-
-    return videoItem;
-}
-
-function openModal(embedCode, format) {
-    const modal = document.getElementById("videoModal");
-    const modalVideoContainer = document.getElementById("modalVideoContainer");
-
-    let embedSrc = embedCode;
-    let isVertical = format === 'vertical';
-    const youtubeId = getYouTubeId(embedCode);
-
-    if (youtubeId) {
-        embedSrc = `https://www.youtube.com/embed/${youtubeId}?autoplay=1`;
-    }
-
-    modalVideoContainer.innerHTML = `<iframe src="${embedSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen class="${isVertical ? 'vertical-video' : 'horizontal-video'}"></iframe>`;
-
-    modal.style.display = "flex";
-}
-
-function closeModal() {
-    const modal = document.getElementById("videoModal");
-    const modalVideoContainer = document.getElementById("modalVideoContainer");
-    modalVideoContainer.innerHTML = '';
-    modal.style.display = "none";
-}
-
-function getYouTubeId(url) {
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-    const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
-}
-
-async function publishNewVideo() {
-    const description = newVideoDescriptionInput.value.trim();
-    const embedCode = newVideoEmbedCodeInput.value.trim();
-
-    if (!currentUser || embedCode === '') {
-        alert("Completa tutti i campi per pubblicare un video.");
-        return;
-    }
-
-    const newVideo = {
-        id: Date.now(),
-        userEmail: currentUser.email,
-        text: description,
-        embedCode: embedCode,
-        timestamp: new Date().toISOString(),
-        votes: 0,
-        format: newVideoFormat
+    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
+    const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Master-Key": API_KEY
     };
 
-    allVideos.push(newVideo);
-
-    try {
-        await fetch(VIDEO_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ videos: allVideos })
-        });
-        alert("Video pubblicato con successo!");
-        newVideoDescriptionInput.value = '';
-        newVideoEmbedCodeInput.value = '';
-        toggleVideoInput();
-        showVideos(newVideo.format, newVideo.format === 'vertical' ? document.getElementById('video-type-shorts') : document.getElementById('video-type-normal'));
-    } catch (err) {
-        console.error("Errore durante la pubblicazione del video:", err);
-        alert("Errore durante la pubblicazione del video.");
-    }
-}
-
-async function voteVideo(event, videoId, type) {
-    event.stopPropagation();
-    event.preventDefault();
-
-    const video = allVideos.find(v => v.id == videoId);
-    if (!video) return;
-
-    if (type === 'up') {
-        video.votes = (video.votes || 0) + 1;
-        triggerEmojiRain(event, UP_EMOJIS, 'up');
-    } else {
-        video.votes = (video.votes || 0) - 1;
-        triggerEmojiRain(event, DOWN_EMOJIS, 'down');
-    }
-
-    try {
-        await fetch(VIDEO_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ videos: allVideos })
-        });
-        document.getElementById(`video-vote-count-${videoId}`).textContent = video.votes;
-    } catch (err) {
-        console.error("Errore durante il voto del video:", err);
-    }
-}
-
-async function deleteVideo(videoId) {
-    if (!confirm("Sei sicuro di voler eliminare questo video?")) {
-        return;
-    }
-
-    allVideos = allVideos.filter(v => v.id != videoId);
-
-    try {
-        await fetch(VIDEO_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ videos: allVideos })
-        });
-        alert("Video eliminato con successo.");
-        showVideos(currentVideoPageFormat, currentVideoPageFormat === 'vertical' ? document.getElementById('video-type-shorts') : document.getElementById('video-type-normal'));
-    } catch (err) {
-        console.error("Errore durante l'eliminazione del video:", err);
-        alert("Errore durante l'eliminazione del video.");
-    }
-}
-
-async function publishPost() {
-    if (!currentUser) {
-        alert("Devi essere loggato per pubblicare!");
-        return;
-    }
-
-    let postContent = '';
-    let postEmbed = '';
-    let postType = currentPostType;
-    let postDestination = postDestinationSelect.value;
-    let channelId = postDestination === 'main' ? null : postDestination;
-
-    if (channelId) {
-        const channel = allChannels.find(c => c.id == channelId);
-        if (!channel || !channel.adminEmails.includes(currentUser.email)) {
-            alert("Non hai i permessi per pubblicare in questo canale.");
-            return;
-        }
-    }
-
-    if (currentPostType === 'text') {
-        postContent = postText.value.trim();
-        if (postContent.length < 3) {
-            alert("Il post deve contenere almeno 3 caratteri.");
-            return;
-        }
-    } else if (currentPostType === 'video') {
-        postContent = videoDescriptionInput.value.trim();
-        postEmbed = videoLinkInput.value.trim();
-        if (postEmbed === '') {
-            alert("Inserisci un link del video.");
-            return;
-        }
-    } else if (currentPostType === 'embed') {
-        postContent = embedDescriptionInput.value.trim();
-        postEmbed = embedCodeInput.value.trim();
-        postType = currentEmbedFormat === 'vertical' ? 'embed-vertical' : 'embed-horizontal';
-        if (postEmbed === '') {
-            alert("Inserisci un codice di incorporamento.");
-            return;
-        }
-    } else if (currentPostType === 'twitter') {
-        postContent = twitterLinkInput.value.trim();
-        postEmbed = postContent;
-        if (postEmbed === '') {
-            alert("Inserisci un link per il post di Twitter.");
-            return;
-        }
-    }
-
-    const newPost = {
-        id: Date.now(),
-        userEmail: currentUser.email,
-        content: postContent,
-        timestamp: new Date().toISOString(),
-        votes: 0,
-        comments: [],
-        embed: postEmbed,
-        type: postType,
-        channelId: channelId
-    };
-
-    allPosts.push(newPost);
-
-    try {
-        await fetch(BASE_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ posts: allPosts })
-        });
-        alert("Post pubblicato con successo!");
-        postText.value = '';
-        videoLinkInput.value = '';
-        embedCodeInput.value = '';
-        twitterLinkInput.value = '';
-        videoDescriptionInput.value = '';
-        embedDescriptionInput.value = '';
-        publishBtn.disabled = true;
-        
-        if (channelId) {
-             showChannelPage(channelId);
-        } else {
-             renderPosts(allPosts.filter(p => !p.channelId));
-        }
-        document.getElementById("inputArea").classList.remove("active");
-    } catch (err) {
-        console.error("Errore durante la pubblicazione:", err);
-        alert("Errore durante la pubblicazione del post.");
-    }
-}
-
-async function deletePost(postId) {
-    if (!confirm("Sei sicuro di voler eliminare questo post?")) {
-        return;
-    }
+    const registerNameInput = document.getElementById("registerName");
+    const registerEmailInput = document.getElementById("registerEmail");
+    const registerPasswordInput = document.getElementById("registerPassword");
+    const loginEmailInput = document.getElementById("loginEmail");
+    const loginPasswordInput = document.getElementById("loginPassword");
     
-    allPosts = allPosts.filter(post => post.id != postId);
-
-    try {
-        await fetch(BASE_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ posts: allPosts })
-        });
-        alert("Post eliminato con successo.");
-        if (currentChannelId) {
-            showChannelPage(currentChannelId);
-        } else {
-            renderPosts(allPosts.filter(p => !p.channelId));
-        }
-    } catch (err) {
-        console.error("Errore durante l'eliminazione del post:", err);
-        alert("Errore durante l'eliminazione del post.");
-    }
-}
-
-async function vote(event, postId, type) {
-    event.stopPropagation();
-    event.preventDefault();
-
-    const post = allPosts.find(p => p.id == postId);
-    if (!post) return;
-
-    if (type === 'up') {
-        post.votes = (post.votes || 0) + 1;
-        triggerEmojiRain(event, UP_EMOJIS, 'up');
-    } else {
-        post.votes = (post.votes || 0) - 1;
-        triggerEmojiRain(event, DOWN_EMOJIS, 'down');
-    }
-
-    try {
-        await fetch(BASE_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ posts: allPosts })
-        });
-        document.getElementById(`vote-count-${postId}`).textContent = post.votes;
-    } catch (err) {
-        console.error("Errore durante il voto:", err);
-    }
-}
-
-async function addComment(postId) {
-    const commentInput = document.getElementById(`comment-input-${postId}`);
-    const commentText = commentInput.value.trim();
-
-    if (commentText === '') return;
+    // Rimosso il vecchio select
+    // const profilePicSelect = document.getElementById("profilePicSelect");
+    const registerProfilePicSelector = document.getElementById("registerProfilePicSelector");
     
-    if (!currentUser) {
-        alert("Devi essere loggato per commentare!");
-        return;
-    }
-
-    const post = allPosts.find(p => p.id == postId);
-    if (!post) return;
-
-    if (!post.comments) {
-        post.comments = [];
-    }
-
-    const newComment = {
-        userEmail: currentUser.email,
-        text: commentText,
-        timestamp: new Date().toISOString(),
-        commenterName: currentUser.name,
-        commenterPic: currentUser.profilePic
-    };
-
-    post.comments.push(newComment);
-
-    try {
-        await fetch(BASE_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ posts: allPosts })
-        });
-        commentInput.value = '';
-        renderComments(postId, post.comments);
-    } catch (err) {
-        console.error("Errore durante l'aggiunta del commento:", err);
-    }
-}
-
-function renderComments(postId, comments) {
-    const commentList = document.getElementById(`comment-list-${postId}`);
-    commentList.innerHTML = '';
-    // Aggiungo un controllo qui
-    (comments || []).forEach(comment => {
-        const commentDiv = document.createElement('div');
-        commentDiv.classList.add('comment');
-        commentDiv.innerHTML = `
-            <strong>
-                <a href="#" class="user-link" onclick="event.preventDefault(); showUserProfilePage('${comment.userEmail}')">
-                    <img src="${comment.commenterPic}" alt="Immagine profilo" class="profile-pic" style="width: 20px; height: 20px;">
-                    ${comment.commenterName}
-                </a>
-            </strong>
-            <p>${comment.text}</p>
-        `;
-        commentList.appendChild(commentDiv);
-    });
-}
-
-function renderPosts(postsToRender, container = postsContainer) {
-    // Aggiungo un controllo per i dati
-    if (!Array.isArray(postsToRender)) {
-        console.error("Dati non validi passati a renderPosts:", postsToRender);
-        container.innerHTML = '<p style="text-align:center;">Errore nel caricamento dei post.</p>';
-        return;
-    }
-
-    container.innerHTML = '';
-    const sortedPosts = postsToRender.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const appContent = document.getElementById("appContent");
+    const authContent = document.getElementById("authContent");
+    const loginPage = document.getElementById("loginPage");
+    const registerPage = document.getElementById("registerPage");
     
-    if (sortedPosts.length === 0) {
-        container.innerHTML = '<p style="text-align:center;">Nessun post da visualizzare.</p>';
-    }
-
-    sortedPosts.forEach(post => {
-        const user = usersData[post.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo1.png' };
-        const postComments = post.comments || [];
-        
-        const postElement = document.createElement('div');
-        postElement.classList.add('post');
-        
-        if (document.body.classList.contains("dark-mode")) {
-          postElement.classList.add('dark-mode');
-        }
-
-        let postContentHtml = `<p>${post.content}</p>`;
-        let postActionsHtml = currentUser && currentUser.email === post.userEmail ? `<button class="delete-btn" onclick="deletePost('${post.id}')">Elimina</button>` : '';
-        
-        if (post.type === 'embed-horizontal' || post.type === 'embed-vertical') {
-            postContentHtml += `
-                <div class="post-embed">
-                    <iframe src="${post.embed}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="${post.type === 'embed-vertical' ? 'vertical-video' : ''}"></iframe>
-                </div>
-            `;
-        } else if (post.type === 'video') {
-            const youtubeId = getYouTubeId(post.embed);
-            if (youtubeId) {
-                postContentHtml += `
-                    <div class="post-embed">
-                        <iframe src="https://www.youtube.com/embed/${youtubeId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                `;
-            }
-        } else if (post.type === 'twitter') {
-             // Utilizza l'embed nativo di Twitter (X)
-            postContentHtml = `
-            <blockquote class="twitter-tweet" data-theme="${document.body.classList.contains('dark-mode') ? 'dark' : 'light'}" data-dnt="true">
-                <a href="${post.embed}"></a>
-            </blockquote>`;
-        }
-        
-        let postHeaderHtml = `
-            <div class="post-header">
-                <a href="#" class="user-link" onclick="event.preventDefault(); showUserProfilePage('${user.email}')">
-                    <img src="${user.profilePic}" alt="Immagine profilo" class="profile-pic">
-                    <span class="user-name">${user.name}</span>
-                </a>
-            </div>
-        `;
-
-        if (post.channelId) {
-            const channel = allChannels.find(c => c.id == post.channelId);
-            if (channel) {
-                postHeaderHtml = `
-                    <div class="post-header">
-                        <a href="#" class="user-link" onclick="event.preventDefault(); showUserProfilePage('${user.email}')">
-                            <img src="${user.profilePic}" alt="Immagine profilo" class="profile-pic">
-                            <span class="user-name">${user.name}</span>
-                        </a>
-                        <span style="font-size: 1.2rem;">→</span>
-                        <a href="#" class="channel-link" onclick="event.preventDefault(); showChannelPage('${channel.id}')">
-                            <div class="channel-icon">#</div>
-                            <span class="channel-name">${channel.name}</span>
-                        </a>
-                    </div>
-                `;
-            }
-        }
-        
-        postElement.innerHTML = `
-            ${postHeaderHtml}
-            ${postContentHtml}
-            <div class="post-footer">
-                <div class="vote-buttons">
-                    <button class="vote-btn upvote-btn" data-post-id="${post.id}" onclick="vote(event, '${post.id}', 'up')">👍</button>
-                    <span class="vote-count" id="vote-count-${post.id}">${post.votes || 0}</span>
-                    <button class="vote-btn downvote-btn" data-post-id="${post.id}" onclick="vote(event, '${post.id}', 'down')">👎</button>
-                </div>
-                <div class="post-action-buttons">
-                    <button class="comment-btn" onclick="toggleComments('${post.id}')">Commenti (${postComments.length})</button>
-                    ${postActionsHtml}
-                </div>
-            </div>
-            <div class="comments-section" id="comments-section-${post.id}" style="display:none;">
-                <div class="comment-list" id="comment-list-${post.id}"></div>
-                <div class="comment-form">
-                    <input type="text" id="comment-input-${post.id}" class="comment-input" placeholder="Scrivi un commento..." />
-                    <button class="comment-submit-btn" onclick="addComment('${post.id}')">Invia</button>
-                </div>
-            </div>
-        `;
-        container.appendChild(postElement);
-    });
-
-    if (window.twttr) {
-      window.twttr.widgets.load();
-    }
-}
-
-function toggleComments(postId) {
-    const commentsSection = document.getElementById(`comments-section-${postId}`);
-    const post = allPosts.find(p => p.id == postId);
-    if (commentsSection.style.display === 'none') {
-        commentsSection.style.display = 'block';
-        if (post) {
-            renderComments(postId, post.comments);
-        }
-    } else {
-        commentsSection.style.display = 'none';
-    }
-}
-
-function triggerEmojiRain(event, emojis, direction) {
-    const rect = event.target.closest('.post, .video-page-item').getBoundingClientRect();
-    const rainContainer = document.createElement('div');
-    rainContainer.classList.add(direction === 'up' ? 'emoji-rain-up' : 'emoji-rain-down');
-    rainContainer.style.top = `${rect.top + window.scrollY}px`;
-    rainContainer.style.left = `${rect.left + window.scrollX}px`;
-    rainContainer.style.width = `${rect.width}px`;
-    rainContainer.style.height = `${rect.height}px`;
-    document.body.appendChild(rainContainer);
-
-    for (let i = 0; i < 10; i++) {
-        const emoji = document.createElement('span');
-        emoji.classList.add('emoji');
-        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = `${Math.random() * 100}%`;
-        emoji.style.animation = `${direction === 'up' ? 'fly-up' : 'fly-down'} ${Math.random() * 2 + 1}s ease-out forwards`;
-        emoji.style.animationDelay = `${Math.random() * 0.5}s`;
-        rainContainer.appendChild(emoji);
-    }
-    setTimeout(() => rainContainer.remove(), 2000);
-}
-
-// Funzione di ricerca utente e canale
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim().toLowerCase();
-    if (query.length > 0) {
-        const filteredUsers = allUsers.filter(user => user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query));
-        const filteredChannels = allChannels.filter(channel => channel.name.toLowerCase().includes(query) || channel.description.toLowerCase().includes(query));
-        renderSearchResults(filteredUsers, filteredChannels);
-    } else {
-        searchResults.style.display = 'none';
-    }
-});
-
-document.addEventListener('click', (event) => {
-    if (document.getElementById('searchArea') && !document.getElementById('searchArea').contains(event.target)) {
-        searchResults.style.display = 'none';
-    }
-});
-
-function renderSearchResults(users, channels) {
-    searchResults.innerHTML = '';
-    const allResults = [...users.map(u => ({...u, type: 'user'})), ...channels.map(c => ({...c, type: 'channel'}))];
-
-    if (allResults.length > 0) {
-        allResults.forEach(result => {
-            const resultItem = document.createElement('a');
-            resultItem.classList.add('search-result-item');
-            resultItem.href = '#';
-
-            if (result.type === 'user') {
-                resultItem.onclick = (e) => {
-                    e.preventDefault();
-                    showUserProfilePage(result.email);
-                };
-                resultItem.innerHTML = `
-                    <img src="${result.profilePic}" alt="Immagine profilo" />
-                    <span>${result.name}</span>
-                `;
-            } else if (result.type === 'channel') {
-                resultItem.classList.add('channel-result');
-                resultItem.onclick = (e) => {
-                    e.preventDefault();
-                    showChannelPage(result.id);
-                };
-                resultItem.innerHTML = `
-                    <div class="channel-icon">#</div>
-                    <span>${result.name}</span>
-                `;
-            }
-            searchResults.appendChild(resultItem);
-        });
-        searchResults.style.display = 'block';
-    } else {
-        searchResults.style.display = 'none';
-    }
-}
-
-function showUserProfilePage(userEmail) {
-    const user = allUsers.find(u => u.email === userEmail);
-    if (!user) {
-        alert("Utente non trovato.");
-        return;
-    }
-
-    currentChannelId = null;
-    mainContent.style.display = 'none';
-    videoPage.style.display = 'none';
-    settingsPage.style.display = 'none';
-    channelsPage.style.display = 'none';
-    channelPage.style.display = 'none';
-    userProfilePage.style.display = 'block';
-
-    profileInfoDiv.innerHTML = `
-        <img src="${user.profilePic}" alt="Immagine profilo" />
-        <h2>${user.name}</h2>
-        <p>${user.email}</p>
-        <p>${user.bio || 'Nessuna bio inserita.'}</p>
-    `;
-
-    const userPosts = allPosts.filter(post => post.userEmail === userEmail);
-    renderPosts(userPosts, userPostsContainer);
-
-    const userVideos = allVideos.filter(video => video.userEmail === userEmail);
-    renderUserVideos(userVideos, userVideosContainer);
-}
-
-function renderUserVideos(videos, container) {
-    container.innerHTML = '';
-    if (videos.length === 0) {
-        container.innerHTML = '<p>Nessun video pubblicato.</p>';
-        return;
-    }
-    videos.forEach(video => {
-        const videoElement = createVideoItem(video);
-        container.appendChild(videoElement);
-    });
-}
-
-function showSettingsPage() {
-    if (!currentUser) {
-        alert("Devi essere loggato per accedere alle impostazioni.");
-        return;
-    }
+    const postText = document.getElementById("postText");
+    const publishBtn = document.getElementById("publishBtn");
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const postsContainer = document.getElementById("postsContainer");
+    const logoElement = document.getElementById("logo");
     
-    currentChannelId = null;
-    mainContent.style.display = 'none';
-    videoPage.style.display = 'none';
-    userProfilePage.style.display = 'none';
-    channelsPage.style.display = 'none';
-    channelPage.style.display = 'none';
-    settingsPage.style.display = 'block';
+    const postTypeButtons = document.querySelectorAll('.post-type-selector button');
+    const textFields = document.getElementById('post-text-fields');
+    const videoFields = document.getElementById('post-video-fields');
+    const embedFields = document.getElementById('post-embed-fields');
+    const twitterFields = document.getElementById('post-twitter-fields');
+    const videoLinkInput = document.getElementById('videoLink');
+    const embedCodeInput = document.getElementById('embedCode');
+    const twitterLinkInput = document.getElementById('twitterLink');
+    const videoDescriptionInput = document.getElementById('videoDescription');
+    const embedDescriptionInput = document.getElementById('embedDescription');
+    const embedFormatButtons = document.querySelectorAll('.video-format-selector button');
 
-    editNameInput.value = currentUser.name;
-    editBioInput.value = currentUser.bio || '';
+    const videoPage = document.getElementById('videoPage');
+    const mainContent = document.getElementById('mainContent');
+    const videoGrid = document.getElementById('videoGrid');
+    const videoTypeButtons = document.querySelectorAll('.video-page-header .video-type-selector button');
+    const videoInputArea = document.getElementById('videoInputArea');
+    const newVideoDescriptionInput = document.getElementById('newVideoDescription');
+    const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
+    const newVideoFormatButtons = document.querySelectorAll('#videoInputArea .video-format-selector button');
+    const publishVideoBtn = document.getElementById('publishVideoBtn');
+
+    const userProfilePage = document.getElementById('userProfilePage');
+    const profileInfoDiv = document.getElementById('profileInfo');
+    const userPostsContainer = document.getElementById('userPostsContainer');
+    const userVideosContainer = document.getElementById('userVideosContainer');
     
-    document.querySelectorAll('#settingsProfilePicSelector img').forEach(img => {
-      img.classList.remove('selected');
-    });
-
-    const currentProfilePicImg = document.querySelector(`#settingsProfilePicSelector img[data-value='${currentUser.profilePic}']`);
-    if (currentProfilePicImg) {
-      currentProfilePicImg.classList.add('selected');
-    }
-}
-
-async function saveSettings() {
-    if (!currentUser) {
-        alert("Errore: Utente non loggato.");
-        return;
-    }
-
-    const newName = editNameInput.value.trim();
-    const newProfilePic = document.querySelector('#settingsProfilePicSelector .selected')?.dataset.value;
-    const newBio = editBioInput.value.trim();
-
-    if (!newName || !newProfilePic) {
-        alert("Nome e immagine profilo non possono essere vuoti.");
-        return;
-    }
-
-    const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
-    if (userIndex !== -1) {
-        allUsers[userIndex].name = newName;
-        allUsers[userIndex].profilePic = newProfilePic;
-        allUsers[userIndex].bio = newBio;
-        currentUser.name = newName;
-        currentUser.profilePic = newProfilePic;
-        currentUser.bio = newBio;
-    }
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
     
-    allPosts.forEach(post => {
-        const postComments = post.comments || [];
-        postComments.forEach(comment => {
-            if (comment.userEmail === currentUser.email) {
-                comment.commenterName = newName;
-                comment.commenterPic = newProfilePic;
-            }
-        });
-    });
+    const settingsPage = document.getElementById('settingsPage');
+    const editNameInput = document.getElementById('editName');
+    // Rimosso il vecchio select
+    // const editProfilePicSelect = document.getElementById('editProfilePic');
+    const editProfilePicSelector = document.getElementById('editProfilePicSelector');
+    const editBioInput = document.getElementById('editBio');
 
-    try {
-        await fetch(USER_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ users: allUsers })
-        });
-        await fetch(BASE_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ posts: allPosts })
-        });
-        alert("Impostazioni salvate con successo!");
-        updateUserInfo();
-        showMainContent();
-    } catch (err) {
-        console.error("Errore durante il salvataggio delle impostazioni:", err);
-        alert("Errore durante il salvataggio delle impostazioni.");
-    }
-}
-
-function selectProfilePic(selectedImg, page) {
-    const parentSelector = page === 'register' ? '#registerProfilePicSelector' : '#settingsProfilePicSelector';
-    document.querySelectorAll(`${parentSelector} img`).forEach(img => {
-        img.classList.remove('selected');
-    });
-    selectedImg.classList.add('selected');
-}
-
-// Funzionalità per i canali
-function showChannelsPage() {
-    mainContent.style.display = 'none';
-    videoPage.style.display = 'none';
-    userProfilePage.style.display = 'none';
-    settingsPage.style.display = 'none';
-    channelPage.style.display = 'none';
-    channelsPage.style.display = 'block';
-    renderChannels();
-}
-
-function showCreateChannelForm() {
-    createChannelForm.classList.toggle('active');
-}
-
-async function createChannel() {
-    if (!currentUser) {
-        alert("Devi essere loggato per creare un canale.");
-        return;
-    }
-    const name = newChannelNameInput.value.trim();
-    const description = newChannelDescriptionInput.value.trim();
-
-    if (!name || !description) {
-        alert("Compila tutti i campi.");
-        return;
-    }
+    let nightLogoTimer = null;
+    let currentPostType = 'text';
+    let currentEmbedFormat = 'horizontal'; 
+    let currentVideoPageFormat = 'vertical';
+    let newVideoFormat = 'horizontal';
+    let isLoadingVideos = false;
+    let currentUser = null;
+    let usersData = {}; // Cache per i dati utente
     
-    if (allChannels.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-        alert("Esiste già un canale con questo nome.");
-        return;
-    }
+    let allPosts = [];
+    let allVideos = [];
+    let allUsers = [];
 
-    const newChannel = {
-        id: Date.now(),
-        name,
-        description,
-        adminEmails: [currentUser.email]
-    };
+    const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
+    const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
 
-    allChannels.push(newChannel);
-
-    try {
-        await fetch(CHANNEL_URL, {
-            method: "PUT",
-            headers,
-            body: JSON.stringify({ channels: allChannels })
-        });
-        alert("Canale creato con successo!");
-        newChannelNameInput.value = '';
-        newChannelDescriptionInput.value = '';
-        createChannelForm.classList.remove('active');
-        renderChannels();
-        updatePostDestinationDropdown();
-    } catch (err) {
-        console.error("Errore durante la creazione del canale:", err);
-        alert("Errore durante la creazione del canale.");
-    }
-}
-
-function renderChannels() {
-    channelsGrid.innerHTML = '';
-    if (allChannels.length === 0) {
-        channelsGrid.innerHTML = '<p style="text-align:center;">Nessun canale creato.</p>';
-        return;
-    }
-    
-    allChannels.forEach(channel => {
-        const channelCard = document.createElement('div');
-        channelCard.classList.add('channel-card');
-        channelCard.onclick = () => showChannelPage(channel.id);
-        channelCard.innerHTML = `
-            <div class="channel-icon">#</div>
-            <h3>${channel.name}</h3>
-            <p>${channel.description}</p>
-        `;
-        channelsGrid.appendChild(channelCard);
-    });
-}
-
-function showChannelPage(channelId) {
-    const channel = allChannels.find(c => c.id == channelId);
-    if (!channel) {
-        alert("Canale non trovato.");
-        return;
-    }
-    
-    currentChannelId = channelId;
-    mainContent.style.display = 'none';
-    videoPage.style.display = 'none';
-    userProfilePage.style.display = 'none';
-    settingsPage.style.display = 'none';
-    channelsPage.style.display = 'none';
-    channelPage.style.display = 'block';
-
-    const isAdmin = currentUser && channel.adminEmails.includes(currentUser.email);
-    let adminButtonsHtml = '';
-    if (isAdmin) {
-        adminButtonsHtml = `
-            <div class="channel-admin-buttons">
-                <button onclick="toggleAdminPanel()">Gestisci amministratori</button>
-            </div>
-            <div id="adminPanel" class="channel-admin-section" style="display: none;">
-                <p>Amministratori attuali: ${channel.adminEmails.join(', ')}</p>
-                <input type="email" id="newAdminEmail" placeholder="Email del nuovo amministratore" />
-                <button onclick="addAdminToChannel('${channel.id}')">Aggiungi amministratore</button>
-            </div>
-        `;
-    }
-
-    channelInfoDiv.innerHTML = `
-        <div class="channel-icon">#</div>
-        <h2>${channel.name}</h2>
-        <p>${channel.description}</p>
-        ${adminButtonsHtml}
-    `;
-
-    const channelPosts = allPosts.filter(post => post.channelId == channelId);
-    renderPosts(channelPosts, channelPostsContainer);
-}
-
-function toggleAdminPanel() {
-    document.getElementById('adminPanel').classList.toggle('active');
-}
-
-async function addAdminToChannel(channelId) {
-    const channel = allChannels.find(c => c.id == channelId);
-    if (!channel) return;
-    
-    const newAdminEmail = document.getElementById('newAdminEmail').value.trim();
-    if (!newAdminEmail) return;
-
-    if (!channel.adminEmails.includes(newAdminEmail)) {
-        channel.adminEmails.push(newAdminEmail);
+    async function loadAllData() {
         try {
-            await fetch(CHANNEL_URL, {
+            const [postsRes, videosRes, usersRes] = await Promise.all([
+                fetch(BASE_URL + "/latest", { headers }),
+                fetch(VIDEO_URL + "/latest", { headers }),
+                fetch(USER_URL + "/latest", { headers })
+            ]);
+
+            const postsData = await postsRes.json();
+            const videosData = await videosRes.json();
+            const usersDataRaw = await usersRes.json();
+
+            allPosts = postsData.record.posts || [];
+            allVideos = videosData.record.videos || [];
+            allUsers = usersDataRaw.record.users || [];
+            
+            // Crea una mappa per un accesso rapido ai dati utente
+            usersData = allUsers.reduce((map, user) => {
+                map[user.email] = user;
+                return map;
+            }, {});
+            
+            renderPosts(allPosts);
+        } catch (err) {
+            console.error("Errore nel caricamento dei dati:", err);
+            // In caso di errore, prova a renderizzare solo i post (potrebbero non avere le info utente)
+            try {
+              const res = await fetch(BASE_URL + "/latest", { headers });
+              const data = await res.json();
+              allPosts = data.record.posts || [];
+              renderPosts(allPosts);
+            } catch (error) {
+              console.error("Fallito il caricamento dei post.", error);
+            }
+        }
+    }
+
+    // Funzioni di autenticazione
+    function showLoginPage() {
+        loginPage.style.display = 'flex';
+        registerPage.style.display = 'none';
+        loginEmailInput.focus();
+    }
+    
+    function showRegisterPage() {
+        loginPage.style.display = 'none';
+        registerPage.style.display = 'flex';
+        registerNameInput.focus();
+    }
+
+    // Nuova funzione per la selezione dell'immagine profilo
+    function selectProfilePic(element, type) {
+        const selector = type === 'register' ? registerProfilePicSelector : editProfilePicSelector;
+        selector.querySelectorAll('.profile-pic-option').forEach(img => {
+            img.classList.remove('selected');
+        });
+        element.classList.add('selected');
+    }
+
+    async function registerUser() {
+        const name = registerNameInput.value.trim();
+        const email = registerEmailInput.value.trim();
+        const password = registerPasswordInput.value.trim();
+        
+        const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+        const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png'; // Default
+        
+        if (!name || !email || !password) {
+            alert("Compila tutti i campi!");
+            return;
+        }
+
+        if (allUsers.find(u => u.email === email)) {
+            alert("Esiste già un utente con questa email.");
+            return;
+        }
+
+        const newUser = { name, email, password, profilePic, bio: "" };
+        
+        try {
+            allUsers.push(newUser);
+            await fetch(USER_URL, {
                 method: "PUT",
                 headers,
-                body: JSON.stringify({ channels: allChannels })
+                body: JSON.stringify({ users: allUsers })
             });
-            alert(`${newAdminEmail} è stato aggiunto come amministratore.`);
-            showChannelPage(channelId);
-        } catch (err) {
-            console.error("Errore durante l'aggiunta dell'amministratore:", err);
-            alert("Errore durante l'aggiunta dell'amministratore.");
+            alert("Registrazione completata! Ora puoi accedere.");
+            showLoginPage();
+        } catch(err) {
+            alert("Errore durante la registrazione.");
+            console.error(err);
         }
-    } else {
-        alert("Questo utente è già un amministratore.");
     }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadAllData();
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
+    async function loginUser() {
+        const email = loginEmailInput.value.trim();
+        const password = loginPasswordInput.value.trim();
+        
+        const user = allUsers.find(u => u.email === email && u.password === password);
+        
+        if (user) {
+            currentUser = user;
+            localStorage.setItem("currentUserEmail", email);
+            alert(`Benvenuto, ${currentUser.name}!`);
+            showAppContent();
+        } else {
+            alert("Credenziali non valide.");
+        }
+    }
+
+    function logoutUser() {
+        currentUser = null;
+        localStorage.removeItem("currentUserEmail");
+        showAuthContent();
+    }
+    
+    function showAuthContent() {
+        authContent.style.display = 'block';
+        appContent.style.display = 'none';
+        showLoginPage();
+    }
+    
+    function showAppContent() {
+        authContent.style.display = 'none';
+        appContent.style.display = 'block';
+        updateUserInfo();
+        showMainContent();
+    }
+
+    function updateUserInfo() {
+        if (currentUser) {
+            document.getElementById("userNameDisplay").textContent = currentUser.name;
+            document.getElementById("userProfilePic").src = currentUser.profilePic;
+            welcomeMessage.style.display = 'flex';
+        }
+    }
+
+    function setPostType(type, button) {
+      currentPostType = type;
+      postTypeButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      textFields.style.display = 'none';
+      videoFields.style.display = 'none';
+      embedFields.style.display = 'none';
+      twitterFields.style.display = 'none';
+      
+      if (type === 'text') {
+        textFields.style.display = 'flex';
+        postText.focus();
+      } else if (type === 'video') {
+        videoFields.style.display = 'flex';
+        videoDescriptionInput.focus();
+      } else if (type === 'embed') {
+        embedFields.style.display = 'flex';
+        embedDescriptionInput.focus();
+      } else if (type === 'twitter') {
+        twitterFields.style.display = 'flex';
+        twitterLinkInput.focus();
+      }
+      checkInputs();
+    }
+
+    function setVideoFormat(format) {
+      currentEmbedFormat = format;
+      embedFormatButtons.forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`embed-format-${format}`).classList.add('active');
+    }
+    
+    function setNewVideoFormat(format) {
+        newVideoFormat = format;
+        newVideoFormatButtons.forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`new-video-format-${format}`).classList.add('active');
+    }
+
+    function toggleInput() {
+      document.getElementById("inputArea").classList.toggle("active");
+      if (document.getElementById("inputArea").classList.contains("active")) {
+        if (currentPostType === 'text') {
+          postText.focus();
+        } else if (currentPostType === 'video') {
+          videoDescriptionInput.focus();
+        } else if (currentPostType === 'embed') {
+          embedDescriptionInput.focus();
+        } else if (currentPostType === 'twitter') {
+          twitterLinkInput.focus();
+        }
+      }
+    }
+
+    function toggleVideoInput() {
+        videoInputArea.classList.toggle('active');
+        if (videoInputArea.classList.contains('active')) {
+            newVideoDescriptionInput.focus();
+        }
+    }
+
+    function checkInputs() {
+      let postContentOk = false;
+      
+      if (currentPostType === 'text') {
+        postContentOk = postText.value.trim().length >= 3;
+      } else if (currentPostType === 'video') {
+        postContentOk = videoLinkInput.value.trim() !== '';
+      } else if (currentPostType === 'embed') {
+        postContentOk = embedCodeInput.value.trim() !== '';
+      } else if (currentPostType === 'twitter') {
+        postContentOk = twitterLinkInput.value.trim() !== '';
+      }
+
+      publishBtn.disabled = !postContentOk;
+    }
+
+    function checkNewVideoInputs() {
+        const videoOk = newVideoEmbedCodeInput.value.trim() !== '';
+        publishVideoBtn.disabled = !videoOk;
+    }
+
+    function toggleTheme() {
+      const body = document.body;
+      body.classList.toggle("dark-mode");
+      const isDarkMode = body.classList.contains("dark-mode");
+      localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+      
+      updateLogo(isDarkMode);
+      renderPosts(allPosts); // Re-render posts to update Twitter widget theme
+      if (videoPage.style.display === 'block') {
+          showVideos(currentVideoPageFormat);
+      }
+    }
+    
+    function updateLogo(isDarkMode) {
+        if (nightLogoTimer) {
+            clearTimeout(nightLogoTimer);
+            nightLogoTimer = null;
+        }
+
+        if (isDarkMode) {
+            logoElement.src = "logo2.png";
+            nightLogoTimer = setTimeout(() => {
+                logoElement.src = "logo3.png";
+            }, 30000);
+        } else {
+            logoElement.src = "logo1.png";
+        }
+    }
+    
+    function loadTwitterWidgets() {
+        if (!document.getElementById('twitter-wjs')) {
+            const script = document.createElement('script');
+            script.id = 'twitter-wjs';
+            script.src = 'https://platform.twitter.com/widgets.js';
+            script.async = true;
+            document.body.appendChild(script);
+        }
+    }
+    
+    function renderTwitterPosts(container) {
+        if (typeof twttr !== 'undefined' && twttr.widgets) {
+            twttr.widgets.load(container);
+        }
+    }
+    
+    function createVideoEmbed(url) {
+        let embedHtml = null;
+        let isVertical = false;
+
+        const youtubeMatch = url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|shorts\/)([^"&?\/ ]{11})/);
+        if (youtubeMatch) {
+            const videoId = youtubeMatch[1];
+            isVertical = url.includes('shorts');
+            embedHtml = `<iframe class="${isVertical ? 'vertical-video' : 'horizontal-video'}" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        }
+        
+        return { embedHtml, isVertical };
+    }
+
+    function renderPosts(postsToRender, container = postsContainer) {
+      container.innerHTML = "";
+      [...postsToRender].reverse().forEach((post) => {
+        const div = document.createElement("div");
+        div.className = "post";
+        const upCount = post.votes ? post.votes.up || 0 : 0;
+        const downCount = post.votes ? post.votes.down || 0 : 0;
+        const user = usersData[post.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo1.png', email: null };
+        
+        let postContentHtml = post.text ? `<p>${post.text}</p>` : '';
+        let embedCodeToCopy = null;
+        let embedFormat = null;
+        
+        if (post.type === 'twitter' && post.tweetUrl) {
+            const tweetTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            postContentHtml += `<div class="post-twitter-embed"><blockquote class="twitter-tweet" data-dnt="true" data-theme="${tweetTheme}"><a href="${post.tweetUrl}"></a></blockquote></div>`;
+            loadTwitterWidgets();
+        } else if ((post.type === 'video' && post.videoLink) || (post.type === 'embed' && post.embedCode)) {
+            embedFormat = post.videoFormat;
+            const videoFormatClass = embedFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
+            const embedHtml = post.embedCode.replace(/<iframe/g, `<iframe class="${videoFormatClass}"`);
+            postContentHtml += `<div class="post-embed">${embedHtml}</div>`;
+            embedCodeToCopy = embedHtml;
+        }
+        
+        const actionsHtml = embedCodeToCopy ? `
+          <div class="post-actions">
+            <button onclick="openModal('${encodeURIComponent(embedCodeToCopy)}', '${embedFormat}')">🔍</button>
+            <button onclick="copyToClipboard('${encodeURIComponent(embedCodeToCopy)}')">🔗</button>
+          </div>
+        ` : '';
+
+        div.innerHTML = `
+          <div class="post-header">
+            <a href="#" class="user-link" onclick="showUserProfilePage('${user.email}')">
+                <img src="${user.profilePic}" class="profile-pic" alt="${user.name}" />
+                <span>${user.name}</span>
+            </a>
+          </div>
+          ${actionsHtml}
+          ${postContentHtml}
+          <div class="date">${post.date}</div>
+          <div class="post-footer">
+              <div class="vote-buttons">
+                  <button class="vote-btn" onclick="handleVote('up', ${post.id}, this, 'post')">👍</button>
+                  <span class="vote-count up-votes-count">${upCount}</span>
+                  <button class="vote-btn" onclick="handleVote('down', ${post.id}, this, 'post')">👎</button>
+                  <span class="vote-count down-votes-count">${downCount}</span>
+              </div>
+              <div class="post-action-buttons">
+                  <button class="comment-btn" onclick="toggleComments(${post.id}, 'post')">💬</button>
+                  <button class="delete-btn" onclick="deletePost(${post.id})">🗑️</button>
+              </div>
+          </div>
+          <div class="emoji-rain-up" data-post-id="${post.id}"></div>
+          <div class="emoji-rain-down" data-post-id="${post.id}"></div>
+          
+          <div class="comments-section" id="comments-post-${post.id}" style="display:none;">
+              <div class="comment-list">
+                  ${post.comments ? post.comments.map(comment => `<div class="comment"><strong>${comment.name}</strong>: ${comment.text}</div>`).join('') : ''}
+              </div>
+              <div class="comment-form">
+                  <input type="text" class="comment-input" placeholder="Scrivi un commento..." onkeydown="if(event.key === 'Enter') addComment(${post.id}, this.value, this, 'post')" />
+                  <button class="comment-submit-btn" onclick="addComment(${post.id}, this.previousElementSibling.value, this.previousElementSibling, 'post')">Invia</button>
+              </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+      renderTwitterPosts(container);
+    }
+
+    async function publishPost() {
+      const date = new Date().toLocaleString();
+      const postId = Date.now();
+      
+      const deletePassword = prompt("Crea una password per eliminare questo post:");
+      if (!deletePassword) {
+        alert("Devi creare una password per pubblicare.");
+        return;
+      }
+      
+      let newPost;
+      if (currentPostType === 'text') {
+        const text = postText.value.trim();
+        if (text.length < 3) return alert("Il post deve contenere almeno 3 caratteri.");
+        newPost = { id: postId, userEmail: currentUser.email, text, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'text' };
+      } else if (currentPostType === 'video') {
+        const videoLink = videoLinkInput.value.trim();
+        const text = videoDescriptionInput.value.trim();
+        if (!videoLink) return alert("Devi inserire un link per il video.");
+        const { embedHtml, isVertical } = createVideoEmbed(videoLink);
+        if (!embedHtml) {
+            alert("Il link del video non è valido.");
+            return;
+        }
+        newPost = { id: postId, userEmail: currentUser.email, text, videoLink, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'video', embedCode: embedHtml, videoFormat: isVertical ? 'vertical' : 'horizontal' };
+      } else if (currentPostType === 'embed') {
+        const embedCode = embedCodeInput.value.trim();
+        const text = embedDescriptionInput.value.trim();
+        if (!embedCode) return alert("Devi inserire il codice di incorporazione.");
+        newPost = { id: postId, userEmail: currentUser.email, text, embedCode, date, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'embed', videoFormat: currentEmbedFormat };
+      } else if (currentPostType === 'twitter') {
+        const tweetUrl = twitterLinkInput.value.trim();
+        if (!tweetUrl) return alert("Devi inserire il link del post di Twitter (X).");
+        newPost = { id: postId, userEmail: currentUser.email, date, tweetUrl, votes: { up: 0, down: 0 }, comments: [], password: deletePassword, type: 'twitter' };
+      } else {
+        return;
+      }
+
+      try {
+        allPosts.push(newPost);
+
+        await fetch(BASE_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ posts: allPosts })
+        });
+
+        postText.value = "";
+        videoDescriptionInput.value = "";
+        videoLinkInput.value = "";
+        embedDescriptionInput.value = "";
+        embedCodeInput.value = "";
+        twitterLinkInput.value = "";
+        checkInputs();
+        renderPosts(allPosts);
+      } catch (err) {
+        alert("Errore nel salvataggio.");
+        console.error(err);
+      }
+    }
+
+    async function deletePost(postId) {
+        const password = prompt("Inserisci la password per eliminare il post:");
+        if (!password) return;
+
+        if (!confirm("Sei sicuro di voler eliminare questo post?")) {
+            return;
+        }
+        
+        try {
+            const postToDelete = allPosts.find(post => post.id === postId);
+            if (postToDelete && postToDelete.password === password) {
+                allPosts = allPosts.filter(post => post.id !== postId);
+
+                await fetch(BASE_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ posts: allPosts })
+                });
+
+                renderPosts(allPosts);
+            } else {
+                alert("Password errata o post non trovato.");
+            }
+        } catch (err) {
+            alert("Errore durante l'eliminazione del post.");
+            console.error(err);
+        }
+    }
+    
+    function toggleComments(id, type) {
+        const commentsSection = document.getElementById(`comments-${type}-${id}`);
+        if (commentsSection) {
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        }
+    }
+    
+    async function addComment(id, commentText, inputElement, type) {
+        const trimmedComment = commentText.trim();
+        
+        if (trimmedComment.length < 3) {
+            alert("Il commento deve contenere almeno 3 caratteri.");
+            return;
+        }
+        
+        const newComment = { name: currentUser.name, text: trimmedComment };
+        const items = type === 'post' ? allPosts : allVideos;
+        const url = type === 'post' ? BASE_URL : VIDEO_URL;
+        
+        const itemIndex = items.findIndex(item => item.id === id);
+        if (itemIndex !== -1) {
+            if (!items[itemIndex].comments) {
+                items[itemIndex].comments = [];
+            }
+            items[itemIndex].comments.push(newComment);
+            
+            const body = type === 'post' ? { posts: items } : { videos: items };
+            try {
+                await fetch(url, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify(body)
+                });
+                
+                if (type === 'post') {
+                  renderPosts(allPosts);
+                } else {
+                  showVideos(currentVideoPageFormat);
+                }
+            } catch (err) {
+                console.error("Errore nell'aggiunta del commento:", err);
+            }
+        }
+    }
+
+    async function handleVote(type, id, button, itemType) {
+        const url = itemType === 'post' ? BASE_URL : VIDEO_URL;
+        const items = itemType === 'post' ? allPosts : allVideos;
+        
+        const itemIndex = items.findIndex(item => item.id === id);
+        if (itemIndex !== -1) {
+            if (!items[itemIndex].votes) {
+                items[itemIndex].votes = { up: 0, down: 0 };
+            }
+            items[itemIndex].votes[type]++;
+            
+            const body = itemType === 'post' ? { posts: items } : { videos: items };
+            try {
+                await fetch(url, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify(body)
+                });
+                
+                const itemElement = button.closest(itemType === 'post' ? '.post' : '.video-page-item');
+                const countSpan = itemElement.querySelector(`.${type}-votes-count`);
+                countSpan.textContent = items[itemIndex].votes[type];
+                
+                showEmojis(type, button, itemElement);
+            } catch (err) {
+                console.error("Errore nel voto:", err);
+            }
+        }
+    }
+
+    function showEmojis(type, button, itemElement) {
+        const emojis = type === 'up' ? UP_EMOJIS : DOWN_EMOJIS;
+        const container = itemElement.querySelector(type === 'up' ? '.emoji-rain-up' : '.emoji-rain-down');
+        const buttonRect = button.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        emojis.forEach(emojiChar => {
+            const emojiEl = document.createElement('span');
+            emojiEl.classList.add('emoji');
+            emojiEl.textContent = emojiChar;
+            
+            const startX = buttonRect.left + buttonRect.width / 2;
+            const startY = buttonRect.top + buttonRect.height / 2;
+            
+            emojiEl.style.left = `${startX - containerRect.left}px`;
+            emojiEl.style.top = `${startY - containerRect.top}px`;
+            
+            container.appendChild(emojiEl);
+            
+            const delay = Math.random() * 0.2;
+            const duration = 1.5 + Math.random();
+            const endX = (Math.random() - 0.5) * 150;
+            const endY = type === 'up' ? -150 - (Math.random() * 80) : 150 + (Math.random() * 80);
+
+            emojiEl.animate([
+                { transform: `translate(0, 0) scale(1)`, opacity: 1 },
+                { transform: `translate(${endX}px, ${endY}px) scale(2)`, opacity: 0 }
+            ], {
+                duration: duration * 1000,
+                delay: delay * 1000,
+                easing: 'ease-out',
+                fill: 'forwards'
+            });
+            
+            setTimeout(() => emojiEl.remove(), (duration + delay) * 1000);
+        });
+    }
+
+    // Funzioni per la finestra modale e copia
+    function openModal(embedCode, videoFormat) {
+        const modal = document.getElementById("videoModal");
+        const modalVideoContainer = document.getElementById("modalVideoContainer");
+        
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = decodeURIComponent(embedCode);
+        const iframe = tempDiv.querySelector('iframe');
+
+        if (iframe) {
+            iframe.classList.remove('horizontal-video', 'vertical-video');
+            
+            if (videoFormat === 'vertical') {
+                iframe.classList.add('vertical-video');
+            } else {
+                iframe.classList.add('horizontal-video');
+            }
+
+            modalVideoContainer.innerHTML = '';
+            modalVideoContainer.appendChild(iframe);
+        } else {
+            modalVideoContainer.innerHTML = decodeURIComponent(embedCode);
+        }
+        
+        modal.style.display = "flex";
+    }
+
+    function closeModal() {
+        const modal = document.getElementById("videoModal");
+        modal.style.display = "none";
+        document.getElementById("modalVideoContainer").innerHTML = "";
+    }
+
+    async function copyToClipboard(embedCode) {
+        try {
+            await navigator.clipboard.writeText(decodeURIComponent(embedCode));
+            alert('Codice di incorporazione copiato negli appunti!');
+        } catch (err) {
+            console.error('Errore nel copiare il codice:', err);
+            alert('Errore nel copiare il codice. Copialo manualmente.');
+        }
+    }
+
+    // Funzioni per la pagina dei video
+    function showVideoPage() {
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'block';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        document.getElementById('inputArea').classList.remove('active');
+        fetchAndRenderVideos();
+    }
+    
+    function showMainContent() {
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        mainContent.style.display = 'block';
+        document.getElementById("inputArea").classList.remove("active");
+    }
+
+    async function fetchAndRenderVideos() {
+        if (isLoadingVideos) return;
+        isLoadingVideos = true;
+        try {
+            showVideos(currentVideoPageFormat);
+        } catch (err) {
+            console.error("Errore nel caricamento video:", err);
+            return [];
+        } finally {
+            isLoadingVideos = false;
+        }
+    }
+
+    function showVideos(format, button = null, container = videoGrid) {
+        if (button) {
+            videoTypeButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            currentVideoPageFormat = format;
+        }
+        
+        container.innerHTML = '';
+        const filteredVideos = allVideos.filter(v => v.videoFormat === format);
+
+        if (format === 'vertical') {
+            container.classList.add('shorts-grid');
+        } else {
+            container.classList.remove('shorts-grid');
+        }
+
+        [...filteredVideos].reverse().forEach(video => {
+            const upCount = video.votes ? video.votes.up || 0 : 0;
+            const downCount = video.votes ? video.votes.down || 0 : 0;
+            const user = usersData[video.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo1.png', email: null };
+
+            const videoItem = document.createElement('div');
+            videoItem.className = 'video-page-item';
+            
+            const iframeClass = video.videoFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
+            let html = video.embedCode.replace(/<iframe/g, `<iframe class="${iframeClass}"`);
+            
+            videoItem.innerHTML = `
+                <div class="video-page-actions">
+                    <button onclick="deleteVideo(${video.id})">🗑️</button>
+                </div>
+                <div class="video-content" onclick="openModal('${encodeURIComponent(html)}', '${video.videoFormat}')">
+                    ${html}
+                </div>
+                <div class="video-item-footer">
+                    <div class="post-header">
+                        <a href="#" class="user-link" onclick="showUserProfilePage('${user.email}')">
+                            <img src="${user.profilePic}" class="profile-pic" alt="${user.name}" />
+                            <span><strong>${user.name}</strong></span>
+                        </a>
+                    </div>
+                    ${video.description || ''}
+                    <div class="date">${video.date}</div>
+                    <div class="post-footer">
+                        <div class="vote-buttons">
+                            <button class="vote-btn" onclick="handleVote('up', ${video.id}, this, 'video')">👍</button>
+                            <span class="vote-count up-votes-count">${upCount}</span>
+                            <button class="vote-btn" onclick="handleVote('down', ${video.id}, this, 'video')">👎</button>
+                            <span class="vote-count down-votes-count">${downCount}</span>
+                        </div>
+                        <div class="post-action-buttons">
+                            <button class="comment-btn" onclick="toggleComments(${video.id}, 'video')">💬</button>
+                            <button class="delete-btn" onclick="deleteVideo(${video.id})">🗑️</button>
+                        </div>
+                    </div>
+                    <div class="emoji-rain-up" data-video-id="${video.id}"></div>
+                    <div class="emoji-rain-down" data-video-id="${video.id}"></div>
+
+                    <div class="comments-section" id="comments-video-${video.id}" style="display:none;">
+                        <div class="comment-list">
+                            ${video.comments ? video.comments.map(comment => `<div class="comment"><strong>${comment.name}</strong>: ${comment.text}</div>`).join('') : ''}
+                        </div>
+                        <div class="comment-form">
+                            <input type="text" class="comment-input" placeholder="Scrivi un commento..." onkeydown="if(event.key === 'Enter') addComment(${video.id}, this.value, this, 'video')" />
+                            <button class="comment-submit-btn" onclick="addComment(${video.id}, this.previousElementSibling.value, this.previousElementSibling, 'video')">Invia</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(videoItem);
+        });
+    }
+
+    async function publishNewVideo() {
+        const deletePassword = prompt("Crea una password per eliminare questo video:");
+        if (!deletePassword) {
+          alert("Devi creare una password per pubblicare.");
+          return;
+        }
+
+        const inputValue = newVideoEmbedCodeInput.value.trim();
+        const description = newVideoDescriptionInput.value.trim();
+        let videoFormat = newVideoFormat;
+        let embedCode = null;
+        let isLink = false;
+
+        const youtubeMatch = inputValue.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/|shorts\/)([^"&?\/ ]{11})/);
+        if (youtubeMatch) {
+            isLink = true;
+            const videoId = youtubeMatch[1];
+            videoFormat = inputValue.includes('shorts') ? 'vertical' : 'horizontal';
+            embedCode = `<iframe class="${videoFormat}-video" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        } else if (inputValue.includes('<iframe')) {
+            embedCode = inputValue;
+        } else {
+            alert("L'input non è un link di YouTube valido né un codice iframe.");
+            return;
+        }
+
+        const newVideo = {
+            id: Date.now(),
+            userEmail: currentUser.email,
+            description,
+            embedCode,
+            videoFormat,
+            date: new Date().toLocaleString(),
+            password: deletePassword,
+            votes: { up: 0, down: 0 },
+            comments: []
+        };
+
+        try {
+            allVideos.push(newVideo);
+
+            await fetch(VIDEO_URL, {
+                method: "PUT",
+                headers,
+                body: JSON.stringify({ videos: allVideos })
+            });
+
+            newVideoEmbedCodeInput.value = "";
+            newVideoDescriptionInput.value = "";
+            checkNewVideoInputs();
+            showVideos(currentVideoPageFormat);
+        } catch (err) {
+            alert("Errore nel salvataggio del video.");
+            console.error(err);
+        }
+    }
+    
+    async function deleteVideo(videoId) {
+        const password = prompt("Inserisci la password per eliminare il video:");
+        if (!password) return;
+
+        if (!confirm("Sei sicuro di voler eliminare questo video?")) {
+            return;
+        }
+        
+        try {
+            const videoToDelete = allVideos.find(video => video.id === videoId);
+            if (videoToDelete && videoToDelete.password === password) {
+                allVideos = allVideos.filter(video => video.id !== videoId);
+
+                await fetch(VIDEO_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ videos: allVideos })
+                });
+
+                showVideos(currentVideoPageFormat);
+            } else {
+                alert("Password errata o video non trovato.");
+            }
+        } catch (err) {
+            alert("Errore durante l'eliminazione del video.");
+            console.error(err);
+        }
+    }
+    
+    function showUserProfilePage(userEmail) {
+        const user = usersData[userEmail];
+        if (!user) {
+            alert("Utente non trovato!");
+            return;
+        }
+
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        userProfilePage.style.display = 'block';
+
+        profileInfoDiv.innerHTML = `
+            <img src="${user.profilePic}" alt="${user.name}" />
+            <h2>${user.name}</h2>
+            <p>${user.bio || 'Nessuna descrizione.'}</p>
+        `;
+
+        const userPosts = allPosts.filter(p => p.userEmail === userEmail);
+        renderPosts(userPosts, userPostsContainer);
+
+        const userVideos = allVideos.filter(v => v.userEmail === userEmail);
+        showVideos(currentVideoPageFormat, null, userVideosContainer);
+    }
+    
+    // Funzioni di ricerca
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        searchResults.innerHTML = '';
+        if (query.length > 0) {
+            const results = allUsers.filter(user => user.name.toLowerCase().includes(query));
+            if (results.length > 0) {
+                results.forEach(user => {
+                    const resultItem = document.createElement('a');
+                    resultItem.href = '#';
+                    resultItem.className = 'search-result-item';
+                    resultItem.onclick = (e) => {
+                        e.preventDefault();
+                        showUserProfilePage(user.email);
+                        searchInput.value = '';
+                        searchResults.style.display = 'none';
+                    };
+                    resultItem.innerHTML = `<img src="${user.profilePic}" alt="${user.name}" /><span>${user.name}</span>`;
+                    searchResults.appendChild(resultItem);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
+            }
+        } else {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!searchResults.contains(event.target) && event.target !== searchInput) {
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    // Funzioni per le impostazioni
+    function showSettingsPage() {
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'block';
+        
+        editNameInput.value = currentUser.name;
+        editBioInput.value = currentUser.bio;
+        
+        // Seleziona l'immagine del profilo attuale
+        editProfilePicSelector.querySelectorAll('.profile-pic-option').forEach(img => {
+            if (img.dataset.value === currentUser.profilePic) {
+                img.classList.add('selected');
+            } else {
+                img.classList.remove('selected');
+            }
+        });
+    }
+    
+    async function saveSettings() {
+        const newName = editNameInput.value.trim();
+        const newBio = editBioInput.value.trim();
+        const selectedPic = document.querySelector('#editProfilePicSelector .selected');
+        const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
+
+        if (!newName) {
+            alert("Il nome non può essere vuoto!");
+            return;
+        }
+
+        const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1) {
+            allUsers[userIndex].name = newName;
+            allUsers[userIndex].profilePic = newProfilePic;
+            allUsers[userIndex].bio = newBio;
+            currentUser = allUsers[userIndex]; // Aggiorna l'oggetto currentUser
+            
+            try {
+                await fetch(USER_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ users: allUsers })
+                });
+                alert("Impostazioni salvate con successo!");
+                updateUserInfo();
+                showMainContent();
+            } catch (err) {
+                alert("Errore nel salvataggio delle impostazioni.");
+                console.error(err);
+            }
+        }
+    }
+    
+    window.addEventListener("DOMContentLoaded", async () => {
+      const savedTheme = localStorage.getItem("theme");
+      const isDarkMode = savedTheme === "dark";
+      if (isDarkMode) {
         document.body.classList.add("dark-mode");
-    }
-    updateLogo(document.body.classList.contains("dark-mode"));
-});
+      }
+      updateLogo(isDarkMode);
+      
+      const savedUserEmail = localStorage.getItem("currentUserEmail");
+      
+      if (savedUserEmail) {
+        try {
+          // Carica tutti i dati prima di controllare l'utente
+          await loadAllData();
+          currentUser = allUsers.find(u => u.email === savedUserEmail);
+          if (currentUser) {
+            showAppContent();
+          } else {
+            // Utente salvato non trovato, mostra login
+            showAuthContent();
+          }
+        } catch (err) {
+          console.error("Errore nel caricare i dati all'avvio", err);
+          showAuthContent(); // In caso di errore, mostra la pagina di login
+        }
+      } else {
+        // Nessun utente salvato, carica i dati e mostra la pagina di login
+        await loadAllData();
+        showAuthContent();
+      }
+      
+      setPostType('text', document.getElementById('post-type-text'));
+      setNewVideoFormat('horizontal');
+    });
 
-postText.addEventListener('input', checkInputs);
-videoLinkInput.addEventListener('input', checkInputs);
-embedCodeInput.addEventListener('input', checkInputs);
-twitterLinkInput.addEventListener('input', checkInputs);
-newVideoEmbedCodeInput.addEventListener('input', checkNewVideoInputs);
-</script>
+    postText.addEventListener("input", checkInputs);
+    videoLinkInput.addEventListener("input", checkInputs);
+    embedCodeInput.addEventListener("input", checkInputs);
+    twitterLinkInput.addEventListener("input", checkInputs);
+    newVideoEmbedCodeInput.addEventListener("input", checkNewVideoInputs);
+  </script>
 </body>
 </html>
