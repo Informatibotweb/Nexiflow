@@ -115,7 +115,7 @@
       gap: 15px;
     }
     
-    .add-button, .change-name-header, .video-button, .logout-button {
+    .add-button, .change-name-header, .video-button, .logout-button, .settings-button {
       background: var(--primary);
       color: white;
       font-size: 1rem;
@@ -143,6 +143,78 @@
         height: 100px;
         width: auto;
         transition: opacity 0.5s;
+    }
+    
+    #searchArea {
+        position: relative;
+        margin-left: auto;
+    }
+    
+    #searchInput {
+        padding: 0.7rem 1.2rem;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: var(--border-radius);
+        background: rgba(255, 255, 255, 0.5);
+        transition: width 0.3s ease;
+        width: 150px;
+        color: var(--text-light);
+    }
+    
+    #searchInput:focus {
+        width: 250px;
+        outline: none;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    body.dark-mode #searchInput {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-dark);
+    }
+    
+    #searchResults {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background: var(--card-light);
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 10;
+        display: none;
+    }
+    
+    body.dark-mode #searchResults {
+        background: var(--card-dark);
+        border-color: #555;
+    }
+    
+    .search-result-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .search-result-item:hover {
+        background-color: #f0f0f0;
+    }
+    
+    body.dark-mode .search-result-item:hover {
+        background-color: #3b3b3b;
+    }
+    
+    .search-result-item img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
     }
 
     .input-area {
@@ -314,6 +386,8 @@
         align-items: center;
         margin-top: 1.5rem;
         position: relative;
+        flex-wrap: wrap;
+        gap: 1rem;
     }
     
     .vote-buttons {
@@ -640,6 +714,12 @@
     .video-item-footer .vote-buttons {
         margin-top: 1.5rem;
     }
+    
+    /* Nuovo stile per il blocco dei pulsanti */
+    .post-action-buttons {
+        display: flex;
+        gap: 10px;
+    }
 
     /* === RESPONSIVE DESIGN === */
 
@@ -657,6 +737,10 @@
             text-align: center;
             gap: 1rem;
             padding: var(--spacing);
+        }
+        
+        #searchInput {
+            width: 100%;
         }
 
         .header-buttons {
@@ -778,9 +862,20 @@
     body.dark-mode .profile-info p {
         color: #ccc;
     }
-
+    
+    .profile-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
     .user-posts-list .post, .user-videos-list .video-page-item {
         margin-bottom: 1.5rem;
+    }
+    
+    #userPostsContainer, #userVideosContainer {
+        display: flex;
+        flex-direction: column;
     }
 
     #registerPage, #loginPage {
@@ -807,7 +902,7 @@
         box-shadow: 0 8px 30px rgba(0,0,0,0.3);
     }
     
-    .auth-card input, .auth-card select {
+    .auth-card input, .auth-card select, .auth-card textarea {
         padding: 0.8rem;
         font-size: 1rem;
         border: 1px solid rgba(0,0,0,0.2);
@@ -816,7 +911,7 @@
         color: inherit;
     }
     
-    body.dark-mode .auth-card input, body.dark-mode .auth-card select {
+    body.dark-mode .auth-card input, body.dark-mode .auth-card select, body.dark-mode .auth-card textarea {
         background: rgba(255,255,255,0.1);
         border: 1px solid rgba(255,255,255,0.2);
     }
@@ -825,7 +920,57 @@
         text-align: center;
         margin-bottom: 0;
     }
+
+    /* Stili per la selezione visiva del profilo */
+    .profile-pic-selector {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 0.5rem;
+        border: 1px solid rgba(0,0,0,0.2);
+        border-radius: var(--border-radius);
+    }
+
+    .profile-pic-option {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+        border: 3px solid transparent;
+    }
     
+    .profile-pic-option:hover {
+        transform: scale(1.1);
+    }
+
+    .profile-pic-option.selected {
+        border: 3px solid var(--accent);
+        transform: scale(1.1);
+        box-shadow: 0 0 10px var(--accent);
+    }
+    
+    /* Stili per la pagina impostazioni */
+    #settingsPage {
+        display: none;
+        padding: 2rem;
+    }
+
+    #settingsForm {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background-color: var(--card-light);
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+    
+    body.dark-mode #settingsForm {
+        background-color: var(--card-dark);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
   </style>
 </head>
 <body>
@@ -848,13 +993,13 @@
                 <input type="text" id="registerName" placeholder="Nome" />
                 <input type="email" id="registerEmail" placeholder="Email" />
                 <input type="password" id="registerPassword" placeholder="Password" />
-                <label for="profilePicSelect">Scegli un'immagine profilo:</label>
-                <select id="profilePicSelect">
-                    <option value="profilo1.png">Profilo 1</option>
-                    <option value="profilo2.png">Profilo 2</option>
-                    <option value="profilo3.png">Profilo 3</option>
-                    <option value="profilo4.png">Profilo 4</option>
-                </select>
+                <label for="profilePicSelector">Scegli un'immagine profilo:</label>
+                <div class="profile-pic-selector" id="registerProfilePicSelector">
+                    <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
+                </div>
                 <button onclick="registerUser()">Registrati</button>
                 <p>Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a></p>
             </div>
@@ -868,6 +1013,11 @@
             <div class="header-buttons">
                 <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
                 <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
+                <div id="searchArea">
+                    <input type="text" id="searchInput" placeholder="Cerca utenti..." />
+                    <div id="searchResults"></div>
+                </div>
+                <button class="settings-button" onclick="showSettingsPage()">⚙️</button>
                 <button class="logout-button" onclick="logoutUser()">Logout</button>
             </div>
         </header>
@@ -939,10 +1089,38 @@
         <div id="userProfilePage">
             <button onclick="showMainContent()">← Torna alla bacheca</button>
             <div class="profile-info" id="profileInfo"></div>
-            <h3>Post di questo utente:</h3>
-            <div class="posts user-posts-list" id="userPostsContainer"></div>
-            <h3>Video di questo utente:</h3>
-            <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
+            <div class="profile-content">
+              <div>
+                <h3>Post di questo utente:</h3>
+                <div class="posts user-posts-list" id="userPostsContainer"></div>
+              </div>
+              <div>
+                <h3>Video di questo utente:</h3>
+                <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
+              </div>
+            </div>
+        </div>
+        
+        <div id="settingsPage">
+            <button onclick="showMainContent()">← Torna alla bacheca</button>
+            <h3>Modifica Profilo</h3>
+            <div id="settingsForm" class="auth-card">
+                <label for="editName">Nome:</label>
+                <input type="text" id="editName" />
+                
+                <label for="editProfilePic">Immagine Profilo:</label>
+                <div class="profile-pic-selector" id="editProfilePicSelector">
+                    <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
+                </div>
+                
+                <label for="editBio">Bio:</label>
+                <textarea id="editBio" rows="4"></textarea>
+                
+                <button onclick="saveSettings()">Salva Modifiche</button>
+            </div>
         </div>
         
     </div>
@@ -981,8 +1159,11 @@
     const registerPasswordInput = document.getElementById("registerPassword");
     const loginEmailInput = document.getElementById("loginEmail");
     const loginPasswordInput = document.getElementById("loginPassword");
-    const profilePicSelect = document.getElementById("profilePicSelect");
-
+    
+    // Rimosso il vecchio select
+    // const profilePicSelect = document.getElementById("profilePicSelect");
+    const registerProfilePicSelector = document.getElementById("registerProfilePicSelector");
+    
     const appContent = document.getElementById("appContent");
     const authContent = document.getElementById("authContent");
     const loginPage = document.getElementById("loginPage");
@@ -1020,6 +1201,16 @@
     const profileInfoDiv = document.getElementById('profileInfo');
     const userPostsContainer = document.getElementById('userPostsContainer');
     const userVideosContainer = document.getElementById('userVideosContainer');
+    
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    
+    const settingsPage = document.getElementById('settingsPage');
+    const editNameInput = document.getElementById('editName');
+    // Rimosso il vecchio select
+    // const editProfilePicSelect = document.getElementById('editProfilePic');
+    const editProfilePicSelector = document.getElementById('editProfilePicSelector');
+    const editBioInput = document.getElementById('editBio');
 
     let nightLogoTimer = null;
     let currentPostType = 'text';
@@ -1087,11 +1278,22 @@
         registerNameInput.focus();
     }
 
+    // Nuova funzione per la selezione dell'immagine profilo
+    function selectProfilePic(element, type) {
+        const selector = type === 'register' ? registerProfilePicSelector : editProfilePicSelector;
+        selector.querySelectorAll('.profile-pic-option').forEach(img => {
+            img.classList.remove('selected');
+        });
+        element.classList.add('selected');
+    }
+
     async function registerUser() {
         const name = registerNameInput.value.trim();
         const email = registerEmailInput.value.trim();
         const password = registerPasswordInput.value.trim();
-        const profilePic = profilePicSelect.value;
+        
+        const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+        const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png'; // Default
         
         if (!name || !email || !password) {
             alert("Compila tutti i campi!");
@@ -1251,6 +1453,10 @@
       localStorage.setItem("theme", isDarkMode ? "dark" : "light");
       
       updateLogo(isDarkMode);
+      renderPosts(allPosts); // Re-render posts to update Twitter widget theme
+      if (videoPage.style.display === 'block') {
+          showVideos(currentVideoPageFormat);
+      }
     }
     
     function updateLogo(isDarkMode) {
@@ -1279,9 +1485,9 @@
         }
     }
     
-    function renderTwitterPosts() {
+    function renderTwitterPosts(container) {
         if (typeof twttr !== 'undefined' && twttr.widgets) {
-            twttr.widgets.load(postsContainer);
+            twttr.widgets.load(container);
         }
     }
     
@@ -1306,16 +1512,16 @@
         div.className = "post";
         const upCount = post.votes ? post.votes.up || 0 : 0;
         const downCount = post.votes ? post.votes.down || 0 : 0;
-        const user = usersData[post.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo4.png', email: null };
+        const user = usersData[post.userEmail] || { name: 'Utente Sconosciuto', profilePic: 'profilo1.png', email: null };
         
         let postContentHtml = post.text ? `<p>${post.text}</p>` : '';
         let embedCodeToCopy = null;
         let embedFormat = null;
         
         if (post.type === 'twitter' && post.tweetUrl) {
-            postContentHtml += `<div class="post-twitter-embed"><blockquote class="twitter-tweet" data-dnt="true" data-theme="${document.body.classList.contains('dark-mode') ? 'dark' : 'light'}"><a href="${post.tweetUrl}"></a></blockquote></div>`;
+            const tweetTheme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
+            postContentHtml += `<div class="post-twitter-embed"><blockquote class="twitter-tweet" data-dnt="true" data-theme="${tweetTheme}"><a href="${post.tweetUrl}"></a></blockquote></div>`;
             loadTwitterWidgets();
-            setTimeout(renderTwitterPosts, 1000);
         } else if ((post.type === 'video' && post.videoLink) || (post.type === 'embed' && post.embedCode)) {
             embedFormat = post.videoFormat;
             const videoFormatClass = embedFormat === 'vertical' ? 'vertical-video' : 'horizontal-video';
@@ -1348,7 +1554,7 @@
                   <button class="vote-btn" onclick="handleVote('down', ${post.id}, this, 'post')">👎</button>
                   <span class="vote-count down-votes-count">${downCount}</span>
               </div>
-              <div>
+              <div class="post-action-buttons">
                   <button class="comment-btn" onclick="toggleComments(${post.id}, 'post')">💬</button>
                   <button class="delete-btn" onclick="deletePost(${post.id})">🗑️</button>
               </div>
@@ -1368,6 +1574,7 @@
         `;
         container.appendChild(div);
       });
+      renderTwitterPosts(container);
     }
 
     async function publishPost() {
@@ -1621,6 +1828,7 @@
         mainContent.style.display = 'none';
         videoPage.style.display = 'block';
         userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
         document.getElementById('inputArea').classList.remove('active');
         fetchAndRenderVideos();
     }
@@ -1628,6 +1836,7 @@
     function showMainContent() {
         videoPage.style.display = 'none';
         userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
         mainContent.style.display = 'block';
         document.getElementById("inputArea").classList.remove("active");
     }
@@ -1695,7 +1904,10 @@
                             <button class="vote-btn" onclick="handleVote('down', ${video.id}, this, 'video')">👎</button>
                             <span class="vote-count down-votes-count">${downCount}</span>
                         </div>
-                        <button class="comment-btn" onclick="toggleComments(${video.id}, 'video')">💬</button>
+                        <div class="post-action-buttons">
+                            <button class="comment-btn" onclick="toggleComments(${video.id}, 'video')">💬</button>
+                            <button class="delete-btn" onclick="deleteVideo(${video.id})">🗑️</button>
+                        </div>
                     </div>
                     <div class="emoji-rain-up" data-video-id="${video.id}"></div>
                     <div class="emoji-rain-down" data-video-id="${video.id}"></div>
@@ -1808,25 +2020,111 @@
             return;
         }
 
-        // Prepara la pagina profilo
         mainContent.style.display = 'none';
         videoPage.style.display = 'none';
+        settingsPage.style.display = 'none';
         userProfilePage.style.display = 'block';
 
-        // Mostra le info dell'utente
         profileInfoDiv.innerHTML = `
             <img src="${user.profilePic}" alt="${user.name}" />
             <h2>${user.name}</h2>
             <p>${user.bio || 'Nessuna descrizione.'}</p>
         `;
 
-        // Filtra e mostra i post dell'utente
         const userPosts = allPosts.filter(p => p.userEmail === userEmail);
         renderPosts(userPosts, userPostsContainer);
 
-        // Filtra e mostra i video dell'utente
         const userVideos = allVideos.filter(v => v.userEmail === userEmail);
         showVideos(currentVideoPageFormat, null, userVideosContainer);
+    }
+    
+    // Funzioni di ricerca
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        searchResults.innerHTML = '';
+        if (query.length > 0) {
+            const results = allUsers.filter(user => user.name.toLowerCase().includes(query));
+            if (results.length > 0) {
+                results.forEach(user => {
+                    const resultItem = document.createElement('a');
+                    resultItem.href = '#';
+                    resultItem.className = 'search-result-item';
+                    resultItem.onclick = (e) => {
+                        e.preventDefault();
+                        showUserProfilePage(user.email);
+                        searchInput.value = '';
+                        searchResults.style.display = 'none';
+                    };
+                    resultItem.innerHTML = `<img src="${user.profilePic}" alt="${user.name}" /><span>${user.name}</span>`;
+                    searchResults.appendChild(resultItem);
+                });
+                searchResults.style.display = 'block';
+            } else {
+                searchResults.style.display = 'none';
+            }
+        } else {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!searchResults.contains(event.target) && event.target !== searchInput) {
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    // Funzioni per le impostazioni
+    function showSettingsPage() {
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'block';
+        
+        editNameInput.value = currentUser.name;
+        editBioInput.value = currentUser.bio;
+        
+        // Seleziona l'immagine del profilo attuale
+        editProfilePicSelector.querySelectorAll('.profile-pic-option').forEach(img => {
+            if (img.dataset.value === currentUser.profilePic) {
+                img.classList.add('selected');
+            } else {
+                img.classList.remove('selected');
+            }
+        });
+    }
+    
+    async function saveSettings() {
+        const newName = editNameInput.value.trim();
+        const newBio = editBioInput.value.trim();
+        const selectedPic = document.querySelector('#editProfilePicSelector .selected');
+        const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
+
+        if (!newName) {
+            alert("Il nome non può essere vuoto!");
+            return;
+        }
+
+        const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1) {
+            allUsers[userIndex].name = newName;
+            allUsers[userIndex].profilePic = newProfilePic;
+            allUsers[userIndex].bio = newBio;
+            currentUser = allUsers[userIndex]; // Aggiorna l'oggetto currentUser
+            
+            try {
+                await fetch(USER_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ users: allUsers })
+                });
+                alert("Impostazioni salvate con successo!");
+                updateUserInfo();
+                showMainContent();
+            } catch (err) {
+                alert("Errore nel salvataggio delle impostazioni.");
+                console.error(err);
+            }
+        }
     }
     
     window.addEventListener("DOMContentLoaded", async () => {
