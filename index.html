@@ -12,9 +12,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nexiflow™ by Nexiquar</title>
+  <link rel="icon" type="image/png" href="nexiflow.png">
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+    
 
     :root {
       --bg-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
@@ -1146,10 +1148,9 @@
     const VIDEO_BIN_ID = "689076be7b4b8670d8acc5b2";
     const USER_BIN_ID = "687ac68274f7b01b5c73cedf";
     
-    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-    const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
-    const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
-    const headers = {
+const BASE_URL = `/api/${BIN_ID}`;
+const VIDEO_URL = `/api/${VIDEO_BIN_ID}`;
+const USER_URL = `/api/${USER_BIN_ID}`;    const headers = {
       "Content-Type": "application/json",
       "X-Master-Key": API_KEY
     };
