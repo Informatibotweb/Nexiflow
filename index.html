@@ -117,7 +117,7 @@
       gap: 15px;
     }
     
-    .add-button, .change-name-header, .video-button, .logout-button, .settings-button {
+    .add-button, .change-name-header, .video-button, .logout-button, .settings-button, .chat-button {
       background: var(--primary);
       color: white;
       font-size: 1rem;
@@ -1077,6 +1077,115 @@
         padding: 0.8rem 1.5rem;
         border-radius: 20px;
     }
+
+    /* === Nuovi stili per la lista delle chat === */
+    #chatListModal {
+        display: none;
+        position: fixed;
+        z-index: 1002;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        max-width: 400px;
+        height: 70vh;
+        max-height: 600px;
+        background-color: var(--card-light);
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        flex-direction: column;
+        animation: fadeIn 0.3s forwards;
+    }
+
+    body.dark-mode #chatListModal {
+        background-color: var(--card-dark);
+        box-shadow: 0 10px 40px rgba(255,255,255,0.1);
+    }
+
+    .chat-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .chat-list-header h3 {
+        margin: 0;
+    }
+    
+    .chat-list-header .close-btn {
+        background: none;
+        color: var(--text-light);
+    }
+    
+    body.dark-mode .chat-list-header .close-btn {
+        color: var(--text-dark);
+    }
+
+    #conversationList {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .conversation-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border-radius: 10px;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .conversation-item:hover {
+        background-color: #f0f0f0;
+    }
+
+    body.dark-mode .conversation-item:hover {
+        background-color: #3b3b3b;
+    }
+    
+    .conversation-item img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+    }
+    
+    .conversation-info {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .conversation-info .user-name {
+        font-weight: bold;
+        font-size: 1.1rem;
+    }
+    
+    .conversation-info .last-message {
+        color: #999;
+        font-size: 0.9rem;
+    }
+
+    /* Media queries for modals on smaller screens */
+    @media (max-width: 768px) {
+        #privateChatModal, #chatListModal {
+            width: 100%;
+            bottom: 0;
+            right: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            height: 80vh;
+            max-height: none;
+            transform: none;
+        }
+    }
+
   </style>
 </head>
 <body>
@@ -1117,6 +1226,7 @@
             <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
             <img id="logo" src="logo1.png" alt="Nexiflow Logo">
             <div class="header-buttons">
+                <button class="chat-button" onclick="showChatList()">💬 Chat</button>
                 <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
                 <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
                 <div id="searchArea">
@@ -1252,6 +1362,16 @@
       </div>
   </div>
 
+  <div id="chatListModal">
+      <div class="chat-list-header">
+          <h3>Le tue chat</h3>
+          <button class="close-btn" onclick="closeChatList()">× Chiudi</button>
+      </div>
+      <div id="conversationList">
+          </div>
+  </div>
+
+
   <script>
     // Inserisci qui le tue API KEY e i BIN ID.
     const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
@@ -1326,6 +1446,8 @@
     const privateMessageInput = document.getElementById('privateMessageInput');
     let currentChatRecipientEmail = null;
     let allPrivateMessages = {};
+    const chatListModal = document.getElementById('chatListModal');
+    const conversationList = document.getElementById('conversationList');
 
     let nightLogoTimer = null;
     let currentPostType = 'text';
@@ -1847,6 +1969,8 @@
         mainContent.style.display = 'none';
         userProfilePage.style.display = 'none';
         settingsPage.style.display = 'none';
+        privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'none';
         videoPage.style.display = 'block';
         showVideos(currentVideoPageFormat);
     }
@@ -1856,6 +1980,7 @@
         userProfilePage.style.display = 'none';
         settingsPage.style.display = 'none';
         privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'none';
         mainContent.style.display = 'block';
     }
 
@@ -2030,6 +2155,7 @@
       videoPage.style.display = 'none';
       settingsPage.style.display = 'none';
       privateChatModal.style.display = 'none';
+      chatListModal.style.display = 'none';
       userProfilePage.style.display = 'block';
 
       profileInfoDiv.innerHTML = `
@@ -2156,6 +2282,7 @@
         videoPage.style.display = 'none';
         userProfilePage.style.display = 'none';
         privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'none';
         settingsPage.style.display = 'block';
         
         editNameInput.value = currentUser.name;
@@ -2216,6 +2343,7 @@
         }
         currentChatRecipientEmail = recipientEmail;
         privateChatModal.style.display = 'flex';
+        chatListModal.style.display = 'none';
 
         const recipient = usersData[recipientEmail];
         if (recipient) {
@@ -2267,7 +2395,7 @@
         const newMessage = {
             senderEmail: currentUser.email,
             text: text,
-            date: getFormattedDate()
+            date: new Date().toISOString()
         };
         
         allPrivateMessages[conversationKey].push(newMessage);
@@ -2288,6 +2416,69 @@
         }
     }
     
+    // Funzioni per la lista delle conversazioni
+    function showChatList() {
+        if (!currentUser) {
+            alert("Devi essere loggato per vedere le tue chat.");
+            return;
+        }
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'flex';
+        renderConversationList();
+    }
+    
+    function closeChatList() {
+        chatListModal.style.display = 'none';
+        showMainContent();
+    }
+    
+    function renderConversationList() {
+        conversationList.innerHTML = '';
+        
+        const myConversations = Object.entries(allPrivateMessages)
+            .filter(([key, messages]) => 
+                key.includes(currentUser.email) && messages.length > 0
+            )
+            .map(([key, messages]) => {
+                const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
+                const recipient = usersData[recipientEmail];
+                const lastMessage = messages[messages.length - 1];
+                return {
+                    recipient,
+                    lastMessage
+                };
+            })
+            .sort((a, b) => new Date(b.lastMessage.date) - new Date(a.lastMessage.date));
+
+        if (myConversations.length === 0) {
+            conversationList.innerHTML = '<p style="text-align: center; color: #999;">Non hai ancora conversazioni.</p>';
+            return;
+        }
+
+        myConversations.forEach(({ recipient, lastMessage }) => {
+            const conversationElement = document.createElement('a');
+            conversationElement.href = '#';
+            conversationElement.className = 'conversation-item';
+            conversationElement.onclick = (e) => {
+                e.preventDefault();
+                openPrivateChat(recipient.email);
+            };
+
+            conversationElement.innerHTML = `
+                <img src="${recipient.profilePic}" class="profile-pic" />
+                <div class="conversation-info">
+                    <span class="user-name">${recipient.name}</span>
+                    <span class="last-message">${lastMessage.text}</span>
+                </div>
+            `;
+            conversationList.appendChild(conversationElement);
+        });
+    }
+
     // Inizializza l'applicazione al caricamento della pagina
     window.onload = async () => {
         const storedEmail = localStorage.getItem("currentUserEmail");
