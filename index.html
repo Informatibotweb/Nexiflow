@@ -893,6 +893,7 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
+      align-items: center; /* Questo centra gli elementi orizzontalmente */
       gap: 1.5rem;
       width: 100%;
       max-width: 400px;
@@ -910,6 +911,7 @@
       border-radius: 10px;
       background: rgba(0,0,0,0.05);
       color: inherit;
+      width: 100%; /* Aggiunto per allineare gli input */
     }
     
     body.dark-mode .auth-card input, body.dark-mode .auth-card select, body.dark-mode .auth-card textarea {
@@ -1225,16 +1227,17 @@
             <div class="auth-card">
                 <h2>Accedi</h2>
                 
+                <input type="text" id="loginEmail" placeholder="Email" />
+                <input type="password" id="loginPassword" placeholder="Password" />
+                <button onclick="loginUser()">Accedi</button>
+                <p style="text-align:center;">o</p>
+
                 <div id="g_id_onload"
                      data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com"
                      data-callback="handleCredentialResponse">
                 </div>
                 <div class="g_id_signin" data-type="standard"></div>
 
-                <p style="text-align:center;">o</p>
-                <input type="text" id="loginEmail" placeholder="Email" />
-                <input type="password" id="loginPassword" placeholder="Password" />
-                <button onclick="loginUser()">Accedi</button>
                 <p>Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a></p>
             </div>
         </div>
@@ -2586,4 +2589,3 @@
   </script>
 </body>
 </html>
-
