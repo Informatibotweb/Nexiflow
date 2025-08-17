@@ -1187,7 +1187,7 @@
       }
     }
 
-    /* Stili per il pulsante Google */
+    /* Stili per i pulsanti di login esterni */
     .google-login-btn {
       background-color: #fff;
       color: #757575;
@@ -1215,6 +1215,33 @@
       color: #f0f0f0;
       border-color: #555;
     }
+    
+    .spotify-login-btn {
+      background-color: #1DB954;
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+    
+    .spotify-login-btn img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .spotify-login-btn:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+    }
+
+    body.dark-mode .spotify-login-btn {
+      background-color: #1DB954;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -1238,6 +1265,12 @@
                 </div>
                 <div class="g_id_signin" data-type="standard"></div>
 
+                <p style="text-align:center;">o</p>
+                <button onclick="loginWithSpotify()" class="spotify-login-btn">
+                    <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify Logo" />
+                    Accedi con Spotify
+                </button>
+                
                 <p>Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a></p>
             </div>
         </div>
@@ -1431,6 +1464,12 @@
       "Content-Type": "application/json",
       "X-Master-Key": API_KEY
     };
+    
+    // INFORMAZIONI DI ACCESSO A SPOTIFY
+    const spotifyClientId = 'f77ae12dd0e7405192d95390c8b1b418';
+    const redirectUri = 'https://nexiflow.netlify.app';
+    const scopes = 'user-read-private user-read-email';
+
 
     const registerNameInput = document.getElementById("registerName");
     const registerEmailInput = document.getElementById("registerEmail");
@@ -1531,6 +1570,17 @@
       
       localStorage.setItem("currentUserEmail", currentUser.email);
       showAppContent();
+    }
+
+    // Funzione per l'autenticazione con Spotify
+    function loginWithSpotify() {
+        const authUrl = 'https://accounts.spotify.com/authorize' +
+            '?response_type=token' +
+            '&client_id=' + encodeURIComponent(spotifyClientId) +
+            '&scope=' + encodeURIComponent(scopes) +
+            '&redirect_uri=' + encodeURIComponent(redirectUri);
+
+        window.location.href = authUrl;
     }
     
     // Funzione per decodificare il JWT
@@ -2583,9 +2633,46 @@
                 logoutUser();
             }
         } else {
-            showAuthContent();
+            const params = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = params.get('access_token');
+
+            if (accessToken) {
+                try {
+                    const spotifyUser = await fetch('https://api.spotify.com/v1/me', {
+                        headers: { 'Authorization': 'Bearer ' + accessToken }
+                    }).then(res => res.json());
+
+                    console.log(spotifyUser);
+
+                    const email = spotifyUser.email;
+                    const user = allUsers.find(u => u.email === email);
+                    
+                    if (user) {
+                        currentUser = user;
+                    } else {
+                        const newUser = {
+                            name: spotifyUser.display_name,
+                            email: spotifyUser.email,
+                            profilePic: spotifyUser.images[0]?.url || 'https://via.placeholder.com/150',
+                            bio: "Accesso tramite Spotify",
+                            password: null
+                        };
+                        allUsers.push(newUser);
+                        await updateUsersOnServer(allUsers);
+                        currentUser = newUser;
+                    }
+                    localStorage.setItem("currentUserEmail", currentUser.email);
+                    showAppContent();
+                } catch (error) {
+                    console.error("Errore durante l'autenticazione con Spotify:", error);
+                    alert("Errore nell'autenticazione con Spotify.");
+                    showAuthContent();
+                }
+            } else {
+                showAuthContent();
+            }
         }
     };
   </script>
 </body>
-</html>
+  </html>
