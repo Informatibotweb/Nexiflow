@@ -13,6 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nexiflow™ by Nexiquar</title>
   <link rel="icon" type="image/png" href="nexiflow.png">
+  <script src="https://yastatic.net/s3/passport-sdk/autofill/v1/sdk-suggest-token-with-polyfills-latest.js"></script>
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
@@ -1270,6 +1271,7 @@
                     <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify Logo" />
                     Accedi con Spotify
                 </button>
+                <div id="buttonContainerId"></div>
                 
                 <p>Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a></p>
             </div>
@@ -1580,6 +1582,36 @@
             '&redirect_uri=' + encodeURIComponent(redirectUri);
 
         window.location.href = authUrl;
+    }
+
+    // Funzione per l'autenticazione con Yandex
+    function loginWithYandex(data) {
+        if (data && data.access_token) {
+            console.log('Accesso Yandex riuscito. Token:', data.access_token);
+            // Qui dovresti fare una chiamata API per ottenere i dati utente
+            // simuliamo i dati utente per l'integrazione
+            const mockYandexUser = {
+                name: "Utente Yandex",
+                email: "utente.yandex@yandex.com", // Dovrai ottenere l'email dall'API
+                profilePic: "profilo4.png", // Dovrai ottenere l'immagine dall'API
+                bio: "Accesso tramite Yandex",
+                password: null
+            };
+            
+            const user = allUsers.find(u => u.email === mockYandexUser.email);
+            if (user) {
+                currentUser = user;
+            } else {
+                allUsers.push(mockYandexUser);
+                updateUsersOnServer(allUsers);
+                currentUser = mockYandexUser;
+            }
+            localStorage.setItem("currentUserEmail", currentUser.email);
+            showAppContent();
+
+        } else {
+            console.log('Accesso Yandex fallito.');
+        }
     }
     
     // Funzione per decodificare il JWT
@@ -2671,6 +2703,28 @@
                 showAuthContent();
             }
         }
+
+        // Codice per il pulsante Yandex
+        window.YaAuthSuggest.init(
+            {
+              client_id: "f67bbe63bc344756acfa5ba3d007ead9",
+              response_type: "token",
+              redirect_uri: "https://nexiflow.netlify.app"
+            },
+            "https://nexiflow.netlify.app",
+            {
+              view: "button",
+              parentId: "buttonContainerId",
+              buttonSize: 'm',
+              buttonView: 'main',
+              buttonTheme: 'light',
+              buttonBorderRadius: "22",
+              buttonIcon: 'yaEng',
+            }
+          )
+          .then(({handler}) => handler())
+          .then(data => loginWithYandex(data))
+          .catch(error => console.log('Errore di autenticazione Yandex', error));
     };
   </script>
 </body>
