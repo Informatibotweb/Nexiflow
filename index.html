@@ -1334,11 +1334,11 @@
           <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
         </div>
         <div id="post-text-fields" class="post-type-fields">
-          <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
+          <input type="text" id="postText" placeholder="Scrivi testo o emoji..." oninput="checkPublishButtonState()" />
         </div>
         <div id="post-video-fields" class="post-type-fields" style="display:none;">
           <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
-          <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
+          <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..." oninput="checkPublishButtonState()" />
         </div>
         <div id="post-embed-fields" class="post-type-fields" style="display:none;">
           <input type="text" id="embedDescription" placeholder="Scrivi una descrizione per il video..." />
@@ -1346,10 +1346,10 @@
             <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
             <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
           </div>
-          <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
+          <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..." oninput="checkPublishButtonState()"></textarea>
         </div>
         <div id="post-twitter-fields" class="post-type-fields" style="display:none;">
-          <input type="text" id="twitterLink" placeholder="Incolla qui il link del post (es. https://x.com/...)" />
+          <input type="text" id="twitterLink" placeholder="Incolla qui il link del post (es. https://x.com/...)" oninput="checkPublishButtonState()" />
         </div>
         <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
       </div>
@@ -1374,7 +1374,7 @@
               <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
               <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
             </div>
-            <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..."></textarea>
+            <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..." oninput="checkPublishVideoButtonState()"></textarea>
           </div>
           <button id="publishVideoBtn" onclick="publishNewVideo()" disabled>Pubblica Video</button>
         </div>
@@ -1567,10 +1567,19 @@
     function toggleTheme() {
       document.body.classList.toggle('dark-mode');
     }
-
+    
+    // NEW: Funzione per mostrare/nascondere l'area di input dei post
     function toggleInput() {
-      const inputArea = document.getElementById('inputArea');
-      inputArea.classList.toggle('active');
+        const inputArea = document.getElementById('inputArea');
+        inputArea.classList.toggle('active');
+        checkPublishButtonState(); // NEW: Controlla lo stato iniziale
+    }
+    
+    // NEW: Funzione per mostrare/nascondere l'area di input dei video
+    function toggleVideoInput() {
+        const videoInputArea = document.getElementById('videoInputArea');
+        videoInputArea.classList.toggle('active');
+        checkPublishVideoButtonState(); // NEW: Controlla lo stato iniziale
     }
 
     function setPostType(type, button) {
@@ -1724,12 +1733,16 @@
         const redirectUri = window.location.origin + window.location.pathname;
         const scope = 'user-read-email';
         
-        const url = `https://accounts.spotify.com/authorize?response_type=token&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}`;
+        // NEW: URL di autorizzazione Spotify corretto
+        const url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scope}`;
         
         window.location.href = url;
     }
     
-    const token = new URLSearchParams(window.location.hash.substring(1)).get('access_token');
+    // NEW: Reindirizzamento corretto dopo l'autenticazione Spotify
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.substring(1));
+    const token = params.get('access_token');
     
     if (token) {
         // Simula il salvataggio del token per un uso futuro, se necessario
