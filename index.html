@@ -1949,6 +1949,8 @@ window.onclick = function(event) {
                   <button class="comment-btn" onclick="toggleComments(${post.id})">💬 Commenta</button>
                   ${privateMessageButton}
               </div>
+              <button class="comment-btn" onclick="translatePost(${post.id})">🌐 Traduci</button>
+              <button class="comment-btn" onclick="summarizePost(${post.id})">📝 Riassumi</button>
           </div>
           <div class="date">${post.date}</div>
           <div class="comments-section" style="display:none;">
@@ -2671,7 +2673,47 @@ window.onclick = function(event) {
                 showAuthContent();
             }
         }
-    };
+        async function translatePost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    const targetLang = currentUser?.country === "Russia" ? "ru" : "it"; // Cambia in base al paese dell'utente
+    const text = post.content;
+
+    try {
+        const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ q: text, target: targetLang })
+        });
+        const data = await res.json();
+        const translated = data.data.translations[0].translatedText;
+        alert("Traduzione: " + translated);
+    } catch (err) {
+        console.error("Errore nella traduzione:", err);
+    }
+}
+async function summarizePost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    try {
+        const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                prompt: { text: "Fai un breve riassunto di questo testo: " + post.content }
+            })
+        });
+        const data = await res.json();
+        const summary = data.candidates[0].output;
+        alert("Riassunto: " + summary);
+    } catch (err) {
+        console.error("Errore nel riassunto:", err);
+    }
+}
+
+ };
   </script>
 <div id="countryModal" class="modal">
   <div class="modal-content" style="max-width:400px; text-align:center;">
