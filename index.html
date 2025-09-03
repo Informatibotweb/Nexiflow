@@ -1242,6 +1242,32 @@
       background-color: #1DB954;
       color: white;
     }
+    .sticker-picker {
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 1rem;
+  background-color: var(--card-light);
+  border-radius: var(--border-radius);
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .sticker-picker {
+  background-color: var(--card-dark);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.sticker-preview {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.sticker-preview:hover {
+  transform: scale(1.1);
+}
   </style>
 </head>
 <body>
@@ -1326,7 +1352,9 @@
 
             <div id="post-text-fields" class="post-type-fields">
                 <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
-            </div>
+             <button id="addStickerBtn" onclick="toggleStickerPicker()">➕ Aggiungi Sticker</button>
+            <div id="stickerPicker" class="sticker-picker"></div>
+             </div>
             <div id="post-video-fields" class="post-type-fields" style="display:none;">
                 <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
                 <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
@@ -1446,7 +1474,45 @@
 
 
   <script>
-    // Inserisci qui le tue API KEY e i BIN ID.
+   // Funzione per mostrare/nascondere il selettore di sticker
+function toggleStickerPicker() {
+  const stickerPicker = document.getElementById('stickerPicker');
+  if (stickerPicker.style.display === 'flex') {
+    stickerPicker.style.display = 'none';
+  } else {
+    stickerPicker.style.display = 'flex';
+    generateStickerPreviews();
+  }
+}
+
+// Funzione per generare le anteprime degli sticker
+function generateStickerPreviews() {
+  const stickerPicker = document.getElementById('stickerPicker');
+  stickerPicker.innerHTML = ''; // Pulisce il contenuto precedente
+
+  const numberOfStickers = 10;
+  for (let i = 1; i <= numberOfStickers; i++) {
+    const img = document.createElement('img');
+    img.src = `stiker${i}.png`; // Nome del file dello sticker
+    img.alt = `Sticker ${i}`;
+    img.classList.add('sticker-preview');
+    img.onclick = () => insertSticker(`stiker${i}.png`);
+    stickerPicker.appendChild(img);
+  }
+}
+
+// Funzione per inserire lo sticker selezionato nel campo di testo
+function insertSticker(stickerPath) {
+  const postText = document.getElementById('postText');
+  const stickerHtml = `<img src="${stickerPath}" alt="sticker" style="width: 50px; height: auto; vertical-align: middle; margin: 0 5px;" />`;
+  
+  // Aggiunge l'HTML dell'immagine al valore del campo di testo
+  postText.value += stickerHtml;
+  
+  // Opzionalmente, nascondi il selettore dopo aver scelto uno sticker
+  document.getElementById('stickerPicker').style.display = 'none';
+}
+ // Inserisci qui le tue API KEY e i BIN ID.
     const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
     
     // SOSTITUISCI QUESTI BIN ID CON QUELLI NUOVI CHE HAI CREATO
