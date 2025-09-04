@@ -1348,10 +1348,6 @@ body.dark-mode .sticker-picker {
                 <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
                 <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
                 <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
-                <button id="post-type-telegram" onclick="setPostType('telegram', this)">Telegram</button>
-            </div>
-            <div id="post-telegram-fields" class="post-type-fields" style="display:none;">
-            <input type="text" id="telegramLink" placeholder="Incolla qui il link del post Telegram (es. https://t.me/...)" />
             </div>
 
             <div id="post-text-fields" class="post-type-fields">
@@ -1585,7 +1581,6 @@ function insertSticker(stickerPath) {
     const editNameInput = document.getElementById('editName');
     const editProfilePicSelector = document.getElementById('editProfilePicSelector');
     const editBioInput = document.getElementById('editBio');
-    const telegramLinkInput = document.getElementById('telegramLink');
     
     // Elementi e variabili per la chat privata
     const privateChatModal = document.getElementById('privateChatModal');
@@ -1809,14 +1804,6 @@ window.onclick = function(event) {
     }
 
     function setPostType(type, button) {
-      telegramFields = document.getElementById('post-telegram-fields');
-telegramFields.style.display = 'none';
-...
-} else if (type === 'telegram') {
-    telegramFields.style.display = 'flex';
-    telegramLinkInput.focus();
-}
-
       currentPostType = type;
       postTypeButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
@@ -1841,10 +1828,6 @@ telegramFields.style.display = 'none';
       checkPublishButtonState();
     }
     
-    else if (currentPostType === 'telegram' && telegramLinkInput.value.trim() !== '') {
-    isReady = true;
-}
-
     function checkPublishButtonState() {
         let isReady = false;
         if (currentPostType === 'text' && postText.value.trim() !== '') {
@@ -1863,8 +1846,6 @@ telegramFields.style.display = 'none';
     videoLinkInput.addEventListener('input', checkPublishButtonState);
     embedCodeInput.addEventListener('input', checkPublishButtonState);
     twitterLinkInput.addEventListener('input', checkPublishButtonState);
-    telegramLinkInput.addEventListener('input', checkPublishButtonState);
-
 
     function setVideoFormat(format) {
         currentEmbedFormat = format;
@@ -1902,10 +1883,6 @@ telegramFields.style.display = 'none';
     }
     
     function getPostContent(type) {
-      else if (type === 'telegram') {
-    return telegramLinkInput.value;
-}
-
       if (type === 'text') {
         return postText.value;
       } else if (type === 'video') {
@@ -1977,16 +1954,6 @@ telegramFields.style.display = 'none';
     }
     
     function renderPosts(posts) {
-      else if (post.type === 'telegram') {
-    postContent = `
-        <div class="post-embed">
-            <script async src="https://telegram.org/js/telegram-widget.js?22"
-                data-telegram-post="${extractTelegramPath(post.content)}"
-                data-width="100%"></script>
-        </div>
-    `;
-}
-
       postsContainer.innerHTML = '';
       posts.forEach(post => {
         const postElement = document.createElement('div');
@@ -2093,15 +2060,6 @@ telegramFields.style.display = 'none';
         const iframe = doc.querySelector('iframe');
         return iframe ? iframe.src : '';
     }
-    function extractTelegramPath(url) {
-    try {
-        const path = new URL(url).pathname; // es: /username/123
-        return path.substring(1); // es: username/123
-    } catch {
-        return url;
-    }
-}
-
 
     async function votePost(id, type) {
       const post = allPosts.find(p => p.id === id);
