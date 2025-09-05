@@ -1119,11 +1119,11 @@
       background: none;
       color: var(--text-light);
     }
-
+    
     body.dark-mode .chat-list-header .close-btn {
       color: var(--text-dark);
     }
-    
+
     #conversationList {
       flex-grow: 1;
       overflow-y: auto;
@@ -1143,11 +1143,11 @@
       text-decoration: none;
       color: inherit;
     }
-
+    
     .conversation-item:hover {
       background-color: #f0f0f0;
     }
-    
+
     body.dark-mode .conversation-item:hover {
       background-color: #3b3b3b;
     }
@@ -1173,57 +1173,6 @@
       font-size: 0.9rem;
     }
 
-    /* Stili per la pagina dei canali */
-    #channelsPage {
-      display: none;
-      padding: 2rem;
-    }
-
-    .channels-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 2rem;
-      padding-top: 2rem;
-    }
-    
-    .channel-item {
-      background-color: var(--card-light);
-      border-radius: var(--border-radius);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-decoration: none;
-      color: inherit;
-      padding: 1rem;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    body.dark-mode .channel-item {
-      background-color: var(--card-dark);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
-    }
-    
-    .channel-item:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-    
-    .channel-item img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 1rem;
-    }
-    
-    .channel-item h4 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-
     /* Media queries for modals on smaller screens */
     @media (max-width: 768px) {
       #privateChatModal, #chatListModal {
@@ -1237,7 +1186,7 @@
         transform: none;
       }
     }
-    
+
     /* Stili per i pulsanti di login esterni */
     .google-login-btn {
       background-color: #fff;
@@ -1250,17 +1199,17 @@
       font-weight: normal;
       font-size: 1rem;
     }
-    
+
     .google-login-btn img {
       width: 20px;
       height: 20px;
     }
-    
+
     .google-login-btn:hover {
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       transform: translateY(-2px);
     }
-    
+
     body.dark-mode .google-login-btn {
       background-color: #424242;
       color: #f0f0f0;
@@ -1283,964 +1232,1581 @@
       width: 20px;
       height: 20px;
     }
-    
+
     .spotify-login-btn:hover {
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
       transform: translateY(-2px);
     }
-    
+
     body.dark-mode .spotify-login-btn {
       background-color: #1DB954;
       color: white;
     }
-    
     .sticker-picker {
-      display: none;
-      flex-wrap: wrap;
-      gap: 10px;
-      padding: 1rem;
-      background-color: var(--card-light);
-      border-radius: var(--border-radius);
-      margin-top: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    body.dark-mode .sticker-picker {
-      background-color: var(--card-dark);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-    }
-    
-    .sticker-preview {
-      width: 50px;
-      height: 50px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    
-    .sticker-preview:hover {
-      transform: scale(1.1);
-    }
-    
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 1rem;
+  background-color: var(--card-light);
+  border-radius: var(--border-radius);
+  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode .sticker-picker {
+  background-color: var(--card-dark);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.sticker-preview {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.sticker-preview:hover {
+  transform: scale(1.1);
+}
   </style>
 </head>
 <body>
   <script src="https://accounts.google.com/gsi/client" defer async></script>
+  
   <div class="container">
+    
     <div id="authContent">
-      <div id="loginPage">
-        <div class="auth-card">
-          <h2>Accedi</h2>
-          <input type="text" id="loginEmail" placeholder="Email" />
-          <input type="password" id="loginPassword" placeholder="Password" />
-          <button onclick="loginUser()">Accedi</button>
-          <p style="text-align:center;">o</p>
-          <div id="g_id_onload" data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com" data-callback="handleCredentialResponse">
-          </div>
-          <div class="g_id_signin" data-type="standard"></div>
-          <p style="text-align:center;">o</p>
-          <button onclick="loginWithSpotify()" class="spotify-login-btn">
-            <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify Logo" /> Accedi con Spotify
-          </button>
-          <p>Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a></p>
+        <div id="loginPage">
+            <div class="auth-card">
+                <h2>Accedi</h2>
+                
+                <input type="text" id="loginEmail" placeholder="Email" />
+                <input type="password" id="loginPassword" placeholder="Password" />
+                <button onclick="loginUser()">Accedi</button>
+                <p style="text-align:center;">o</p>
+
+                <div id="g_id_onload"
+                     data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com"
+                     data-callback="handleCredentialResponse">
+                </div>
+                <div class="g_id_signin" data-type="standard"></div>
+
+                <p style="text-align:center;">o</p>
+                <button onclick="loginWithSpotify()" class="spotify-login-btn">
+                    <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify Logo" />
+                    Accedi con Spotify
+                </button>
+                
+                <p>Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a></p>
+            </div>
         </div>
-      </div>
-      <div id="registerPage" style="display: none;">
-        <div class="auth-card">
-          <h2>Registrati</h2>
-          <input type="text" id="registerName" placeholder="Nome" />
-          <input type="email" id="registerEmail" placeholder="Email" />
-          <input type="password" id="registerPassword" placeholder="Password" />
-          <label for="profilePicSelector">Scegli un'immagine profilo:</label>
-          <div class="profile-pic-selector" id="registerProfilePicSelector">
-            <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
-            <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
-            <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
-            <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
-          </div>
-          <button onclick="registerUser()">Registrati</button>
-          <p>Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a></p>
+
+        <div id="registerPage" style="display: none;">
+            <div class="auth-card">
+                <h2>Registrati</h2>
+                <input type="text" id="registerName" placeholder="Nome" />
+                <input type="email" id="registerEmail" placeholder="Email" />
+                <input type="password" id="registerPassword" placeholder="Password" />
+                <label for="profilePicSelector">Scegli un'immagine profilo:</label>
+                <div class="profile-pic-selector" id="registerProfilePicSelector">
+                    <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
+                    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
+                </div>
+                <button onclick="registerUser()">Registrati</button>
+                <p>Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a></p>
+            </div>
         </div>
-      </div>
     </div>
+    
     <div id="appContent" style="display: none;">
-      <header>
-        <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
-        <img id="logo" src="logo1.png" alt="Nexiflow Logo">
-        <div class="header-buttons">
-          <button class="chat-button" onclick="showChatList()">💬 Chat</button>
-          <button class="video-button" onclick="showChannelsPage()">canali</button>
-          <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
-          <div id="searchArea">
-            <input type="text" id="searchInput" placeholder="Cerca utenti..." />
-            <div id="searchResults"></div>
-          </div>
-          <button class="settings-button" onclick="showSettingsPage()">⚙️</button>
-          <button class="logout-button" onclick="logoutUser()">Logout</button>
+        <header>
+            <button class="theme-toggle" onclick="toggleTheme()">🌗</button>
+            <img id="logo" src="logo1.png" alt="Nexiflow Logo">
+            <div class="header-buttons">
+                <button class="chat-button" onclick="showChatList()">💬 Chat</button>
+                <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
+                <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
+                <div id="searchArea">
+                    <input type="text" id="searchInput" placeholder="Cerca utenti..." />
+                    <div id="searchResults"></div>
+                </div>
+                <button class="settings-button" onclick="showSettingsPage()">⚙️</button>
+                <button class="logout-button" onclick="logoutUser()">Logout</button>
+            </div>
+        </header>
+
+        <div id="welcomeMessage" class="user-info">
+            <img id="userProfilePic" class="profile-pic" />
+            <span id="userNameDisplay"></span>
         </div>
-      </header>
-      <div id="welcomeMessage" class="user-info">
-        <img id="userProfilePic" class="profile-pic" />
-        <span id="userNameDisplay"></span>
-      </div>
-      <div class="input-area" id="inputArea">
-        <div class="post-type-selector">
-          <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
-          <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
-          <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
-          <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
+        
+        <div class="input-area" id="inputArea">
+            <div class="post-type-selector">
+                <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
+                <button id="post-type-video" onclick="setPostType('video', this)">Video (solo link)</button>
+                <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora (iframe)</button>
+                <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter (X)</button>
+            </div>
+
+            <div id="post-text-fields" class="post-type-fields">
+                <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
+             <button id="addStickerBtn" onclick="toggleStickerPicker()">➕ Aggiungi Sticker</button>
+            <div id="stickerPicker" class="sticker-picker"></div>
+             </div>
+            <div id="post-video-fields" class="post-type-fields" style="display:none;">
+                <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
+                <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
+            </div>
+            <div id="post-embed-fields" class="post-type-fields" style="display:none;">
+                <input type="text" id="embedDescription" placeholder="Scrivi una descrizione per il video..." />
+                <div class="video-format-selector">
+                    <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
+                    <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
+                </div>
+                <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
+            </div>
+            <div id="post-twitter-fields" class="post-type-fields" style="display:none;">
+                <input type="text" id="twitterLink" placeholder="Incolla qui il link del post (es. https://x.com/...)" />
+            </div>
+            <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
         </div>
-        <div id="post-text-fields" class="post-type-fields">
-          <input type="text" id="postText" placeholder="Scrivi testo o emoji..." />
-          <button id="addStickerBtn" onclick="toggleStickerPicker()">➕ Aggiungi Sticker</button>
-          <div id="stickerPicker" class="sticker-picker"></div>
+
+        <div id="mainContent">
+            <div class="posts" id="postsContainer"></div>
         </div>
-        <div id="post-video-fields" class="post-type-fields" style="display:none;">
-          <input type="text" id="videoDescription" placeholder="Scrivi una descrizione per il video..." />
-          <input type="text" id="videoLink" class="video-input" placeholder="Incolla il link del video (es. YouTube)..."/>
+
+        <div id="videoPage">
+            <div class="video-page-header">
+                <div class="header-row">
+                    <button onclick="showMainContent()">← Torna alla bacheca</button>
+                    <div class="video-type-selector">
+                        <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
+                        <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+                    </div>
+                    <button onclick="toggleVideoInput()">➕ Aggiungi Video</button>
+                </div>
+            </div>
+            <div id="videoInputArea" class="input-area">
+                <div class="post-type-fields">
+                    <input type="text" id="newVideoDescription" placeholder="Scrivi una descrizione per il video..." />
+                    <div class="video-format-selector">
+                        <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
+                        <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+                    </div>
+                    <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..."></textarea>
+                </div>
+                <button id="publishVideoBtn" onclick="publishNewVideo()" disabled>Pubblica Video</button>
+            </div>
+            <div class="video-page-container" id="videoGrid"></div>
         </div>
-        <div id="post-embed-fields" class="post-type-fields" style="display:none;">
-          <input type="text" id="embedDescription" placeholder="Scrivi una descrizione per il video..." />
-          <div class="video-format-selector">
-            <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
-            <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
-          </div>
-          <textarea id="embedCode" class="embed-input" rows="4" placeholder="Incolla qui il codice di incorporazione (iframe)..."></textarea>
-        </div>
-        <div id="post-twitter-fields" class="post-type-fields" style="display:none;">
-          <input type="text" id="twitterLink" placeholder="Incolla qui il link del post (es. https://x.com/...)" />
-        </div>
-        <button id="publishBtn" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
-      </div>
-      <div id="mainContent">
-        <div class="posts" id="postsContainer"></div>
-      </div>
-      <div id="videoPage">
-        <div class="video-page-header">
-          <div class="header-row">
+        
+        <div id="userProfilePage">
             <button onclick="showMainContent()">← Torna alla bacheca</button>
-            <div class="video-type-selector">
-              <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
-              <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+            <div class="profile-info" id="profileInfo"></div>
+            <div class="profile-content">
+                <div>
+                    <h3>Post di questo utente:</h3>
+                    <div class="posts user-posts-list" id="userPostsContainer"></div>
+                </div>
+                <div>
+                    <h3>Video di questo utente:</h3>
+                    <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
+                </div>
             </div>
-            <button onclick="toggleVideoInput()">➕ Aggiungi Video</button>
-          </div>
         </div>
-        <div id="videoInputArea" class="input-area">
-          <div class="post-type-fields">
-            <input type="text" id="newVideoDescription" placeholder="Scrivi una descrizione per il video..." />
-            <div class="video-format-selector">
-              <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
-              <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+
+        <div id="settingsPage">
+            <button onclick="showMainContent()">← Torna alla bacheca</button>
+            <h3>Modifica Profilo</h3>
+            <div id="settingsForm" class="auth-card">
+                <label for="editName">Nome:</label>
+                <input type="text" id="editName" />
+                <label for="editProfilePic">Immagine Profilo:</label>
+                <div class="profile-pic-selector" id="editProfilePicSelector">
+                    <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
+                    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
+                </div>
+                <label for="editBio">Bio:</label>
+                <textarea id="editBio" rows="4"></textarea>
+                <button onclick="saveSettings()">Salva Modifiche</button>
             </div>
-            <textarea id="newVideoEmbedCode" class="embed-input" rows="4" placeholder="Incolla qui il link o il codice di incorporazione (iframe)..."></textarea>
-          </div>
-          <button id="publishVideoBtn" onclick="publishNewVideo()" disabled>Pubblica Video</button>
         </div>
-        <div class="video-page-container" id="videoGrid"></div>
-      </div>
-      
-      <div id="channelsPage" style="display:none;">
-        <button onclick="showMainContent()">← Torna alla bacheca</button>
-        <h3>Canali</h3>
-        <div class="channels-grid">
-          <a href="djacopo.html" class="channel-item">
-            <img src="profilo1.png" alt="DJ jaco & ligth jokey matty Profile Picture">
-            <h4>DJ jaco & ligth jokey matty</h4>
-          </a>
-        </div>
-      </div>
-      <div id="userProfilePage">
-        <button onclick="showMainContent()">← Torna alla bacheca</button>
-        <div class="profile-info" id="profileInfo"></div>
-        <div class="profile-content">
-          <div>
-            <h3>Post di questo utente:</h3>
-            <div class="posts user-posts-list" id="userPostsContainer"></div>
-          </div>
-          <div>
-            <h3>Video di questo utente:</h3>
-            <div class="video-page-container user-videos-list" id="userVideosContainer"></div>
-          </div>
-        </div>
-      </div>
-      <div id="settingsPage">
-        <button onclick="showMainContent()">← Torna alla bacheca</button>
-        <h3>Modifica Profilo</h3>
-        <div id="settingsForm" class="auth-card">
-          <label for="editName">Nome:</label>
-          <input type="text" id="editName" />
-          <label for="editProfilePic">Immagine Profilo:</label>
-          <div class="profile-pic-selector" id="editProfilePicSelector">
-            <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
-            <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
-            <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
-            <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
-          </div>
-          <label for="editBio">Bio:</label>
-          <textarea id="editBio" rows="4"></textarea>
-          <button onclick="saveSettings()">Salva Modifiche</button>
-        </div>
-      </div>
     </div>
+    
     <footer>
-      © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
+        © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
     </footer>
   </div>
+  
   <div id="videoModal" class="modal">
     <span class="close-modal" onclick="closeModal()">×</span>
     <div class="modal-content">
-      <div id="modalVideoContainer"></div>
+        <div id="modalVideoContainer"></div>
     </div>
   </div>
+
   <div id="privateChatModal">
-    <div class="chat-header">
-      <button class="close-chat-btn" onclick="closePrivateChat()">←</button>
-      <img id="chatRecipientPic" class="profile-pic" />
-      <h3 id="chatRecipientName"></h3>
-    </div>
-    <div class="chat-body" id="chatMessageHistory">
-    </div>
-    <div class="chat-input-area">
-      <input type="text" id="privateMessageInput" class="chat-input" placeholder="Scrivi un messaggio..." />
-      <button class="send-chat-btn" onclick="sendPrivateMessage()">Invia</button>
-    </div>
+      <div class="chat-header">
+          <button class="close-chat-btn" onclick="closePrivateChat()">←</button>
+          <img id="chatRecipientPic" class="profile-pic" />
+          <h3 id="chatRecipientName"></h3>
+      </div>
+      <div class="chat-body" id="chatMessageHistory">
+          </div>
+      <div class="chat-input-area">
+          <input type="text" id="privateMessageInput" class="chat-input" placeholder="Scrivi un messaggio..." />
+          <button class="send-chat-btn" onclick="sendPrivateMessage()">Invia</button>
+      </div>
   </div>
+
   <div id="chatListModal">
-    <div class="chat-list-header">
-      <h3>Le mie chat</h3>
-      <span class="close-btn" onclick="closeChatListModal()">×</span>
-    </div>
-    <div id="conversationList"></div>
+      <div class="chat-list-header">
+          <h3>Le tue chat</h3>
+          <button class="close-btn" onclick="closeChatList()">× Chiudi</button>
+      </div>
+      <div id="conversationList">
+          </div>
   </div>
-  <div id="countryModal" class="modal">
-    <div class="modal-content" style="max-width:400px; text-align:center;">
-      <h3>Seleziona il tuo Paese</h3>
-      <select id="countrySelect">
-        <option value="">-- Scegli un Paese --</option>
-        <option value="Italia">Italia</option>
-        <option value="Francia">Francia</option>
-        <option value="Germania">Germania</option>
-        <option value="Spagna">Spagna</option>
-      </select>
-      <button onclick="saveCountry()">Salva</button>
-    </div>
-  </div>
+
+
   <script>
-    // Inizializza il tema, gli utenti e i post
-    document.addEventListener('DOMContentLoaded', () => {
-      initTheme();
-      initUsers();
-      initPosts();
-      initVideos();
-      checkAuth();
-      fetchStickers();
-    });
+   // Funzione per mostrare/nascondere il selettore di sticker
+function toggleStickerPicker() {
+  const stickerPicker = document.getElementById('stickerPicker');
+  if (stickerPicker.style.display === 'flex') {
+    stickerPicker.style.display = 'none';
+  } else {
+    stickerPicker.style.display = 'flex';
+    generateStickerPreviews();
+  }
+}
 
-    // Funzione per mostrare e nascondere il form di pubblicazione
-    let inputVisible = false;
+// Funzione per generare le anteprime degli sticker
+function generateStickerPreviews() {
+  const stickerPicker = document.getElementById('stickerPicker');
+  stickerPicker.innerHTML = ''; // Pulisce il contenuto precedente
 
-    function toggleInput() {
-      const inputArea = document.getElementById('inputArea');
-      if (inputVisible) {
-        inputArea.classList.remove('active');
-        inputVisible = false;
-      } else {
-        inputArea.classList.add('active');
-        inputVisible = true;
+  const numberOfStickers = 22;
+  for (let i = 1; i <= numberOfStickers; i++) {
+    const img = document.createElement('img');
+    img.src = `stiker${i}.png`; // Nome del file dello sticker
+    img.alt = `Sticker ${i}`;
+    img.classList.add('sticker-preview');
+    img.onclick = () => insertSticker(`stiker${i}.png`);
+    stickerPicker.appendChild(img);
+  }
+}
+
+// Funzione per inserire lo sticker selezionato nel campo di testo
+function insertSticker(stickerPath) {
+  const postText = document.getElementById('postText');
+  const stickerHtml = `<img src="${stickerPath}" alt="sticker" style="width: 50px; height: auto; vertical-align: middle; margin: 0 5px;" />`;
+  
+  // Aggiunge l'HTML dell'immagine al valore del campo di testo
+  postText.value += stickerHtml;
+  
+  // Opzionalmente, nascondi il selettore dopo aver scelto uno sticker
+  document.getElementById('stickerPicker').style.display = 'none';
+}
+ // Inserisci qui le tue API KEY e i BIN ID.
+    const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
+    
+    // SOSTITUISCI QUESTI BIN ID CON QUELLI NUOVI CHE HAI CREATO
+    const BIN_ID = "68960092f7e7a370d1f76798";
+    const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
+    const USER_BIN_ID = "68580aba8a456b7966b3543a";
+    const MESSAGES_BIN_ID = "689600f3203a8b52b5e1dafd"; 
+
+    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
+    const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
+    const MESSAGES_URL = `https://api.jsonbin.io/v3/b/${MESSAGES_BIN_ID}`;
+
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Master-Key": API_KEY
+    };
+    
+    // INFORMAZIONI DI ACCESSO A SPOTIFY
+    const spotifyClientId = 'f77ae12dd0e7405192d95390c8b1b418';
+    const redirectUri = 'https://nexiflow.netlify.app';
+
+
+    const registerNameInput = document.getElementById("registerName");
+    const registerEmailInput = document.getElementById("registerEmail");
+    const registerPasswordInput = document.getElementById("registerPassword");
+    const loginEmailInput = document.getElementById("loginEmail");
+    const loginPasswordInput = document.getElementById("loginPassword");
+    const registerProfilePicSelector = document.getElementById("registerProfilePicSelector");
+    const appContent = document.getElementById("appContent");
+    const authContent = document.getElementById("authContent");
+    const loginPage = document.getElementById("loginPage");
+    const registerPage = document.getElementById("registerPage");
+    const postText = document.getElementById("postText");
+    const publishBtn = document.getElementById("publishBtn");
+    const welcomeMessage = document.getElementById("welcomeMessage");
+    const postsContainer = document.getElementById("postsContainer");
+    const logoElement = document.getElementById("logo");
+    const postTypeButtons = document.querySelectorAll('.post-type-selector button');
+    const textFields = document.getElementById('post-text-fields');
+    const videoFields = document.getElementById('post-video-fields');
+    const embedFields = document.getElementById('post-embed-fields');
+    const twitterFields = document.getElementById('post-twitter-fields');
+    const videoLinkInput = document.getElementById('videoLink');
+    const embedCodeInput = document.getElementById('embedCode');
+    const twitterLinkInput = document.getElementById('twitterLink');
+    const videoDescriptionInput = document.getElementById('videoDescription');
+    const embedDescriptionInput = document.getElementById('embedDescription');
+    const embedFormatButtons = document.querySelectorAll('.video-format-selector button');
+    const videoPage = document.getElementById('videoPage');
+    const mainContent = document.getElementById('mainContent');
+    const videoGrid = document.getElementById('videoGrid');
+    const videoTypeButtons = document.querySelectorAll('.video-page-header .video-type-selector button');
+    const videoInputArea = document.getElementById('videoInputArea');
+    const newVideoDescriptionInput = document.getElementById('newVideoDescription');
+    const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
+    const newVideoFormatButtons = document.querySelectorAll('#videoInputArea .video-format-selector button');
+    const publishVideoBtn = document.getElementById('publishVideoBtn');
+    const userProfilePage = document.getElementById('userProfilePage');
+    const profileInfoDiv = document.getElementById('profileInfo');
+    const userPostsContainer = document.getElementById('userPostsContainer');
+    const userVideosContainer = document.getElementById('userVideosContainer');
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const settingsPage = document.getElementById('settingsPage');
+    const editNameInput = document.getElementById('editName');
+    const editProfilePicSelector = document.getElementById('editProfilePicSelector');
+    const editBioInput = document.getElementById('editBio');
+    
+    // Elementi e variabili per la chat privata
+    const privateChatModal = document.getElementById('privateChatModal');
+    const chatRecipientName = document.getElementById('chatRecipientName');
+    const chatRecipientPic = document.getElementById('chatRecipientPic');
+    const chatMessageHistory = document.getElementById('chatMessageHistory');
+    const privateMessageInput = document.getElementById('privateMessageInput');
+    let currentChatRecipientEmail = null;
+    let allPrivateMessages = {};
+    const chatListModal = document.getElementById('chatListModal');
+    const conversationList = document.getElementById('conversationList');
+
+    let nightLogoTimer = null;
+    let currentPostType = 'text';
+    let currentEmbedFormat = 'horizontal';
+    let currentVideoPageFormat = 'vertical';
+    let newVideoFormat = 'horizontal';
+    let isLoadingVideos = false;
+    let currentUser = null;
+    let usersData = {};
+    let allPosts = [];
+    let allVideos = [];
+    let allUsers = [];
+
+    const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
+    const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
+    
+function handleCredentialResponse(response) {
+  const decodedToken = parseJwt(response.credential);
+  let user = allUsers.find(u => u.email === decodedToken.email);
+
+  if (user) {
+    currentUser = user;
+    localStorage.setItem("currentUserEmail", currentUser.email);
+    showAppContent();
+  } else {
+    const newUser = {
+      name: decodedToken.name,
+      email: decodedToken.email,
+      profilePic: decodedToken.picture,
+      bio: "Accesso tramite Google",
+      country: "" // Sarà riempito dopo
+    };
+    allUsers.push(newUser);
+    currentUser = newUser;
+    localStorage.setItem("currentUserEmail", currentUser.email);
+    document.getElementById("countryModal").style.display = "flex";
+  }
+}
+
+function saveCountry() {
+  const country = document.getElementById("countrySelect").value;
+  if (!country) {
+    alert("Seleziona un Paese!");
+    return;
+  }
+  currentUser.country = country;
+  updateUsersOnServer(allUsers); // Salva su JSONBin
+  document.getElementById("countryModal").style.display = "none";
+  showAppContent();
+}
+window.onclick = function(event) {
+  const modal = document.getElementById("countryModal");
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
+    // Funzione per decodificare il JWT
+    function parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+    
+    // Funzione per aggiornare il bin degli utenti
+    async function updateUsersOnServer(users) {
+        try {
+            await fetch(USER_URL, {
+                method: "PUT",
+                headers,
+                body: JSON.stringify({ users })
+            });
+        } catch (error) {
+            console.error("Errore nell'aggiornamento degli utenti:", error);
+        }
+    }
+
+    async function loadAllData() {
+      try {
+        const [postsRes, videosRes, usersRes, messagesRes] = await Promise.all([
+          fetch(BASE_URL + "/latest", { headers }),
+          fetch(VIDEO_URL + "/latest", { headers }),
+          fetch(USER_URL + "/latest", { headers }),
+          fetch(MESSAGES_URL + "/latest", { headers })
+        ]);
+
+        const postsData = await postsRes.json();
+        const videosData = await videosRes.json();
+        const usersDataRaw = await usersRes.json();
+        const messagesData = await messagesRes.json();
+
+        allPosts = postsData.record.posts || [];
+        allVideos = videosData.record.videos || [];
+        allUsers = usersDataRaw.record.users || [];
+        allPrivateMessages = messagesData.record.privateMessages || {};
+
+        usersData = allUsers.reduce((map, user) => {
+          map[user.email] = user;
+          return map;
+        }, {});
+
+        renderPosts(allPosts);
+      } catch (err) {
+        console.error("Errore nel caricamento dei dati:", err);
       }
     }
 
-    // Variabile globale per la formattazione del video
-    let videoFormat = 'horizontal';
-    
-    function setVideoFormat(format) {
-        videoFormat = format;
-        document.querySelectorAll('.video-format-selector button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.getElementById(`embed-format-${format}`).classList.add('active');
-    }
-    
-    let newVideoFormat = 'horizontal';
-    
-    function setNewVideoFormat(format) {
-        newVideoFormat = format;
-        document.querySelectorAll('#videoInputArea .video-format-selector button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.getElementById(`new-video-format-${format}`).classList.add('active');
+    // Funzioni di autenticazione
+    function showLoginPage() {
+      loginPage.style.display = 'flex';
+      registerPage.style.display = 'none';
+      loginEmailInput.focus();
     }
 
-    // Funzione per cambiare il tipo di post
+    function showRegisterPage() {
+      loginPage.style.display = 'none';
+      registerPage.style.display = 'flex';
+      registerNameInput.focus();
+    }
+
+    function selectProfilePic(element, type) {
+      const selector = type === 'register' ? registerProfilePicSelector : editProfilePicSelector;
+      selector.querySelectorAll('.profile-pic-option').forEach(img => {
+        img.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+
+    async function registerUser() {
+      const name = registerNameInput.value.trim();
+      const email = registerEmailInput.value.trim();
+      const password = registerPasswordInput.value.trim();
+      const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+      const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
+      
+      if (!name || !email || !password) {
+        alert("Compila tutti i campi!");
+        return;
+      }
+      
+      if (allUsers.find(u => u.email === email)) {
+        alert("Esiste già un utente con questa email.");
+        return;
+      }
+      
+      const newUser = { name, email, password, profilePic, bio: "" };
+      
+      try {
+        allUsers.push(newUser);
+        await fetch(USER_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ users: allUsers })
+        });
+        alert("Registrazione completata! Ora puoi accedere.");
+        showLoginPage();
+      } catch(err) {
+        alert("Errore durante la registrazione.");
+        console.error(err);
+      }
+    }
+
+    async function loginUser() {
+      const email = loginEmailInput.value.trim();
+      const password = loginPasswordInput.value.trim();
+      
+      const user = allUsers.find(u => u.email === email);
+      
+      if (user) {
+        if (user.password === password) {
+            currentUser = user;
+            localStorage.setItem("currentUserEmail", email);
+            alert(`Benvenuto, ${currentUser.name}!`);
+            showAppContent();
+        } else {
+            alert("Password non corretta. Riprova.");
+        }
+      } else {
+        alert("Utente non trovato. Controlla l'email o registrati.");
+      }
+    }
+
+    function logoutUser() {
+      currentUser = null;
+      localStorage.removeItem("currentUserEmail");
+      showAuthContent();
+    }
+
+    function showAuthContent() {
+      authContent.style.display = 'block';
+      appContent.style.display = 'none';
+      showLoginPage();
+    }
+
+    function showAppContent() {
+      authContent.style.display = 'none';
+      appContent.style.display = 'block';
+      updateUserInfo();
+      showMainContent();
+    }
+
+    function updateUserInfo() {
+      if (currentUser) {
+        document.getElementById("userNameDisplay").textContent = currentUser.name;
+        document.getElementById("userProfilePic").src = currentUser.profilePic;
+        welcomeMessage.style.display = 'flex';
+      }
+    }
+
     function setPostType(type, button) {
-      document.querySelectorAll('.post-type-selector button').forEach(btn => {
-        btn.classList.remove('active');
-      });
+      currentPostType = type;
+      postTypeButtons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
-      document.querySelectorAll('.post-type-fields').forEach(field => {
-        field.style.display = 'none';
-      });
-      document.getElementById(`post-${type}-fields`).style.display = 'flex';
+      textFields.style.display = 'none';
+      videoFields.style.display = 'none';
+      embedFields.style.display = 'none';
+      twitterFields.style.display = 'none';
+
+      if (type === 'text') {
+        textFields.style.display = 'flex';
+        postText.focus();
+      } else if (type === 'video') {
+        videoFields.style.display = 'flex';
+        videoLinkInput.focus();
+      } else if (type === 'embed') {
+        embedFields.style.display = 'flex';
+        embedCodeInput.focus();
+      } else if (type === 'twitter') {
+        twitterFields.style.display = 'flex';
+        twitterLinkInput.focus();
+      }
       checkPublishButtonState();
     }
     
-    // Funzione per controllare lo stato del pulsante "Pubblica"
     function checkPublishButtonState() {
-      const postText = document.getElementById('postText');
-      const videoLink = document.getElementById('videoLink');
-      const embedCode = document.getElementById('embedCode');
-      const twitterLink = document.getElementById('twitterLink');
-      const publishBtn = document.getElementById('publishBtn');
-
-      let isActive = false;
-      const currentType = document.querySelector('.post-type-selector .active').id;
-      
-      switch(currentType) {
-        case 'post-type-text':
-          isActive = postText.value.trim() !== '';
-          break;
-        case 'post-type-video':
-          isActive = videoLink.value.trim() !== '';
-          break;
-        case 'post-type-embed':
-          isActive = embedCode.value.trim() !== '';
-          break;
-        case 'post-type-twitter':
-          isActive = twitterLink.value.trim() !== '';
-          break;
-      }
-      
-      publishBtn.disabled = !isActive;
-    }
-    
-    document.getElementById('postText').addEventListener('input', checkPublishButtonState);
-    document.getElementById('videoLink').addEventListener('input', checkPublishButtonState);
-    document.getElementById('embedCode').addEventListener('input', checkPublishButtonState);
-    document.getElementById('twitterLink').addEventListener('input', checkPublishButtonState);
-
-    // Gestione dei video
-    const videoData = [
-    {
-        id: 1,
-        user: 'Matty-light',
-        userPic: 'profilo1.png',
-        title: 'Video di prova 1',
-        description: 'Primo video di prova.',
-        embedCode: '<iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4s4A?si=2z6l9Tq_z1eXwS7l" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-        format: 'horizontal',
-        likes: 12,
-        dislikes: 2,
-        date: new Date('2024-03-01T10:00:00')
-    },
-    {
-        id: 2,
-        user: 'DJ Jaco',
-        userPic: 'profilo2.png',
-        title: 'Short di prova',
-        description: 'Uno short per test.',
-        embedCode: '<iframe width="315" height="560" src="https://www.youtube.com/embed/n4pYt_kH_gM?si=oYqfG6P4g41r4p2w" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-        format: 'vertical',
-        likes: 5,
-        dislikes: 1,
-        date: new Date('2024-03-02T12:30:00')
-    },
-    {
-        id: 3,
-        user: 'Matty-light',
-        userPic: 'profilo1.png',
-        title: 'Altro Video di prova',
-        description: 'Secondo video orizzontale.',
-        embedCode: '<iframe width="560" height="315" src="https://www.youtube.com/embed/a0LqQ_xI_1w?si=7B5uJp6c4fWd8Z2A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-        format: 'horizontal',
-        likes: 25,
-        dislikes: 3,
-        date: new Date('2024-03-03T15:45:00')
-    }
-    ];
-
-    function renderVideos(format) {
-      const videoGrid = document.getElementById('videoGrid');
-      videoGrid.innerHTML = '';
-      
-      if (format === 'vertical') {
-          videoGrid.classList.add('shorts-grid');
-      } else {
-          videoGrid.classList.remove('shorts-grid');
-      }
-
-      const filteredVideos = videoData.filter(video => video.format === format);
-      
-      filteredVideos.forEach(video => {
-        const videoItem = document.createElement('div');
-        videoItem.className = 'video-page-item';
-        videoItem.innerHTML = `
-          <div class="video-content" onclick="openVideoModal(${video.id})">
-            ${video.embedCode}
-          </div>
-          <div class="video-page-actions">
-            <button class="like-btn" onclick="likeVideo(${video.id})">👍</button>
-            <button class="dislike-btn" onclick="dislikeVideo(${video.id})">👎</button>
-          </div>
-          <div class="video-item-footer">
-            <h4>${video.title}</h4>
-            <p>${video.description}</p>
-            <p>di <a href="#" onclick="showUserProfilePage('${video.user}')">${video.user}</a></p>
-            <div class="vote-buttons">
-              <span>👍 ${video.likes}</span>
-              <span>👎 ${video.dislikes}</span>
-            </div>
-          </div>
-        `;
-        videoGrid.appendChild(videoItem);
-      });
-    }
-
-    function showVideos(format, button) {
-      document.querySelectorAll('.video-type-selector button').forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      renderVideos(format);
-    }
-
-    function toggleVideoInput() {
-        const videoInputArea = document.getElementById('videoInputArea');
-        videoInputArea.style.display = videoInputArea.style.display === 'flex' ? 'none' : 'flex';
-    }
-
-    function publishNewVideo() {
-        // Implementazione per la pubblicazione di nuovi video
-    }
-    
-    function openVideoModal(videoId) {
-        const video = videoData.find(v => v.id === videoId);
-        if (!video) return;
-
-        const modal = document.getElementById('videoModal');
-        const modalVideoContainer = document.getElementById('modalVideoContainer');
-        
-        modalVideoContainer.innerHTML = video.embedCode;
-        
-        const iframe = modalVideoContainer.querySelector('iframe');
-        if (video.format === 'horizontal') {
-            iframe.classList.add('horizontal-video');
-            iframe.classList.remove('vertical-video');
-        } else {
-            iframe.classList.add('vertical-video');
-            iframe.classList.remove('horizontal-video');
+        let isReady = false;
+        if (currentPostType === 'text' && postText.value.trim() !== '') {
+            isReady = true;
+        } else if (currentPostType === 'video' && videoLinkInput.value.trim() !== '') {
+            isReady = true;
+        } else if (currentPostType === 'embed' && embedCodeInput.value.trim() !== '') {
+            isReady = true;
+        } else if (currentPostType === 'twitter' && twitterLinkInput.value.trim() !== '') {
+            isReady = true;
         }
-
-        modal.style.display = 'flex';
+        publishBtn.disabled = !isReady;
     }
     
-    function closeModal() {
-        const modal = document.getElementById('videoModal');
-        modal.style.display = 'none';
-        const modalVideoContainer = document.getElementById('modalVideoContainer');
-        modalVideoContainer.innerHTML = ''; // Ferma il video
-    }
+    postText.addEventListener('input', checkPublishButtonState);
+    videoLinkInput.addEventListener('input', checkPublishButtonState);
+    embedCodeInput.addEventListener('input', checkPublishButtonState);
+    twitterLinkInput.addEventListener('input', checkPublishButtonState);
 
-    // Gestione del tema
-    function initTheme() {
-      const savedTheme = localStorage.getItem('theme');
-      if (savedTheme) {
-        document.body.classList.toggle('dark-mode', savedTheme === 'dark');
-      }
+    function setVideoFormat(format) {
+        currentEmbedFormat = format;
+        embedFormatButtons.forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`embed-format-${format}`).classList.add('active');
+    }
+    
+    function setLogo(isNight) {
+        const logo = isNight ? 'logo2.png' : 'logo1.png';
+        logoElement.src = logo;
+        logoElement.style.opacity = '1';
+        clearTimeout(nightLogoTimer);
+        if (isNight) {
+            nightLogoTimer = setTimeout(() => {
+                logoElement.style.opacity = '0';
+            }, 3000);
+        } else {
+            nightLogoTimer = null;
+        }
     }
 
     function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
-      const theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-      localStorage.setItem('theme', theme);
+        const isDark = document.body.classList.toggle('dark-mode');
+        setLogo(isDark);
     }
     
-    // Gestione dei post
-    const allPosts = [
-        {
-            id: 1,
-            user: "Matty-light",
-            userPic: "profilo1.png",
-            content: "Oggi ho imparato a programmare in C++ ed è una cosa molto difficile da fare in un breve periodo di tempo. In pratica devi essere un genio. Io ci sto provando in tutti i modi",
-            date: "2024-03-01T08:00:00Z",
-            likes: 15,
-            dislikes: 2,
-            comments: ["bel post", "sono d'accordo"],
-            type: "text",
-            format: null
-        },
-        {
-            id: 2,
-            user: "DJ Jaco",
-            userPic: "profilo2.png",
-            content: "Ciao a tutti, ho deciso di iniziare a fare lo youtuber.",
-            date: "2024-03-01T09:00:00Z",
-            likes: 20,
-            dislikes: 1,
-            comments: ["bravo!", "forza"],
-            type: "text",
-            format: null
-        },
-        {
-            id: 3,
-            user: "Matty-light",
-            userPic: "profilo1.png",
-            content: null,
-            date: "2024-03-01T10:00:00Z",
-            embed: "<iframe width='560' height='315' src='https://www.youtube.com/embed/q_E0pB_8V-I' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>",
-            description: "Il mio video preferito!",
-            likes: 10,
-            dislikes: 0,
-            comments: ["figo"],
-            type: "embed",
-            format: "horizontal"
-        }
-    ];
+    function toggleInput() {
+      const inputArea = document.getElementById('inputArea');
+      inputArea.classList.toggle('active');
+    }
+    
+    function getFormattedDate() {
+      const now = new Date();
+      return now.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+    
+    function getPostContent(type) {
+      if (type === 'text') {
+        return postText.value;
+      } else if (type === 'video') {
+        return videoLinkInput.value;
+      } else if (type === 'embed') {
+        return embedCodeInput.value;
+      } else if (type === 'twitter') {
+        return twitterLinkInput.value;
+      }
+      return '';
+    }
 
-    function initPosts() {
-        const postsContainer = document.getElementById('postsContainer');
-        postsContainer.innerHTML = '';
-        allPosts.forEach(post => postsContainer.appendChild(createPostElement(post)));
+    function getPostDescription(type) {
+      if (type === 'text') {
+        return postText.value;
+      } else if (type === 'video') {
+        return videoDescriptionInput.value;
+      } else if (type === 'embed') {
+        return embedDescriptionInput.value;
+      }
+      return '';
+    }
+
+    async function publishPost() {
+      const content = getPostContent(currentPostType);
+      const description = getPostDescription(currentPostType);
+
+      if (!content || !currentUser) return;
+
+      const newPost = {
+        id: Date.now(),
+        author: currentUser.name,
+        authorEmail: currentUser.email,
+        authorPic: currentUser.profilePic,
+        type: currentPostType,
+        content: content,
+        description: description,
+        date: getFormattedDate(),
+        upvotes: 0,
+        downvotes: 0,
+        comments: [],
+        embedFormat: currentEmbedFormat
+      };
+      
+      allPosts.unshift(newPost);
+      await updatePostsOnServer(allPosts);
+      renderPosts(allPosts);
+      
+      postText.value = '';
+      videoDescriptionInput.value = '';
+      videoLinkInput.value = '';
+      embedDescriptionInput.value = '';
+      embedCodeInput.value = '';
+      twitterLinkInput.value = '';
+      checkPublishButtonState();
+      toggleInput();
     }
     
-    function createPostElement(post) {
+    async function updatePostsOnServer(posts) {
+      try {
+        await fetch(BASE_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ posts })
+        });
+      } catch (error) {
+        console.error("Errore nell'aggiornamento dei post:", error);
+      }
+    }
+    
+    function renderPosts(posts) {
+      postsContainer.innerHTML = '';
+      posts.forEach(post => {
         const postElement = document.createElement('div');
         postElement.className = 'post';
-        postElement.style.animationDelay = `${(allPosts.indexOf(post) * 0.1)}s`;
+        postElement.dataset.id = post.id;
+        
+        const isMyPost = currentUser && post.authorEmail === currentUser.email;
+        const deleteButton = isMyPost ? `<button class="delete-btn" onclick="deletePost(${post.id})">❌</button>` : '';
+        const privateMessageButton = !isMyPost ? `<button class="comment-btn" onclick="openPrivateChat('${post.authorEmail}')">✉️ Invia messaggio</button>` : '';
 
-        let postContentHtml = '';
+        let postContent = '';
         if (post.type === 'text') {
-            postContentHtml = `<p>${post.content}</p>`;
-        } else if (post.type === 'embed' || post.type === 'video') {
-            const videoClass = post.format === 'vertical' ? 'vertical-video' : '';
-            postContentHtml = `
-                <p>${post.description}</p>
+          postContent = `<p>${post.content}</p>`;
+        } else if (post.type === 'video') {
+          postContent = `
+            ${post.description ? `<p>${post.description}</p>` : ''}
+            <div class="post-embed">
+                <iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          `;
+        } else if (post.type === 'embed') {
+            const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
+            postContent = `
+                ${post.description ? `<p>${post.description}</p>` : ''}
                 <div class="post-embed">
-                    ${post.embed}
+                    <iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             `;
         } else if (post.type === 'twitter') {
-             postContentHtml = `<blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr"><a href="${post.content}"></a></p></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>`;
+            postContent = `
+                <blockquote class="twitter-tweet">
+                    <a href="${post.content}"></a>
+                </blockquote>
+            `;
         }
-        
+
+        const authorProfileLink = `<a href="#" class="user-link" onclick="showUserProfile('${post.authorEmail}')">
+            <img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo">
+            ${post.author}
+        </a>`;
+
         postElement.innerHTML = `
-            <div class="post-header">
-                <a href="#" class="user-link" onclick="showUserProfilePage('${post.user}')">
-                    <img src="${post.userPic}" alt="${post.user}" class="profile-pic">
-                    <span>${post.user}</span>
-                </a>
-            </div>
-            <div class="post-actions">
-                <button onclick="deletePost(${post.id})">🗑️</button>
-            </div>
-            ${postContentHtml}
-            <div class="post-footer">
-                <div class="vote-buttons">
-                    <button class="vote-btn" onclick="likePost(${post.id})">👍</button>
-                    <span id="like-count-${post.id}" class="vote-count">${post.likes}</span>
-                    <button class="vote-btn" onclick="dislikePost(${post.id})">👎</button>
-                    <span id="dislike-count-${post.id}" class="vote-count">${post.dislikes}</span>
-                </div>
-                <div class="post-action-buttons">
-                    <button class="comment-btn" onclick="toggleComments(${post.id})">💬 Commenta</button>
-                    <button class="comment-btn" onclick="summarizePost(${post.id})">📝 Riassumi</button>
-                </div>
-            </div>
-            <div id="comments-section-${post.id}" class="comments-section" style="display:none;">
-                <div id="comment-list-${post.id}" class="comment-list"></div>
-                <div class="comment-form">
-                    <input type="text" id="comment-input-${post.id}" class="comment-input" placeholder="Aggiungi un commento...">
-                    <button class="comment-submit-btn" onclick="addComment(${post.id})">Invia</button>
-                </div>
-            </div>
+          <div class="post-header">
+              ${authorProfileLink}
+              <div class="post-actions">
+                ${deleteButton}
+              </div>
+          </div>
+          <div class="post-content">
+            ${postContent}
+          </div>
+          <div class="post-footer">
+              <div class="vote-buttons">
+                  <span class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</span>
+                  <button class="vote-btn" onclick="votePost(${post.id}, 'up')">👍</button>
+                  <button class="vote-btn" onclick="votePost(${post.id}, 'down')">👎</button>
+              </div>
+              <div class="post-action-buttons">
+                  <button class="comment-btn" onclick="toggleComments(${post.id})">💬 Commenta</button>
+                  ${privateMessageButton}
+              </div>
+              <button class="comment-btn" onclick="translatePost(${post.id})">🌐 Traduci</button>
+              <button class="comment-btn" onclick="summarizePost(${post.id})">📝 Riassumi</button>
+          </div>
+          <div class="date">${post.date}</div>
+          <div class="comments-section" style="display:none;">
+            <h4>Commenti:</h4>
+            <div class="comment-list" id="comments-${post.id}"></div>
+            <form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
+              <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required />
+              <button type="submit" class="comment-submit-btn">Invia</button>
+            </form>
+          </div>
+          <div class="emoji-rain-up" id="emoji-up-${post.id}"></div>
+          <div class="emoji-rain-down" id="emoji-down-${post.id}"></div>
         `;
-        return postElement;
+        
+        postsContainer.appendChild(postElement);
+        renderComments(post.id, post.comments || []);
+        
+        if (post.type === 'twitter') {
+            const script = document.createElement('script');
+            script.src = 'https://platform.twitter.com/widgets.js';
+            document.body.appendChild(script);
+        }
+      });
+    }
+    
+    function embedFromLink(link) {
+      if (link.includes('youtu.be')) {
+        const id = link.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      } else if (link.includes('youtube.com')) {
+        const urlParams = new URLSearchParams(new URL(link).search);
+        const id = urlParams.get('v');
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      return link;
+    }
+    
+    function srcFromEmbed(embedCode) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(embedCode, 'text/html');
+        const iframe = doc.querySelector('iframe');
+        return iframe ? iframe.src : '';
     }
 
-    function addComment(postId) {
-        const input = document.getElementById(`comment-input-${postId}`);
-        const commentText = input.value.trim();
-        if (commentText === '') return;
-        
-        const post = allPosts.find(p => p.id === postId);
-        if (post) {
-            post.comments.push(commentText);
-            renderComments(postId);
-            input.value = '';
+    async function votePost(id, type) {
+      const post = allPosts.find(p => p.id === id);
+      if (!post) return;
+      
+      const emojiContainerId = `emoji-${type}-${id}`;
+      const emojiContainer = document.getElementById(emojiContainerId);
+
+      const emojiList = type === 'up' ? UP_EMOJIS : DOWN_EMOJIS;
+      const emoji = emojiList[Math.floor(Math.random() * emojiList.length)];
+      
+      createEmojiRain(emojiContainer, emoji);
+
+      if (type === 'up') {
+        post.upvotes = (post.upvotes || 0) + 1;
+      } else {
+        post.downvotes = (post.downvotes || 0) + 1;
+      }
+
+      await updatePostsOnServer(allPosts);
+      renderPosts(allPosts);
+    }
+    
+    function createEmojiRain(container, emoji) {
+        for (let i = 0; i < 15; i++) {
+            const emojiEl = document.createElement('span');
+            emojiEl.textContent = emoji;
+            emojiEl.className = 'emoji';
+            emojiEl.style.left = `${Math.random() * 100}%`;
+            emojiEl.style.animation = `
+                ${container.id.includes('up') ? 'fly-up' : 'fly-down'} 
+                ${1 + Math.random()}s ease-out forwards`;
+            emojiEl.style.animationDelay = `${Math.random() * 0.5}s`;
+            container.appendChild(emojiEl);
+
+            setTimeout(() => emojiEl.remove(), 2000);
         }
     }
     
-    function renderComments(postId) {
-        const commentList = document.getElementById(`comment-list-${postId}`);
-        const post = allPosts.find(p => p.id === postId);
+    async function deletePost(id) {
+        if (!currentUser) {
+            alert("Devi essere loggato per eliminare un post.");
+            return;
+        }
+
+        const post = allPosts.find(p => p.id === id);
         if (!post) return;
         
+        if (post.authorEmail !== currentUser.email) {
+            alert("Puoi eliminare solo i tuoi post.");
+            return;
+        }
+
+        const password = prompt("Inserisci la tua password per confermare l'eliminazione:");
+        if (password === null) {
+            return; // L'utente ha annullato
+        }
+
+        if (password !== currentUser.password) {
+            alert("Password non corretta. Impossibile eliminare il post.");
+            return;
+        }
+
+        allPosts = allPosts.filter(p => p.id !== id);
+        await updatePostsOnServer(allPosts);
+        renderPosts(allPosts);
+    }
+    
+    function toggleComments(postId) {
+        const commentsSection = document.querySelector(`.post[data-id='${postId}'] .comments-section`);
+        commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        if (commentsSection.style.display === 'block') {
+            document.getElementById(`comment-input-${postId}`).focus();
+        }
+    }
+    
+    async function addComment(postId) {
+        const post = allPosts.find(p => p.id === postId);
+        const commentInput = document.getElementById(`comment-input-${postId}`);
+        const text = commentInput.value.trim();
+        
+        if (!text || !currentUser || !post) return;
+        
+        // Assicurati che l'array dei commenti esista
+        if (!post.comments) {
+            post.comments = [];
+        }
+        post.comments.push({
+            author: currentUser.name,
+            authorEmail: currentUser.email,
+            authorPic: currentUser.profilePic,
+            text: text,
+            date: getFormattedDate()
+        });
+        await updatePostsOnServer(allPosts);
+        renderComments(postId, post.comments);
+        commentInput.value = '';
+    }
+    
+    function renderComments(postId, comments) {
+        const commentList = document.getElementById(`comments-${postId}`);
         commentList.innerHTML = '';
-        post.comments.forEach(comment => {
+        comments.forEach(comment => {
             const commentElement = document.createElement('div');
             commentElement.className = 'comment';
-            commentElement.textContent = comment;
+            commentElement.innerHTML = `
+                <strong>${comment.author}</strong>: ${comment.text}
+                <div class="date">${comment.date}</div>
+            `;
             commentList.appendChild(commentElement);
         });
     }
 
-    function toggleComments(postId) {
-        const commentsSection = document.getElementById(`comments-section-${postId}`);
-        if (commentsSection.style.display === 'none') {
-            commentsSection.style.display = 'block';
-            renderComments(postId);
-        } else {
-            commentsSection.style.display = 'none';
-        }
-    }
-    
-    function publishPost() {
-        // Implementazione per la pubblicazione di nuovi post
-    }
-    
-    function likePost(postId) {
-        const post = allPosts.find(p => p.id === postId);
-        if (!post) return;
-        post.likes++;
-        document.getElementById(`like-count-${postId}`).textContent = post.likes;
-    }
-
-    function dislikePost(postId) {
-        const post = allPosts.find(p => p.id === postId);
-        if (!post) return;
-        post.dislikes++;
-        document.getElementById(`dislike-count-${postId}`).textContent = post.dislikes;
-    }
-    
-    function deletePost(postId) {
-        // Implementazione per la cancellazione di un post
-    }
-
-    function showMainContent() {
-      document.getElementById('mainContent').style.display = 'block';
-      document.getElementById('videoPage').style.display = 'none';
-      document.getElementById('userProfilePage').style.display = 'none';
-      document.getElementById('settingsPage').style.display = 'none';
-      document.getElementById('channelsPage').style.display = 'none';
-      document.getElementById('inputArea').classList.remove('active');
-      inputVisible = false;
-    }
-
-    // Funzione modificata per mostrare la pagina dei canali
-    function showChannelsPage() {
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('videoPage').style.display = 'none';
-        document.getElementById('userProfilePage').style.display = 'none';
-        document.getElementById('settingsPage').style.display = 'none';
-        document.getElementById('channelsPage').style.display = 'block';
-    }
-
+    // === Funzioni per la pagina dei video ===
     function showVideoPage() {
-      document.getElementById('mainContent').style.display = 'none';
-      document.getElementById('videoPage').style.display = 'block';
-      document.getElementById('userProfilePage').style.display = 'none';
-      document.getElementById('settingsPage').style.display = 'none';
-      renderVideos('horizontal');
-    }
-
-    function showUserProfilePage(username) {
-        document.getElementById('mainContent').style.display = 'none';
-        document.getElementById('videoPage').style.display = 'none';
-        document.getElementById('userProfilePage').style.display = 'block';
-        document.getElementById('settingsPage').style.display = 'none';
-        document.getElementById('channelsPage').style.display = 'none';
-        
-        // Simulare la carica del profilo
-        document.getElementById('profileInfo').innerHTML = `
-            <img src="profilo1.png" alt="${username}">
-            <h2>${username}</h2>
-            <p>Bio di ${username}...</p>
-        `;
-        
-        document.getElementById('userPostsContainer').innerHTML = '<h4>Caricamento post...</h4>';
-        document.getElementById('userVideosContainer').innerHTML = '<h4>Caricamento video...</h4>';
-    }
-
-    function showSettingsPage() {
-      document.getElementById('mainContent').style.display = 'none';
-      document.getElementById('videoPage').style.display = 'none';
-      document.getElementById('userProfilePage').style.display = 'none';
-      document.getElementById('settingsPage').style.display = 'block';
-      document.getElementById('channelsPage').style.display = 'none';
-    }
-
-    // Funzioni per l'autenticazione
-    function checkAuth() {
-        const loggedInUser = localStorage.getItem('loggedInUser');
-        if (loggedInUser) {
-            document.getElementById('authContent').style.display = 'none';
-            document.getElementById('appContent').style.display = 'block';
-            document.getElementById('userNameDisplay').textContent = loggedInUser;
-            // Imposta l'immagine del profilo in base all'utente
-            const userProfilePic = localStorage.getItem(`${loggedInUser}-profilePic`) || 'profilo1.png';
-            document.getElementById('userProfilePic').src = userProfilePic;
-            showCountryModal();
-        } else {
-            document.getElementById('authContent').style.display = 'block';
-            document.getElementById('appContent').style.display = 'none';
-        }
-    }
-
-    function registerUser() {
-        const name = document.getElementById('registerName').value;
-        const email = document.getElementById('registerEmail').value;
-        const password = document.getElementById('registerPassword').value;
-        const profilePic = document.querySelector('#registerProfilePicSelector .selected').getAttribute('data-value');
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userPassword', password);
-        localStorage.setItem('loggedInUser', name);
-        localStorage.setItem(`${name}-profilePic`, profilePic);
-        alert('Registrazione effettuata!');
-        checkAuth();
-    }
-
-    function loginUser() {
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        const storedEmail = localStorage.getItem('userEmail');
-        const storedPassword = localStorage.getItem('userPassword');
-        if (email === storedEmail && password === storedPassword) {
-            const userName = localStorage.getItem('loggedInUser');
-            localStorage.setItem('loggedInUser', userName);
-            alert('Login effettuato!');
-            checkAuth();
-        } else {
-            alert('Email o password errati.');
-        }
-    }
-
-    function logoutUser() {
-        localStorage.removeItem('loggedInUser');
-        localStorage.removeItem('theme');
-        localStorage.removeItem('selectedCountry');
-        alert('Logout effettuato!');
-        checkAuth();
-    }
-
-    function showRegisterPage() {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('registerPage').style.display = 'block';
-    }
-
-    function showLoginPage() {
-        document.getElementById('registerPage').style.display = 'none';
-        document.getElementById('loginPage').style.display = 'block';
+        mainContent.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'none';
+        videoPage.style.display = 'block';
+        showVideos(currentVideoPageFormat);
     }
     
-    function selectProfilePic(element, page) {
-        document.querySelectorAll(`#${page}ProfilePicSelector .profile-pic-option`).forEach(img => {
-            img.classList.remove('selected');
-        });
-        element.classList.add('selected');
+    function showMainContent() {
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'none';
+        mainContent.style.display = 'block';
     }
 
-    function saveSettings() {
-        const newName = document.getElementById('editName').value;
-        const newBio = document.getElementById('editBio').value;
-        const newProfilePic = document.querySelector('#editProfilePicSelector .selected').getAttribute('data-value');
-        
-        const currentUser = localStorage.getItem('loggedInUser');
-        if (newName) {
-            localStorage.setItem('loggedInUser', newName);
+    function showVideos(format, button) {
+        currentVideoPageFormat = format;
+        videoGrid.innerHTML = '';
+        videoTypeButtons.forEach(btn => btn.classList.remove('active'));
+        if (button) {
+            button.classList.add('active');
+        } else {
+            const defaultButton = format === 'vertical' ? 
+                document.getElementById('video-type-shorts') : 
+                document.getElementById('video-type-normal');
+            if (defaultButton) defaultButton.classList.add('active');
         }
-        if (newProfilePic) {
-            localStorage.setItem(`${newName || currentUser}-profilePic`, newProfilePic);
+
+        videoGrid.classList.toggle('shorts-grid', format === 'vertical');
+
+        const filteredVideos = allVideos.filter(v => v.format === format);
+
+        if (filteredVideos.length === 0) {
+            videoGrid.innerHTML = `<p style="text-align: center; width: 100%;">Nessun video di questo tipo è stato ancora pubblicato.</p>`;
+            return;
         }
-        alert('Impostazioni salvate!');
-        checkAuth();
-    }
-    
-    // Gestione della chat
-    const chatData = {};
 
-    function showChatList() {
-        const chatListModal = document.getElementById('chatListModal');
-        const conversationList = document.getElementById('conversationList');
-        conversationList.innerHTML = '';
-        
-        // Simulare la lista di chat
-        const users = [
-            { name: "DJ Jaco", pic: "profilo2.png" },
-            { name: "Nexiflow_Support", pic: "profilo3.png" }
-        ];
+        filteredVideos.forEach(video => {
+            const videoElement = document.createElement('div');
+            videoElement.className = 'video-page-item';
+            videoElement.dataset.id = video.id;
 
-        users.forEach(user => {
-            const conversationItem = document.createElement('a');
-            conversationItem.className = 'conversation-item';
-            conversationItem.href = '#';
-            conversationItem.onclick = () => openPrivateChat(user.name, user.pic);
-            conversationItem.innerHTML = `
-                <img src="${user.pic}" alt="${user.name}">
-                <div class="conversation-info">
-                    <span class="user-name">${user.name}</span>
-                    <span class="last-message">Ultimo messaggio...</span>
+            const isMyVideo = currentUser && video.authorEmail === currentUser.email;
+            const deleteButton = isMyVideo ? `<button onclick="deleteVideo(${video.id})">❌</button>` : '';
+
+            videoElement.innerHTML = `
+                <div class="video-page-actions">
+                    <button onclick="voteVideo(${video.id}, 'up')">👍</button>
+                    <button onclick="voteVideo(${video.id}, 'down')">👎</button>
+                    ${deleteButton}
+                </div>
+                <div class="video-content" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
+                    <iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" 
+                        src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" 
+                        title="YouTube video player" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-item-footer">
+                    <div class="post-header">
+                        <img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo">
+                        <strong>${video.author}</strong>
+                    </div>
+                    <p>${video.description}</p>
+                    <div class="vote-buttons">
+                        <span class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</span>
+                    </div>
                 </div>
             `;
-            conversationList.appendChild(conversationItem);
+            videoGrid.appendChild(videoElement);
         });
+    }
+    
+    function openVideoModal(embedCode, format) {
+        const videoModal = document.getElementById('videoModal');
+        const modalVideoContainer = document.getElementById('modalVideoContainer');
+        modalVideoContainer.innerHTML = `
+            <iframe class="${format === 'vertical' ? 'vertical-video' : 'horizontal-video'}" 
+                src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1"
+                title="YouTube video player" frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        `;
+        videoModal.style.display = 'flex';
+    }
+    
+    function closeModal() {
+        const videoModal = document.getElementById('videoModal');
+        const modalVideoContainer = document.getElementById('modalVideoContainer');
+        modalVideoContainer.innerHTML = '';
+        videoModal.style.display = 'none';
+    }
+    
+    function toggleVideoInput() {
+      videoInputArea.classList.toggle('active');
+    }
+    
+    function setNewVideoFormat(format) {
+        newVideoFormat = format;
+        newVideoFormatButtons.forEach(btn => btn.classList.remove('active'));
+        document.getElementById(`new-video-format-${format}`).classList.add('active');
+    }
+    
+    newVideoEmbedCodeInput.addEventListener('input', () => {
+        publishVideoBtn.disabled = newVideoEmbedCodeInput.value.trim() === '';
+    });
+    
+    async function publishNewVideo() {
+        const embedCode = newVideoEmbedCodeInput.value.trim();
+        const description = newVideoDescriptionInput.value.trim();
         
-        chatListModal.style.display = 'flex';
+        if (!embedCode || !currentUser) return;
+        
+        const newVideo = {
+            id: Date.now(),
+            author: currentUser.name,
+            authorEmail: currentUser.email,
+            authorPic: currentUser.profilePic,
+            description: description,
+            embedCode: embedCode,
+            format: newVideoFormat,
+            date: getFormattedDate(),
+            upvotes: 0,
+            downvotes: 0,
+        };
+        
+        allVideos.unshift(newVideo);
+        await updateVideosOnServer(allVideos);
+        showVideos(newVideoFormat);
+        
+        newVideoDescriptionInput.value = '';
+        newVideoEmbedCodeInput.value = '';
+        publishVideoBtn.disabled = true;
+        toggleVideoInput();
+    }
+    
+    async function updateVideosOnServer(videos) {
+        try {
+            await fetch(VIDEO_URL, {
+                method: "PUT",
+                headers,
+                body: JSON.stringify({ videos })
+            });
+        } catch (error) {
+            console.error("Errore nell'aggiornamento dei video:", error);
+        }
+    }
+    
+    async function voteVideo(id, type) {
+        const video = allVideos.find(v => v.id === id);
+        if (!video) return;
+        
+        if (type === 'up') {
+            video.upvotes = (video.upvotes || 0) + 1;
+        } else {
+            video.downvotes = (video.downvotes || 0) + 1;
+        }
+        
+        await updateVideosOnServer(allVideos);
+        showVideos(currentVideoPageFormat);
+    }
+    
+    async function deleteVideo(id) {
+        if (!confirm("Sei sicuro di voler eliminare questo video?")) {
+            return;
+        }
+        allVideos = allVideos.filter(v => v.id !== id);
+        await updateVideosOnServer(allVideos);
+        showVideos(currentVideoPageFormat);
+    }
+    
+    // === Funzioni per la pagina utente ===
+    function showUserProfile(email) {
+      if (email === currentUser.email) {
+          showSettingsPage();
+          return;
+      }
+      const user = usersData[email];
+      if (!user) return;
+      
+      mainContent.style.display = 'none';
+      videoPage.style.display = 'none';
+      settingsPage.style.display = 'none';
+      privateChatModal.style.display = 'none';
+      chatListModal.style.display = 'none';
+      userProfilePage.style.display = 'block';
+
+      profileInfoDiv.innerHTML = `
+          <img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo">
+          <h2>${user.name}</h2>
+          <p>Email: ${user.email}</p>
+          <p>${user.bio || 'Nessuna bio disponibile.'}</p>
+          <button onclick="openPrivateChat('${user.email}')">✉️ Invia messaggio</button>
+      `;
+
+      const userPosts = allPosts.filter(post => post.authorEmail === email);
+      renderUserPosts(userPosts);
+      
+      const userVideos = allVideos.filter(video => video.authorEmail === email);
+      renderUserVideos(userVideos);
+    }
+    
+    function renderUserPosts(posts) {
+        userPostsContainer.innerHTML = '';
+        if (posts.length === 0) {
+            userPostsContainer.innerHTML = '<p>Nessun post pubblicato da questo utente.</p>';
+            return;
+        }
+        posts.forEach(post => {
+            const postElement = document.createElement('div');
+            postElement.className = 'post';
+            
+            let postContent = '';
+            if (post.type === 'text') {
+                postContent = `<p>${post.content}</p>`;
+            } else if (post.type === 'video') {
+                postContent = `
+                    <p>${post.description}</p>
+                    <div class="post-embed">
+                        <iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                `;
+            } else if (post.type === 'embed') {
+                postContent = `
+                    <p>${post.description}</p>
+                    <div class="post-embed">
+                        <iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                `;
+            }
+            
+            postElement.innerHTML = `
+                <div class="post-content">${postContent}</div>
+                <div class="date">${post.date}</div>
+            `;
+            userPostsContainer.appendChild(postElement);
+        });
+    }
+    
+    function renderUserVideos(videos) {
+        userVideosContainer.innerHTML = '';
+        if (videos.length === 0) {
+            userVideosContainer.innerHTML = '<p>Nessun video pubblicato da questo utente.</p>';
+            return;
+        }
+        videos.forEach(video => {
+            const videoElement = document.createElement('div');
+            videoElement.className = 'video-page-item';
+            
+            videoElement.innerHTML = `
+                <div class="video-content" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
+                    <iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" 
+                        src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" 
+                        title="YouTube video player" frameborder="0" allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="video-item-footer">
+                    <p>${video.description}</p>
+                </div>
+            `;
+            userVideosContainer.appendChild(videoElement);
+        });
+    }
+    
+    // === Funzioni per la ricerca utente ===
+    searchInput.addEventListener('input', filterUsers);
+
+    function filterUsers() {
+        const query = searchInput.value.toLowerCase();
+        searchResults.innerHTML = '';
+        
+        if (query.length < 2) {
+            searchResults.style.display = 'none';
+            return;
+        }
+
+        const filtered = allUsers.filter(user => user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query));
+
+        if (filtered.length > 0) {
+            searchResults.style.display = 'block';
+            filtered.forEach(user => {
+                const resultItem = document.createElement('a');
+                resultItem.href = '#';
+                resultItem.className = 'search-result-item';
+                resultItem.innerHTML = `<img src="${user.profilePic}" class="profile-pic" /> ${user.name}`;
+                resultItem.onclick = (e) => {
+                    e.preventDefault();
+                    showUserProfile(user.email);
+                    searchResults.style.display = 'none';
+                    searchInput.value = '';
+                };
+                searchResults.appendChild(resultItem);
+            });
+        } else {
+            searchResults.style.display = 'none';
+        }
+    }
+    
+    document.addEventListener('click', (event) => {
+        if (!searchArea.contains(event.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+
+    // === Funzioni per la pagina impostazioni ===
+    function showSettingsPage() {
+        if (!currentUser) return;
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'none';
+        settingsPage.style.display = 'block';
+        
+        editNameInput.value = currentUser.name;
+        editBioInput.value = currentUser.bio;
+        
+        const currentPic = document.querySelector(`#editProfilePicSelector img[data-value='${currentUser.profilePic}']`);
+        if (currentPic) {
+            selectProfilePic(currentPic, 'settings');
+        }
+    }
+    
+    async function saveSettings() {
+        if (!currentUser) return;
+        
+        const newName = editNameInput.value.trim();
+        const newBio = editBioInput.value.trim();
+        const selectedPic = document.querySelector('#editProfilePicSelector .selected');
+        const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
+        
+        if (!newName) {
+            alert("Il nome non può essere vuoto.");
+            return;
+        }
+
+        currentUser.name = newName;
+        currentUser.bio = newBio;
+        currentUser.profilePic = newProfilePic;
+        
+        try {
+            const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                allUsers[userIndex] = currentUser;
+                await fetch(USER_URL, {
+                    method: "PUT",
+                    headers,
+                    body: JSON.stringify({ users: allUsers })
+                });
+                localStorage.setItem("currentUserEmail", currentUser.email);
+                alert("Impostazioni salvate con successo!");
+                updateUserInfo();
+                showMainContent();
+            }
+        } catch (error) {
+            console.error("Errore nel salvataggio delle impostazioni:", error);
+            alert("Errore nel salvataggio delle impostazioni.");
+        }
     }
 
-    function closeChatListModal() {
-        document.getElementById('chatListModal').style.display = 'none';
-    }
-
-    function openPrivateChat(recipientName, recipientPic) {
-        document.getElementById('chatListModal').style.display = 'none';
-        const privateChatModal = document.getElementById('privateChatModal');
-        document.getElementById('chatRecipientName').textContent = recipientName;
-        document.getElementById('chatRecipientPic').src = recipientPic;
+    // === Funzioni per la chat privata ===
+    async function openPrivateChat(recipientEmail) {
+        if (!currentUser) {
+            alert("Devi essere loggato per inviare messaggi.");
+            return;
+        }
+        if (currentUser.email === recipientEmail) {
+            alert("Non puoi inviare messaggi a te stesso.");
+            return;
+        }
+        currentChatRecipientEmail = recipientEmail;
         privateChatModal.style.display = 'flex';
-        // Carica la cronologia chat
-        loadChatHistory(recipientName);
+        chatListModal.style.display = 'none';
+
+        const recipient = usersData[recipientEmail];
+        if (recipient) {
+            chatRecipientName.textContent = recipient.name;
+            chatRecipientPic.src = recipient.profilePic;
+        }
+
+        await renderPrivateMessages();
+        privateMessageInput.focus();
     }
     
     function closePrivateChat() {
-        document.getElementById('privateChatModal').style.display = 'none';
-    }
-
-    function loadChatHistory(recipientName) {
-        // Simula la cronologia della chat
-        const chatHistory = document.getElementById('chatMessageHistory');
-        chatHistory.innerHTML = `
-            <div class="chat-message received">Ciao, sono ${recipientName}!</div>
-            <div class="chat-message sent">Ciao!</div>
-        `;
-        chatHistory.scrollTop = chatHistory.scrollHeight; // Scorre in basso
-    }
-
-    function sendPrivateMessage() {
-        const input = document.getElementById('privateMessageInput');
-        const message = input.value.trim();
-        if (message === '') return;
-        
-        const chatHistory = document.getElementById('chatMessageHistory');
-        const messageElement = document.createElement('div');
-        messageElement.className = 'chat-message sent';
-        messageElement.textContent = message;
-        chatHistory.appendChild(messageElement);
-        
-        input.value = '';
-        chatHistory.scrollTop = chatHistory.scrollHeight; // Scorre in basso
+        privateChatModal.style.display = 'none';
+        currentChatRecipientEmail = null;
     }
     
-    // Funzione per mostrare il modale del paese
-    function showCountryModal() {
-        if (!localStorage.getItem('selectedCountry')) {
-            document.getElementById('countryModal').style.display = 'flex';
-        }
-    }
-
-    // Funzione per salvare il paese
-    function saveCountry() {
-        const countrySelect = document.getElementById('countrySelect');
-        const selectedCountry = countrySelect.value;
-        if (selectedCountry) {
-            localStorage.setItem('selectedCountry', selectedCountry);
-            document.getElementById('countryModal').style.display = 'none';
-        } else {
-            alert('Per favore, seleziona un Paese.');
-        }
+    function getConversationKey(email1, email2) {
+        return [email1, email2].sort().join('_to_');
     }
     
-    // Funzione per la ricerca utenti
-    function searchUsers() {
-      const input = document.getElementById('searchInput');
-      const query = input.value.toLowerCase();
-      const resultsContainer = document.getElementById('searchResults');
-      resultsContainer.innerHTML = '';
-      
-      if (query.length < 2) {
-          resultsContainer.style.display = 'none';
-          return;
-      }
+    async function renderPrivateMessages() {
+        chatMessageHistory.innerHTML = '';
+        const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
+        const messages = allPrivateMessages[conversationKey] || [];
+        
+        if (messages.length === 0) {
+            chatMessageHistory.innerHTML = '<p style="text-align: center; color: #999;">Inizia una conversazione!</p>';
+        }
 
-      // Elenco utenti fittizio
-      const users = [
-          { name: 'Matty-light', pic: 'profilo1.png' },
-          { name: 'DJ Jaco', pic: 'profilo2.png' },
-          { name: 'Utente_3', pic: 'profilo3.png' }
-      ];
-      
-      const filteredUsers = users.filter(user => user.name.toLowerCase().includes(query));
-
-      if (filteredUsers.length > 0) {
-        filteredUsers.forEach(user => {
-          const item = document.createElement('a');
-          item.href = '#';
-          item.className = 'search-result-item';
-          item.onclick = (e) => {
-              e.preventDefault();
-              showUserProfilePage(user.name);
-              resultsContainer.style.display = 'none';
-              input.value = '';
-          };
-          item.innerHTML = `
-            <img src="${user.pic}" alt="${user.name}">
-            <span>${user.name}</span>
-          `;
-          resultsContainer.appendChild(item);
+        messages.forEach(msg => {
+            const messageElement = document.createElement('div');
+            messageElement.className = `chat-message ${msg.senderEmail === currentUser.email ? 'sent' : 'received'}`;
+            messageElement.textContent = msg.text;
+            chatMessageHistory.appendChild(messageElement);
         });
-        resultsContainer.style.display = 'block';
-      } else {
-        resultsContainer.style.display = 'none';
-      }
+
+        chatMessageHistory.scrollTop = chatMessageHistory.scrollHeight;
     }
-    
-    document.getElementById('searchInput').addEventListener('input', searchUsers);
-    
-    // Funzione per riassumere i post (simulato)
-    async function summarizePost(postId) {
-        const post = allPosts.find(p => p.id === postId);
-        if (!post) return;
+
+    async function sendPrivateMessage() {
+        const text = privateMessageInput.value.trim();
+        if (!text || !currentUser || !currentChatRecipientEmail) return;
+
+        const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
+        if (!allPrivateMessages[conversationKey]) {
+            allPrivateMessages[conversationKey] = [];
+        }
+
+        const newMessage = {
+            senderEmail: currentUser.email,
+            text: text,
+            date: new Date().toISOString()
+        };
+        
+        allPrivateMessages[conversationKey].push(newMessage);
+        
+        privateMessageInput.value = '';
+        
+        await renderPrivateMessages();
 
         try {
-            const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    prompt: { text: "Fai un breve riassunto di questo testo: " + post.content }
-                })
+            await fetch(MESSAGES_URL, {
+                method: "PUT",
+                headers,
+                body: JSON.stringify({ privateMessages: allPrivateMessages })
             });
-            const data = await res.json();
-            const summary = data.candidates[0].output;
-            alert("Riassunto: " + summary);
-        } catch (err) {
-            console.error("Errore nel riassunto:", err);
+        } catch (error) {
+            console.error("Errore nell'aggiornamento dei messaggi:", error);
+            alert("Errore nell'invio del messaggio.");
         }
     }
     
-    // Funzione per la gestione degli sticker (simulato)
-    const stickers = [
-        '😀', '😂', '😍', '👍', '❤️', '🔥', '🎉', '🌟', '🤣'
-    ];
+    // Funzioni per la lista delle conversazioni
+    function showChatList() {
+        if (!currentUser) {
+            alert("Devi essere loggato per vedere le tue chat.");
+            return;
+        }
+        mainContent.style.display = 'none';
+        videoPage.style.display = 'none';
+        userProfilePage.style.display = 'none';
+        settingsPage.style.display = 'none';
+        privateChatModal.style.display = 'none';
+        chatListModal.style.display = 'flex';
+        renderConversationList();
+    }
     
-    function fetchStickers() {
-        const picker = document.getElementById('stickerPicker');
-        stickers.forEach(sticker => {
-            const img = document.createElement('img');
-            img.src = `https://via.placeholder.com/50/${Math.floor(Math.random()*16777215).toString(16)}/000000?text=${sticker}`;
-            img.className = 'sticker-preview';
-            img.style.border = '2px solid transparent';
-            img.onclick = () => addSticker(sticker);
-            picker.appendChild(img);
+    function closeChatList() {
+        chatListModal.style.display = 'none';
+        showMainContent();
+    }
+    
+    function renderConversationList() {
+        conversationList.innerHTML = '';
+        
+        const myConversations = Object.entries(allPrivateMessages)
+            .filter(([key, messages]) => 
+                key.includes(currentUser.email) && messages.length > 0
+            )
+            .map(([key, messages]) => {
+                const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
+                const recipient = usersData[recipientEmail];
+                const lastMessage = messages[messages.length - 1];
+                return {
+                    recipient,
+                    lastMessage
+                };
+            })
+            .sort((a, b) => new Date(b.lastMessage.date) - new Date(a.lastMessage.date));
+
+        if (myConversations.length === 0) {
+            conversationList.innerHTML = '<p style="text-align: center; color: #999;">Non hai ancora conversazioni.</p>';
+            return;
+        }
+
+        myConversations.forEach(({ recipient, lastMessage }) => {
+            const conversationElement = document.createElement('a');
+            conversationElement.href = '#';
+            conversationElement.className = 'conversation-item';
+            conversationElement.onclick = (e) => {
+                e.preventDefault();
+                openPrivateChat(recipient.email);
+            };
+
+            conversationElement.innerHTML = `
+                <img src="${recipient.profilePic}" class="profile-pic" />
+                <div class="conversation-info">
+                    <span class="user-name">${recipient.name}</span>
+                    <span class="last-message">${lastMessage.text}</span>
+                </div>
+            `;
+            conversationList.appendChild(conversationElement);
         });
     }
 
-    function toggleStickerPicker() {
-        const picker = document.getElementById('stickerPicker');
-        picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
+    // Inizializza l'applicazione al caricamento della pagina
+    window.onload = async () => {
+        const storedEmail = localStorage.getItem("currentUserEmail");
+        if (storedEmail) {
+            await loadAllData();
+            currentUser = allUsers.find(u => u.email === storedEmail);
+            if (currentUser) {
+                showAppContent();
+            } else {
+                logoutUser();
+            }
+        } else {
+            const params = new URLSearchParams(window.location.hash.substring(1));
+            const accessToken = params.get('access_token');
+
+            if (accessToken) {
+                try {
+                    const spotifyUser = await fetch('https://api.spotify.com/v1/me', {
+                        headers: { 'Authorization': 'Bearer ' + accessToken }
+                    }).then(res => res.json());
+
+                    console.log(spotifyUser);
+
+                    const email = spotifyUser.email;
+                    const user = allUsers.find(u => u.email === email);
+                    
+                    if (user) {
+                        currentUser = user;
+                    } else {
+                        const newUser = {
+                            name: spotifyUser.display_name,
+                            email: spotifyUser.email,
+                            profilePic: spotifyUser.images[0]?.url || 'https://via.placeholder.com/150',
+                            bio: "Accesso tramite Spotify",
+                            password: null
+                        };
+                        allUsers.push(newUser);
+                        await updateUsersOnServer(allUsers);
+                        currentUser = newUser;
+                    }
+                    localStorage.setItem("currentUserEmail", currentUser.email);
+                    showAppContent();
+                } catch (error) {
+                    console.error("Errore durante l'autenticazione con Spotify:", error);
+                    alert("Errore nell'autenticazione con Spotify.");
+                    showAuthContent();
+                }
+            } else {
+                showAuthContent();
+            }
+        }
+        async function translatePost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    const targetLang = currentUser?.country === "Russia" ? "ru" : "it"; // Cambia in base al paese dell'utente
+    const text = post.content;
+
+    try {
+        const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ q: text, target: targetLang })
+        });
+        const data = await res.json();
+        const translated = data.data.translations[0].translatedText;
+        alert("Traduzione: " + translated);
+    } catch (err) {
+        console.error("Errore nella traduzione:", err);
     }
-    
-    function addSticker(sticker) {
-        const postText = document.getElementById('postText');
-        postText.value += ' ' + sticker;
-        toggleStickerPicker();
-        checkPublishButtonState();
+}
+async function summarizePost(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    try {
+        const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                prompt: { text: "Fai un breve riassunto di questo testo: " + post.content }
+            })
+        });
+        const data = await res.json();
+        const summary = data.candidates[0].output;
+        alert("Riassunto: " + summary);
+    } catch (err) {
+        console.error("Errore nel riassunto:", err);
     }
+}
+
+ };
   </script>
+<div id="countryModal" class="modal">
+  <div class="modal-content" style="max-width:400px; text-align:center;">
+    <h3>Seleziona il tuo Paese</h3>
+    <select id="countrySelect">
+      <option value="">-- Scegli un Paese --</option>
+      <option value="Italia">Italia</option>
+      <option value="Francia">Francia</option>
+      <option value="Germania">Germania</option>
+      <option value="Spagna">Spagna</option>
+      <option value="USA">USA</option>
+      <option value="Regno Unito">Regno Unito</option>
+      <option value="Canada">Canada</option>
+      <option value="Australia">Australia</option>
+    </select>
+    <br><br>
+    <button onclick="saveCountry()">Conferma</button>
+  </div>
+</div>
 </body>
-</html>
+  </html>
+
+
+
+
+
+
+
+
+
