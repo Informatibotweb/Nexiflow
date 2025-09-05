@@ -15,7 +15,48 @@
   <link rel="icon" type="image/png" href="nexiflow.png">
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+/* Stili per la pagina dei canali */
+#channelsPage {
+  display: none;
+  padding: 2rem;
+}
+
+.channels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+  padding-top: 2rem;
+}
+
+.channel-item {
+  background-color: var(--card-light);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .channel-item {
+  background-color: var(--card-dark);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.channel-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.channel-item img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.5rem;
+}    
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
     
     :root {
       --bg-light: linear-gradient(135deg, #f5f7fa, #c3cfe2);
@@ -1326,7 +1367,7 @@ body.dark-mode .sticker-picker {
             <img id="logo" src="logo1.png" alt="Nexiflow Logo">
             <div class="header-buttons">
                 <button class="chat-button" onclick="showChatList()">💬 Chat</button>
-                <button class="video-button" onclick="showVideoPage()">🎬 Video</button>
+                <button class="video-button" onclick="showVideoPage()">canali</button>
                 <button class="add-button" onclick="showMainContent(); toggleInput()">➕</button>
                 <div id="searchArea">
                     <input type="text" id="searchInput" placeholder="Cerca utenti..." />
@@ -1490,7 +1531,7 @@ function generateStickerPreviews() {
   const stickerPicker = document.getElementById('stickerPicker');
   stickerPicker.innerHTML = ''; // Pulisce il contenuto precedente
 
-  const numberOfStickers = 22;
+  const numberOfStickers = 21;
   for (let i = 1; i <= numberOfStickers; i++) {
     const img = document.createElement('img');
     img.src = `stiker${i}.png`; // Nome del file dello sticker
@@ -2174,14 +2215,13 @@ window.onclick = function(event) {
     }
 
     // === Funzioni per la pagina dei video ===
-    function showVideoPage() {
-        mainContent.style.display = 'none';
-        userProfilePage.style.display = 'none';
-        settingsPage.style.display = 'none';
-        privateChatModal.style.display = 'none';
-        chatListModal.style.display = 'none';
-        videoPage.style.display = 'block';
-        showVideos(currentVideoPageFormat);
+function showChannelsPage() {
+  document.getElementById('channelsPage').style.display = 'block';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('videoPage').style.display = 'none';
+  document.getElementById('userProfilePage').style.display = 'none';
+  document.getElementById('settingsPage').style.display = 'none';
+}}
     }
     
     function showMainContent() {
@@ -2798,10 +2838,19 @@ async function summarizePost(postId) {
     <br><br>
     <button onclick="saveCountry()">Conferma</button>
   </div>
+<div id="channelsPage" style="display: none; padding: 2rem;">
+  <button onclick="showMainContent()">← Torna alla bacheca</button>
+  <h3>I Nostri Canali</h3>
+  <div class="channels-grid">
+    <a href="djacopo.html" class="channel-item">
+      <img src="djacopo-logo.png" alt="Logo DJ jaco & ligth jokey matty">
+      <h4>DJ jaco & ligth jokey matty</h4>
+    </a>
+    </div>
+</div>
 </div>
 </body>
   </html>
-
 
 
 
