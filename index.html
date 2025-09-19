@@ -2694,5 +2694,75 @@
       }
     });
   </script>
+  <script>
+(function() {
+  // Utility per gestire la modalità "delete power"
+  let deletePowerEnabled = false;
+  let deletePowerTimeout = null;
+
+  // Funzione da chiamare per abilitare la modalità "delete power"
+  function enableDeletePower() {
+    if (deletePowerEnabled) return;
+    deletePowerEnabled = true;
+
+    // Mostra tutti i bottoni cestino (assumendo che abbiano classe .action-button)
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.style.display = 'flex';
+      btn.disabled = false;
+    });
+
+    // Mostra i bottoni cestino nei commenti se esistono
+    document.querySelectorAll('.comment .action-button').forEach(btn => {
+      btn.style.display = 'flex';
+      btn.disabled = false;
+    });
+
+    // Aggiungi handler di eliminazione per ogni cestino
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.addEventListener('click', function handler(e) {
+        // Trova l'elemento da eliminare (post o commento)
+        let post = btn.closest('.post');
+        let comment = btn.closest('.comment');
+        if (post) post.remove();
+        if (comment) comment.remove();
+      });
+    });
+
+    // Disabilita dopo 5 minuti
+    deletePowerTimeout = setTimeout(disableDeletePower, 5 * 60 * 1000);
+  }
+
+  // Funzione da chiamare per disabilitare la modalità "delete power"
+  function disableDeletePower() {
+    deletePowerEnabled = false;
+
+    // Nasconde i bottoni cestino (se normalmente nascosti)
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.style.display = '';
+      btn.disabled = true;
+    });
+    document.querySelectorAll('.comment .action-button').forEach(btn => {
+      btn.style.display = '';
+      btn.disabled = true;
+    });
+    if (deletePowerTimeout) {
+      clearTimeout(deletePowerTimeout);
+      deletePowerTimeout = null;
+    }
+  }
+
+  // Monitoraggio della barra di ricerca
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    searchInput.addEventListener('input', function() {
+      if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') {
+        enableDeletePower();
+      }
+    });
+  });
+})();
+</script>
 </body>
 </html>
+
