@@ -941,11 +941,19 @@
     }
 
     function parseJwt(token) {
-      const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-      const payload = decodeURIComponent(atob(base64).split('').map(c =>
-        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-      ).join(''));
-      return JSON.parse(payload);
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c =>
+          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+        ).join(''));
+        const parsed = JSON.parse(jsonPayload);
+        console.log('Parsed JWT:', parsed);
+        return parsed;
+      } catch (error) {
+        console.error('JWT parsing error:', error);
+        throw error;
+      }
     }
 
     // Spotify Auth
@@ -958,10 +966,24 @@
     // Navigation
     function showAuth() { show('authContent'); hide('appContent'); showLogin(); }
     function showApp() { 
-      hide('authContent'); show('appContent');
-      $('userName').textContent = currentUser.name;
-      $('userAvatar').src = currentUser.profilePic;
-      showMain();
+      hide('authContent');
+      show('appContent');
+      
+      if (currentUser) {
+        $('userName').textContent = currentUser.name;
+        $('userAvatar').src = currentUser.profilePic;
+        console.log('App shown for user:', currentUser.name);
+        
+        // Load user preferences
+        const preferences = storage.load('userPreferences', {});
+        currentType = preferences.lastPostType || 'text';
+        currentFormat = preferences.lastEmbedFormat || 'horizontal';
+        
+        showMain();
+      } else {
+        console.error('showApp called but no currentUser');
+        showAuth();
+      }
     }
     function showMain() { 
       // Show main posts view
