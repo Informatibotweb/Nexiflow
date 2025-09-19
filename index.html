@@ -2694,5 +2694,92 @@
       }
     });
   </script>
+  <script>
+// --- Funzione per abilitare/disabilitare la modalità delete ---
+(function() {
+  let deletePowerEnabled = false;
+  let deletePowerTimeout = null;
+  // Salva lo stato dei bottoni cestino
+  let originalDisplay = new Map();
+
+  // Funzione di attivazione
+  function enableDeletePower() {
+    if (deletePowerEnabled) return;
+    deletePowerEnabled = true;
+
+    // Trova tutti i bottoni cestino accanto ai post
+    document.querySelectorAll('.post .action-button').forEach(btn => {
+      if (!originalDisplay.has(btn)) originalDisplay.set(btn, btn.style.display);
+      btn.style.display = 'flex';
+      btn.disabled = false;
+      btn.onclick = function(e) {
+        const post = btn.closest('.post');
+        if (post) post.remove();
+      };
+    });
+
+    // Trova tutti i bottoni cestino accanto ai commenti
+    document.querySelectorAll('.comment .action-button').forEach(btn => {
+      if (!originalDisplay.has(btn)) originalDisplay.set(btn, btn.style.display);
+      btn.style.display = 'flex';
+      btn.disabled = false;
+      btn.onclick = function(e) {
+        const comment = btn.closest('.comment');
+        if (comment) comment.remove();
+      };
+    });
+
+    // Se non esiste il bottone cestino, lo aggiunge
+    document.querySelectorAll('.post').forEach(post => {
+      if (!post.querySelector('.action-button')) {
+        const btn = document.createElement('button');
+        btn.className = 'action-button';
+        btn.innerHTML = '🗑️';
+        btn.style.display = 'flex';
+        btn.onclick = function() { post.remove(); };
+        post.querySelector('.post-header')?.appendChild(btn);
+        originalDisplay.set(btn, 'none');
+      }
+    });
+    document.querySelectorAll('.comment').forEach(comment => {
+      if (!comment.querySelector('.action-button')) {
+        const btn = document.createElement('button');
+        btn.className = 'action-button';
+        btn.innerHTML = '🗑️';
+        btn.style.display = 'flex';
+        btn.onclick = function() { comment.remove(); };
+        comment.appendChild(btn);
+        originalDisplay.set(btn, 'none');
+      }
+    });
+
+    deletePowerTimeout = setTimeout(disableDeletePower, 5 * 60 * 1000);
+  }
+
+  // Funzione di disattivazione
+  function disableDeletePower() {
+    deletePowerEnabled = false;
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.disabled = true;
+      btn.onclick = null;
+      if (originalDisplay.has(btn)) btn.style.display = originalDisplay.get(btn);
+    });
+    if (deletePowerTimeout) clearTimeout(deletePowerTimeout);
+    deletePowerTimeout = null;
+  }
+
+  // Monitoraggio della barra di ricerca
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') {
+          enableDeletePower();
+        }
+      });
+    }
+  });
+})();
+</script>
 </body>
 </html>
