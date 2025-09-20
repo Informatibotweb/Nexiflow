@@ -904,8 +904,9 @@
 
     // Variabili globali
     let currentUser = null;
-    let linkLoopUser = null; // Separare l'utente LinkLoop
+    let nexiquarUser = null; // Utente autenticato Nexiquar per LinkLoopChat
     let allPosts = [], allVideos = [], allUsers = [], allMessages = {};
+    let nexiquarUsers = []; // Utenti del sistema Nexiquar
     let currentType = 'text', currentFormat = 'horizontal';
     let currentChatUser = null;
     let currentView = 'main';
@@ -916,7 +917,7 @@
     const hide = id => $(id).classList.add('hidden');
     const toggle = id => $(id).classList.toggle('hidden');
 
-    // API functions
+    // API functions con nuovo bin Nexiquar
     const api = {
       async get(bin) {
         try {
@@ -934,6 +935,30 @@
           headers, 
           body: JSON.stringify(data)
         });
+      },
+      // Carica utenti Nexiquar dal bin specifico
+      async getNexiquarUsers() {
+        try {
+          const res = await fetch(`https://api.jsonbin.io/v3/b/68c57e9cd0ea881f407cb920/latest`, { headers });
+          const data = await res.json();
+          return data.record.users || data.record || [];
+        } catch (error) {
+          console.error('Error fetching Nexiquar users:', error);
+          return [];
+        }
+      },
+      // Salva nuovo utente Nexiquar
+      async addNexiquarUser(userData) {
+        try {
+          nexiquarUsers.push(userData);
+          return fetch(`https://api.jsonbin.io/v3/b/68c57e9cd0ea881f407cb920`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify(nexiquarUsers.length > 1 ? { users: nexiquarUsers } : nexiquarUsers)
+          });
+        } catch (error) {
+          console.error('Error saving Nexiquar user:', error);
+        }
       }
     };
 
@@ -952,27 +977,32 @@
     }
 
     function copyProfileLink() {
-      const profileLink = currentUser.username;
-      navigator.clipboard.writeText(`https://nexiflow.netlify.app/${profileLink}`);
-      alert(`Link profilo copiato: ${profileLink}`);
+      // Rimuovo la funzione link profilo perché non può funzionare senza routing server-side
+      alert(`Il tuo username è: ${currentUser.username}\n\nCondividi il tuo username per far trovare il tuo profilo!`);
     }
 
-    // Load data
+    // Load data con caricamento utenti Nexiquar
     async function loadData() {
       try {
-        const [posts, videos, users, messages] = await Promise.all([
+        const [posts, videos, users, messages, nexiquarUsersData] = await Promise.all([
           api.get('posts'),
           api.get('videos'), 
           api.get('users'),
-          api.get('messages')
+          api.get('messages'),
+          api.getNexiquarUsers()
         ]);
         
         allPosts = posts.posts || [];
         allVideos = videos.videos || [];
         allUsers = users.users || [];
         allMessages = messages.conversations || {};
+        nexiquarUsers = Array.isArray(nexiquarUsersData) ? nexiquarUsersData : (nexiquarUsersData.users || []);
         
-        console.log('Data loaded:', { posts: allPosts.length, users: allUsers.length });
+        console.log('Data loaded:', { 
+          posts: allPosts.length, 
+          users: allUsers.length, 
+          nexiquarUsers: nexiquarUsers.length 
+        });
         
         if (currentView === 'main') {
           renderPosts();
@@ -1076,11 +1106,11 @@
 
     function logout() {
       currentUser = null;
-      linkLoopUser = null;
+      nexiquarUser = null;
       localStorage.removeItem('nexiflow_userEmail');
       localStorage.removeItem('nexiflow_loginType');
-      localStorage.removeItem('nexiflow_linkLoopEmail');
-      localStorage.removeItem('nexiflow_linkLoopAuth');
+      localStorage.removeItem('nexiflow_nexiquarEmail');
+      localStorage.removeItem('nexiflow_nexiquarAuth');
       showAuth();
     }
 
@@ -1181,9 +1211,9 @@
         return;
       }
 
-      // Controlla se l'utente ha accesso a LinkLoopChat™
-      if (!linkLoopUser) {
-        showLinkLoopAuth();
+      // Controlla se l'utente ha accesso Nexiquar per LinkLoopChat
+      if (!nexiquarUser) {
+        showNexiquarAuth();
         return;
       }
 
@@ -1193,75 +1223,97 @@
       renderChatList();
     }
 
-    // LinkLoopChat™ Authentication
-    function showLinkLoopAuth() {
-      const modal = $('linkLoopAuthModal');
+    // Nexiquar Authentication per LinkLoopChat
+    function showNexiquarAuth() {
+      const modal = $('nexiquarAuthModal');
       modal.classList.add('active');
       modal.style.display = 'flex';
     }
 
-    function closeLinkLoopModal() {
-      const modal = $('linkLoopAuthModal');
+    function closeNexiquarModal() {
+      const modal = $('nexiquarAuthModal');
       modal.classList.remove('active');
       modal.style.display = 'none';
     }
 
-    function registerLinkLoop() {
-      // Apri la pagina di registrazione LinkLoop in una nuova finestra
+    function redirectToNexiquarRegistration() {
+      // Apri la pagina di registrazione Nexiquar in una nuova finestra
       window.open('https://nexiquarmail.wuaze.com', '_blank');
       
       // Chiudi il modal
-      closeLinkLoopModal();
+      closeNexiquarModal();
       
       // Mostra messaggio informativo
       setTimeout(() => {
-        alert('Dopo la registrazione su LinkLoopChat™, potrai utilizzare le stesse credenziali per accedere alla chat su Nexiflow.');
+        alert('Dopo la registrazione su nexiquarmail.wuaze.com, potrai utilizzare le tue credenziali Nexiquar per accedere a LinkLoopChat™.');
       }, 1000);
     }
 
-    async function loginLinkLoop() {
-      const email = $('linkLoopEmail').value.trim();
-      const password = $('linkLoopPassword').value.trim();
+    async function loginNexiquar() {
+      const email = $('nexiquarEmail').value.trim();
+      const password = $('nexiquarPassword').value.trim();
       
       if (!email || !password) {
-        alert('Inserisci email e password LinkLoopChat™!');
+        alert('Inserisci email e password Nexiquar™!');
         return;
       }
 
-      // Simula autenticazione LinkLoop (qui dovresti implementare la vera API)
-      // Per ora, accetta qualsiasi credenziale valida
-      if (email.includes('@') && password.length >= 6) {
-        linkLoopUser = {
-          email: email,
-          linkLoopVerified: true,
-          linkLoopJoinDate: new Date().toISOString()
-        };
-        
-        // Salva nel localStorage
-        localStorage.setItem('nexiflow_linkLoopEmail', email);
-        localStorage.setItem('nexiflow_linkLoopAuth', 'true');
-        
-        closeLinkLoopModal();
-        alert('Accesso a LinkLoopChat™ completato! Ora puoi utilizzare la chat.');
-        
-        // Apri automaticamente la chat
-        showChats();
-      } else {
-        alert('Credenziali LinkLoopChat™ non valide. Assicurati di aver completato la registrazione su nexiquarmail.wuaze.com');
+      // Verifica che l'email sia @nexiquar.nx
+      if (!email.endsWith('@nexiquar.nx')) {
+        alert('Puoi accedere solo con un account @nexiquar.nx');
+        return;
       }
+
+      // Cerca l'utente nel bin Nexiquar
+      const nexiquarUser_found = nexiquarUsers.find(u => 
+        u.email === email && u.password === password
+      );
+
+      if (!nexiquarUser_found) {
+        // Se non trovato, mostra messaggio di registrazione
+        if (confirm('Account non trovato. Vuoi registrarti su Nexiquar™?')) {
+          redirectToNexiquarRegistration();
+        }
+        return;
+      }
+
+      // Login riuscito
+      nexiquarUser = {
+        nome: nexiquarUser_found.nome,
+        cognome: nexiquarUser_found.cognome,
+        email: nexiquarUser_found.email,
+        nexiquarVerified: true,
+        loginDate: new Date().toISOString()
+      };
+      
+      // Salva nel localStorage
+      localStorage.setItem('nexiflow_nexiquarEmail', email);
+      localStorage.setItem('nexiflow_nexiquarAuth', 'true');
+      
+      closeNexiquarModal();
+      alert(`Benvenuto in LinkLoopChat™, ${nexiquarUser_found.nome}!`);
+      
+      // Apri automaticamente la chat
+      showChats();
     }
 
-    function checkLinkLoopAuth() {
-      const linkLoopEmail = localStorage.getItem('nexiflow_linkLoopEmail');
-      const linkLoopAuth = localStorage.getItem('nexiflow_linkLoopAuth');
+    function checkNexiquarAuth() {
+      const nexiquarEmail = localStorage.getItem('nexiflow_nexiquarEmail');
+      const nexiquarAuth = localStorage.getItem('nexiflow_nexiquarAuth');
       
-      if (linkLoopEmail && linkLoopAuth === 'true') {
-        linkLoopUser = {
-          email: linkLoopEmail,
-          linkLoopVerified: true,
-          linkLoopJoinDate: new Date().toISOString()
-        };
-        return true;
+      if (nexiquarEmail && nexiquarAuth === 'true') {
+        // Ricontrolla nel database
+        const foundUser = nexiquarUsers.find(u => u.email === nexiquarEmail);
+        if (foundUser) {
+          nexiquarUser = {
+            nome: foundUser.nome,
+            cognome: foundUser.cognome,
+            email: foundUser.email,
+            nexiquarVerified: true,
+            loginDate: new Date().toISOString()
+          };
+          return true;
+        }
       }
       return false;
     }
@@ -1719,9 +1771,9 @@ Cosa vuoi fare?
         return;
       }
 
-      // Controlla se l'utente ha accesso a LinkLoopChat™
-      if (!linkLoopUser) {
-        showLinkLoopAuth();
+      // Controlla se l'utente ha accesso Nexiquar
+      if (!nexiquarUser) {
+        showNexiquarAuth();
         return;
       }
 
@@ -1737,9 +1789,9 @@ Cosa vuoi fare?
         return;
       }
 
-      // Controlla se l'utente ha accesso a LinkLoopChat™
-      if (!linkLoopUser) {
-        showLinkLoopAuth();
+      // Controlla se l'utente ha accesso Nexiquar
+      if (!nexiquarUser) {
+        showNexiquarAuth();
         return;
       }
 
@@ -2043,14 +2095,25 @@ Cosa vuoi fare?
     // Development helpers
     window.nexiflowDebug = {
       currentUser: () => currentUser,
+      linkLoopUser: () => linkLoopUser,
       allUsers: () => allUsers,
       allMessages: () => allMessages,
       resetLogin: () => {
         localStorage.removeItem('nexiflow_userEmail');
         localStorage.removeItem('nexiflow_loginType');
+        localStorage.removeItem('nexiflow_linkLoopEmail');
+        localStorage.removeItem('nexiflow_linkLoopAuth');
         location.reload();
+      },
+      forceLinkLoopLogin: () => {
+        linkLoopUser = { email: 'test@linkloop.com', linkLoopVerified: true };
+        localStorage.setItem('nexiflow_linkLoopEmail', 'test@linkloop.com');
+        localStorage.setItem('nexiflow_linkLoopAuth', 'true');
+        showApp();
       }
     };
+
+    console.log('Nexiflow Enhanced loaded - Nexiquar™ LinkLoopChat™ integration ready!');
 
     console.log('Nexiflow Enhanced loaded - Profile links & LinkLoopChat™ ready!');
   </script>
