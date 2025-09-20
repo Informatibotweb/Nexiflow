@@ -13,1502 +13,1945 @@
   <title>Nexiflow™ by Nexiquar</title>
   <link rel="icon" type="image/png" href="nexiflow.png">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap');
-    
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
     :root {
-      --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --primary-solid: #667eea;
-      --secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      --accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --primary: #00D4FF;
+      --primary-dark: #00B8E6;
+      --secondary: #6366F1;
+      --accent: #F59E0B;
+      --success: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
       
-      --surface-1: rgba(255, 255, 255, 0.95);
-      --surface-2: rgba(255, 255, 255, 0.85);
-      --surface-3: rgba(255, 255, 255, 0.75);
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F8FAFC;
+      --bg-tertiary: #F1F5F9;
       
-      --text-1: #1a1a1a;
-      --text-2: #4a4a4a;
-      --text-3: #8a8a8a;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-tertiary: #94A3B8;
       
-      --border: rgba(0, 0, 0, 0.08);
-      --shadow-1: 0 2px 20px rgba(0, 0, 0, 0.08);
-      --shadow-2: 0 8px 40px rgba(0, 0, 0, 0.12);
-      --shadow-3: 0 20px 60px rgba(0, 0, 0, 0.15);
+      --border-light: #E2E8F0;
+      --border-medium: #CBD5E1;
       
-      --radius-sm: 12px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
-      --radius-xl: 32px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+      --radius-full: 9999px;
+      
+      --spacing-xs: 0.5rem;
+      --spacing-sm: 0.75rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
     }
 
-    [data-theme="dark"] {
-      --surface-1: rgba(20, 20, 20, 0.95);
-      --surface-2: rgba(25, 25, 25, 0.85);
-      --surface-3: rgba(30, 30, 30, 0.75);
-      --text-1: #ffffff;
-      --text-2: #b0b0b0;
-      --text-3: #707070;
-      --border: rgba(255, 255, 255, 0.08);
+    /* Dark mode variables */
+    body.dark-mode {
+      --bg-primary: #0F172A;
+      --bg-secondary: #1E293B;
+      --bg-tertiary: #334155;
+      
+      --text-primary: #F8FAFC;
+      --text-secondary: #CBD5E1;
+      --text-tertiary: #64748B;
+      
+      --border-light: #334155;
+      --border-medium: #475569;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
-      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: var(--text-1);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
       line-height: 1.6;
+      transition: all 0.3s ease;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
-    .glass {
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      background: var(--surface-1);
-      border: 1px solid var(--border);
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--spacing-md);
     }
 
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-    /* Header */
+    /* Header Styles */
     header {
-      position: fixed;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-light);
+      padding: var(--spacing-md) 0;
+      position: sticky;
       top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      padding: 16px 0;
-      backdrop-filter: blur(20px);
-      background: rgba(255, 255, 255, 0.1);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      backdrop-filter: blur(10px);
     }
 
     .header-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 20px;
+      gap: var(--spacing-lg);
     }
 
     .logo-section {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--spacing-md);
     }
 
-    .logo { height: 36px; width: auto; }
+    #logo {
+      height: 40px;
+      width: auto;
+    }
 
-    .brand {
-      font-size: 24px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, #e0e0e0 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .brand-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
       text-decoration: none;
     }
 
-    .header-actions {
+    .header-nav {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--spacing-sm);
     }
 
-    .btn {
-      padding: 10px 16px;
+    .nav-button {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-xs) var(--spacing-md);
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius-full);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
     }
 
-    .btn-primary {
+    .nav-button:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .nav-button.primary {
       background: var(--primary);
       color: white;
-      box-shadow: var(--shadow-1);
     }
 
-    .btn-ghost {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .nav-button.primary:hover {
+      background: var(--primary-dark);
     }
 
-    .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
 
-    .search-box {
+    /* Search Styles */
+    .search-container {
       position: relative;
       min-width: 200px;
     }
 
-    .search-input {
+    #searchInput {
       width: 100%;
-      padding: 10px 16px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: var(--radius-sm);
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      font-size: 14px;
+      padding: var(--spacing-xs) var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
     }
 
-    .search-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+    #searchInput:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(0 212 255 / 0.1);
+    }
 
-    /* Main Content */
-    .main { margin-top: 80px; padding: 40px 0; min-height: calc(100vh - 80px); }
+    #searchResults {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      z-index: 50;
+      display: none;
+      max-height: 300px;
+      overflow-y: auto;
+    }
 
-    .welcome {
-      background: var(--surface-1);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 32px;
-      box-shadow: var(--shadow-1);
+    .search-result-item {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.2s ease;
     }
 
-    .avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+    .search-result-item:hover {
+      background: var(--bg-secondary);
+    }
+
+    .search-result-item img {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
       object-fit: cover;
-      box-shadow: var(--shadow-1);
     }
 
-    .welcome-text h2 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
-    .welcome-text p { color: var(--text-2); font-size: 16px; }
-    .profile-link { 
-      color: var(--primary-solid); 
-      font-weight: 500; 
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    /* Post Creator */
-    .post-creator {
-      background: var(--surface-1);
+    /* User Info */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background: var(--bg-primary);
       border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 32px;
-      box-shadow: var(--shadow-1);
+      box-shadow: var(--shadow-sm);
+      margin: var(--spacing-lg) 0;
+    }
+
+    .profile-pic {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      object-fit: cover;
+    }
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: var(--spacing-lg) 0;
+    }
+
+    /* Input Area */
+    .input-area {
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      margin-bottom: var(--spacing-xl);
+      box-shadow: var(--shadow-md);
       display: none;
     }
 
-    .post-creator.active { display: block; animation: slideIn 0.4s ease; }
+    .input-area.active {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
 
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-20px); }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .post-types {
+    .post-type-selector {
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
+      gap: var(--spacing-xs);
+      margin-bottom: var(--spacing-lg);
       padding: 4px;
-      background: rgba(0, 0, 0, 0.05);
-      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
     }
 
-    .post-type {
+    .post-type-selector button {
       flex: 1;
-      padding: 8px 12px;
-      background: transparent;
+      padding: var(--spacing-sm) var(--spacing-md);
       border: none;
       border-radius: var(--radius-sm);
-      color: var(--text-2);
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
-    .post-type.active {
-      background: white;
-      color: var(--text-1);
-      box-shadow: var(--shadow-1);
+    .post-type-selector button.active {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
     }
 
-    .form-group { margin-bottom: 16px; }
+    .post-type-fields {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
 
     .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      color: var(--text-1);
-      font-size: 16px;
-      resize: vertical;
+      padding: var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 1rem;
       transition: all 0.2s ease;
+      resize: vertical;
     }
 
     .form-input:focus {
       outline: none;
-      border-color: var(--primary-solid);
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgb(0 212 255 / 0.1);
     }
 
-    .publish-btn {
-      width: 100%;
-      padding: 14px;
+    .publish-button {
+      padding: var(--spacing-md) var(--spacing-xl);
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 16px;
+      transition: all 0.2s ease;
+      margin-top: var(--spacing-md);
     }
 
-    .publish-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: var(--shadow-2); }
-    .publish-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .publish-button:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .publish-button:disabled {
+      background: var(--text-tertiary);
+      cursor: not-allowed;
+      transform: none;
+    }
 
     /* Posts */
-    .posts { display: flex; flex-direction: column; gap: 24px; }
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-xl);
+    }
 
     .post {
-      background: var(--surface-1);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      box-shadow: var(--shadow-1);
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      padding: var(--spacing-xl);
+      box-shadow: var(--shadow-md);
       transition: all 0.3s ease;
       position: relative;
-      overflow: hidden;
     }
 
-    .post::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: var(--primary);
+    .post:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
     }
-
-    .post:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); }
 
     .post-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: var(--spacing-lg);
     }
 
-    .author {
+    .post-author {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--spacing-sm);
       text-decoration: none;
-      color: var(--text-1);
+      color: var(--text-primary);
     }
 
-    .author-avatar { width: 48px; height: 48px; }
-
-    .author-info h4 { font-size: 16px; font-weight: 600; }
-    .author-info p { font-size: 14px; color: var(--text-3); }
-    .username-link {
-      font-size: 12px;
-      color: var(--primary-solid);
-      cursor: pointer;
-      text-decoration: underline;
+    .post-author .profile-pic {
+      width: 40px;
+      height: 40px;
     }
 
-    .post-actions { display: flex; gap: 8px; }
+    .author-info {
+      display: flex;
+      flex-direction: column;
+    }
 
-    .action-btn {
+    .author-name {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .post-date {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .post-actions {
+      display: flex;
+      gap: var(--spacing-xs);
+    }
+
+    .action-button {
       width: 32px;
       height: 32px;
       border: none;
-      border-radius: 50%;
-      background: rgba(255, 0, 0, 0.1);
-      color: #ff4444;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
       cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.2s ease;
     }
 
-    .action-btn:hover { background: #ff4444; color: white; }
+    .action-button:hover {
+      background: var(--danger);
+      color: white;
+    }
 
-    .post-content { margin-bottom: 16px; font-size: 16px; line-height: 1.6; }
+    .post-content {
+      margin-bottom: var(--spacing-lg);
+      line-height: 1.7;
+    }
 
     .post-embed {
-      border-radius: var(--radius-md);
+      margin-top: var(--spacing-md);
+      border-radius: var(--radius-lg);
       overflow: hidden;
-      margin: 16px 0;
-      box-shadow: var(--shadow-1);
     }
 
-    .post-embed iframe { width: 100%; height: 400px; border: none; }
-    .post-embed .vertical { height: 600px; max-width: 400px; margin: 0 auto; }
+    .post-embed iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+    }
+
+    .post-embed .vertical-video {
+      height: 600px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
 
     .post-footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
       flex-wrap: wrap;
-      gap: 16px;
+      gap: var(--spacing-md);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--border-light);
     }
 
-    .votes {
+    .vote-section {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--spacing-sm);
     }
 
-    .vote-btn {
+    .vote-button {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      color: var(--text-2);
+      gap: var(--spacing-xs);
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
       cursor: pointer;
       transition: all 0.2s ease;
-      font-size: 14px;
     }
 
-    .vote-btn:hover { border-color: var(--primary-solid); color: var(--primary-solid); }
+    .vote-button:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
 
     .vote-count {
       font-weight: 600;
-      font-size: 16px;
-      color: var(--text-1);
+      color: var(--text-primary);
     }
 
-    .post-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .post-actions-footer {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
 
-    .post-btn {
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      color: var(--text-2);
-      text-decoration: none;
-      font-size: 14px;
+    .footer-button {
+      padding: var(--spacing-xs) var(--spacing-sm);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-size: 0.875rem;
       cursor: pointer;
       transition: all 0.2s ease;
+      text-decoration: none;
     }
 
-    .post-btn:hover { background: var(--primary-solid); color: white; }
+    .footer-button:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
-    /* Auth */
+    /* Comments */
+    .comments-section {
+      margin-top: var(--spacing-lg);
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--border-light);
+      display: none;
+    }
+
+    .comment {
+      background: var(--bg-secondary);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .comment-form {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-md);
+    }
+
+    .comment-input {
+      flex: 1;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .comment-submit {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* Chat Styles - FIXED FOR MOBILE */
+    #privateChatModal {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      max-width: 400px;
+      height: 70vh;
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      box-shadow: var(--shadow-xl);
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      animation: slideUpChat 0.3s ease;
+    }
+
+    @keyframes slideUpChat {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-primary);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .close-chat-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chat-recipient-info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .chat-recipient-info .profile-pic {
+      width: 36px;
+      height: 36px;
+    }
+
+    .chat-body {
+      flex: 1;
+      padding: var(--spacing-md);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+
+    .chat-message {
+      max-width: 80%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-lg);
+      word-wrap: break-word;
+    }
+
+    .chat-message.sent {
+      background: var(--primary);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: var(--spacing-xs);
+    }
+
+    .chat-message.received {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      align-self: flex-start;
+      border-bottom-left-radius: var(--spacing-xs);
+    }
+
+    .chat-input-area {
+      display: flex;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-primary);
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-full);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .send-chat-btn {
+      padding: var(--spacing-sm) var(--spacing-lg);
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* Chat List Modal */
+    #chatListModal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      background: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      display: none;
+      flex-direction: column;
+      z-index: 1001;
+    }
+
+    .chat-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .chat-list-header h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    #conversationList {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-md);
+    }
+
+    .conversation-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: background 0.2s ease;
+    }
+
+    .conversation-item:hover {
+      background: var(--bg-secondary);
+    }
+
+    .conversation-item .profile-pic {
+      width: 48px;
+      height: 48px;
+    }
+
+    .conversation-info {
+      flex: 1;
+    }
+
+    .user-name-conv {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .last-message {
+      font-size: 0.875rem;
+      color: var(--text-tertiary);
+    }
+
+    /* Auth Pages */
     .auth-container {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: var(--spacing-lg);
     }
 
     .auth-card {
-      background: var(--surface-1);
-      padding: 40px;
+      background: var(--bg-primary);
+      padding: var(--spacing-2xl);
       border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-3);
+      box-shadow: var(--shadow-lg);
       width: 100%;
       max-width: 400px;
-      backdrop-filter: blur(20px);
     }
 
     .auth-card h2 {
       text-align: center;
-      font-size: 28px;
+      margin-bottom: var(--spacing-xl);
+      font-size: 1.75rem;
       font-weight: 700;
-      margin-bottom: 32px;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
-    .auth-form { display: flex; flex-direction: column; gap: 20px; }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-lg);
+    }
 
     .auth-input {
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      color: var(--text-1);
-      font-size: 16px;
-      transition: all 0.2s ease;
+      padding: var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 1rem;
     }
 
-    .auth-input:focus {
-      outline: none;
-      border-color: var(--primary-solid);
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .auth-btn {
-      padding: 16px;
+    .auth-button {
+      padding: var(--spacing-md);
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: var(--radius-sm);
-      font-size: 16px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
 
-    .auth-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+    .auth-button:hover {
+      background: var(--primary-dark);
+    }
 
-    .social-btn {
+    .auth-divider {
+      text-align: center;
+      color: var(--text-tertiary);
+      margin: var(--spacing-md) 0;
+    }
+
+    .social-login {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-2);
-      color: var(--text-1);
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
       text-decoration: none;
       transition: all 0.2s ease;
     }
 
-    .social-btn:hover { background: var(--surface-3); }
-
-    .social-btn img { width: 20px; height: 20px; }
-
-    /* Profile Pics */
-    .profile-selector {
-      display: flex;
-      gap: 12px;
-      padding: 16px;
-      background: var(--surface-2);
-      border-radius: var(--radius-sm);
+    .social-login:hover {
+      background: var(--bg-tertiary);
     }
 
-    .profile-option {
+    .social-login img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: var(--spacing-lg);
+    }
+
+    .auth-link a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    /* Profile Picture Selector */
+    .profile-pic-selector {
+      display: flex;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: var(--bg-secondary);
+    }
+
+    .profile-pic-option {
       width: 48px;
       height: 48px;
-      border-radius: 50%;
+      border-radius: var(--radius-full);
+      object-fit: cover;
       cursor: pointer;
       border: 2px solid transparent;
       transition: all 0.2s ease;
     }
 
-    .profile-option:hover { transform: scale(1.05); }
-    .profile-option.selected { border-color: var(--primary-solid); transform: scale(1.05); }
-
-    /* Chat Interface */
-    .chat-container {
-      min-height: calc(100vh - 80px);
-      display: flex;
-      background: var(--surface-1);
-      margin: 80px 20px 20px;
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-2);
-      overflow: hidden;
+    .profile-pic-option:hover {
+      transform: scale(1.05);
     }
 
-    .chat-sidebar {
-      width: 300px;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
+    .profile-pic-option.selected {
+      border-color: var(--primary);
+      transform: scale(1.05);
     }
 
-    .chat-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-2);
+    /* Sticker Picker */
+    .sticker-picker {
+      display: none;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      margin-top: var(--spacing-md);
     }
 
-    .chat-header h3 { 
-      font-size: 18px; 
-      margin-bottom: 8px;
-      background: var(--primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .chat-list {
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .chat-item {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .chat-item:hover, .chat-item.active {
-      background: var(--surface-2);
-    }
-
-    .chat-item-avatar {
+    .sticker-preview {
       width: 40px;
       height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .chat-item-info h4 {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .chat-item-info p {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    .chat-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .chat-conversation-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-2);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .chat-messages {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .message {
-      max-width: 70%;
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
-      word-wrap: break-word;
-      position: relative;
-    }
-
-    .message.sent {
-      background: var(--primary-solid);
-      color: white;
-      align-self: flex-end;
-    }
-
-    .message.received {
-      background: var(--surface-2);
-      color: var(--text-1);
-      align-self: flex-start;
-    }
-
-    .message-time {
-      font-size: 11px;
-      opacity: 0.7;
-      margin-top: 4px;
-    }
-
-    .chat-input-area {
-      padding: 20px;
-      border-top: 1px solid var(--border);
-      background: var(--surface-2);
-      display: flex;
-      gap: 12px;
-    }
-
-    .chat-input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--surface-1);
-      color: var(--text-1);
-      font-size: 16px;
-    }
-
-    .send-btn {
-      padding: 12px 20px;
-      background: var(--primary-solid);
-      color: white;
-      border: none;
-      border-radius: var(--radius-sm);
       cursor: pointer;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      border-radius: var(--radius-sm);
+      transition: transform 0.2s ease;
     }
 
-    .send-btn:hover { background: #5a6fd8; }
+    .sticker-preview:hover {
+      transform: scale(1.1);
+    }
 
-    .no-chat-selected {
-      display: flex;
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    .modal-overlay.active {
+      display: block;
+    }
+
+    /* Video Modal */
+    #videoModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
       align-items: center;
       justify-content: center;
-      height: 100%;
-      color: var(--text-3);
-      font-size: 18px;
+      z-index: 1000;
     }
 
-    /* Responsive */
+    .modal-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: white;
+      font-size: 2rem;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .modal-content iframe {
+      border-radius: var(--radius-lg);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: var(--spacing-2xl);
+      color: var(--text-tertiary);
+      border-top: 1px solid var(--border-light);
+      margin-top: var(--spacing-2xl);
+    }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .container { padding: 0 16px; }
-      .header-content { flex-wrap: wrap; gap: 12px; }
-      .search-box { min-width: 150px; }
-      .post { padding: 16px; }
-      .post-footer { flex-direction: column; align-items: stretch; }
-      .votes { justify-content: center; }
-      .post-btns { justify-content: center; }
-      
-      .chat-container {
-        margin: 80px 10px 10px;
+      .container {
+        padding: 0 var(--spacing-sm);
+      }
+
+      .header-content {
+        flex-wrap: wrap;
+        gap: var(--spacing-md);
+      }
+
+      .header-nav {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .search-container {
+        min-width: 150px;
+      }
+
+      .brand-name {
+        font-size: 1.25rem;
+      }
+
+      .post {
+        padding: var(--spacing-lg);
+      }
+
+      .post-footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .vote-section {
+        justify-content: center;
+      }
+
+      .post-actions-footer {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .comment-form {
         flex-direction: column;
       }
-      
-      .chat-sidebar {
+
+      /* Mobile Chat Fix */
+      #privateChatModal {
+        bottom: 0;
+        right: 0;
+        left: 0;
         width: 100%;
-        max-height: 300px;
+        max-width: none;
+        height: 100vh;
+        border-radius: 0;
+      }
+
+      .chat-header {
+        border-radius: 0;
+      }
+
+      #chatListModal {
+        width: 100%;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: none;
+      }
+
+      .auth-container {
+        padding: var(--spacing-md);
+      }
+
+      .auth-card {
+        padding: var(--spacing-xl);
       }
     }
 
-    /* Utilities */
-    .hidden { display: none !important; }
-    .glass { backdrop-filter: blur(20px); }
-    .fade-in { animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @media (max-width: 480px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
 
-    /* Username generator styles */
-    .username-preview {
-      padding: 8px 12px;
-      background: rgba(102, 126, 234, 0.1);
-      border-radius: var(--radius-sm);
-      color: var(--primary-solid);
-      font-weight: 600;
-      font-family: monospace;
-      text-align: center;
-      margin: 8px 0;
+      .logo-section {
+        justify-content: center;
+      }
+
+      .nav-button {
+        font-size: 0.75rem;
+        padding: var(--spacing-xs);
+      }
+
+      .post-type-selector {
+        flex-direction: column;
+      }
+
+      .post-type-selector button {
+        flex: none;
+      }
     }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease;
+    }
+
+    .slide-up {
+      animation: slideUp 0.3s ease;
+    }
+
+    /* Utility Classes */
+    .hidden { display: none !important; }
+    .visible { display: block !important; }
+    .flex { display: flex !important; }
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    .font-bold { font-weight: 600; }
+    .font-semibold { font-weight: 500; }
+    .text-sm { font-size: 0.875rem; }
+    .text-xs { font-size: 0.75rem; }
   </style>
 </head>
 <body>
   <script src="https://accounts.google.com/gsi/client" defer async></script>
   
-  <!-- Auth Content -->
-  <div id="authContent">
-    <div id="loginPage">
-      <div class="auth-container">
-        <div class="auth-card glass">
-          <h2>Accedi a Nexiflow</h2>
-          <div class="auth-form">
-            <input type="email" id="loginEmail" class="auth-input" placeholder="Email" />
-            <input type="password" id="loginPassword" class="auth-input" placeholder="Password" />
-            <button onclick="login()" class="auth-btn">Accedi</button>
+  <div class="modal-overlay" id="modalOverlay"></div>
+  
+  <div class="container">
+    <!-- Auth Content -->
+    <div id="authContent">
+      <div id="loginPage">
+        <div class="auth-container">
+          <div class="auth-card">
+            <h2>Accedi a Nexiflow</h2>
+            <div class="auth-form">
+              <input type="email" id="loginEmail" class="auth-input" placeholder="Email" />
+              <input type="password" id="loginPassword" class="auth-input" placeholder="Password" />
+              <button onclick="loginUser()" class="auth-button">Accedi</button>
+              
+              <div class="auth-divider">o</div>
+              
+              <div id="g_id_onload"
+                   data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com"
+                   data-callback="handleCredentialResponse">
+              </div>
+              <div class="g_id_signin" data-type="standard"></div>
+              
+              <button onclick="loginWithSpotify()" class="social-login">
+                <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify" />
+                Accedi con Spotify
+              </button>
+            </div>
             
-            <div style="text-align: center; color: var(--text-3); margin: 16px 0;">o</div>
-            
-            <div id="g_id_onload" data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com" data-callback="handleGoogle"></div>
-            <div class="g_id_signin" data-type="standard"></div>
-            
-            <button onclick="loginSpotify()" class="social-btn">
-              <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify" />
-              Accedi con Spotify
-            </button>
+            <div class="auth-link">
+              Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a>
+            </div>
           </div>
-          
-          <div style="text-align: center; margin-top: 20px;">
-            Non hai un account? <a href="#" onclick="showRegister()" style="color: var(--primary-solid);">Registrati</a>
+        </div>
+      </div>
+
+      <div id="registerPage" class="hidden">
+        <div class="auth-container">
+          <div class="auth-card">
+            <h2>Registrati su Nexiflow</h2>
+            <div class="auth-form">
+              <input type="text" id="registerName" class="auth-input" placeholder="Nome" />
+              <input type="email" id="registerEmail" class="auth-input" placeholder="Email" />
+              <input type="password" id="registerPassword" class="auth-input" placeholder="Password" />
+              
+              <label>Scegli un'immagine profilo:</label>
+              <div class="profile-pic-selector" id="registerProfilePicSelector">
+                <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
+                <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
+                <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
+                <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
+              </div>
+              
+              <button onclick="registerUser()" class="auth-button">Registrati</button>
+            </div>
+            
+            <div class="auth-link">
+              Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="registerPage" class="hidden">
-      <div class="auth-container">
-        <div class="auth-card glass">
-          <h2>Registrati su Nexiflow</h2>
-          <div class="auth-form">
-            <input type="text" id="regName" class="auth-input" placeholder="Nome" oninput="generateUsername()" />
-            <div class="username-preview" id="usernamePreview">@username00</div>
-            <input type="email" id="regEmail" class="auth-input" placeholder="Email" />
-            <input type="password" id="regPassword" class="auth-input" placeholder="Password" />
-            
-            <label style="font-weight: 500;">Scegli un'immagine profilo:</label>
-            <div class="profile-selector" id="regProfileSelector">
-              <img src="profilo1.png" class="profile-option selected" data-value="profilo1.png" onclick="selectProfile(this)">
-              <img src="profilo2.png" class="profile-option" data-value="profilo2.png" onclick="selectProfile(this)">
-              <img src="profilo3.png" class="profile-option" data-value="profilo3.png" onclick="selectProfile(this)">
-              <img src="profilo4.png" class="profile-option" data-value="profilo4.png" onclick="selectProfile(this)">
+    <!-- App Content -->
+    <div id="appContent" class="hidden">
+      <header>
+        <div class="container">
+          <div class="header-content">
+            <div class="logo-section">
+              <img id="logo" src="logo1.png" alt="Nexiflow Logo">
+              <a href="#" class="brand-name" onclick="showMainContent()">Nexiflow</a>
             </div>
             
-            <button onclick="register()" class="auth-btn">Registrati con LinkLoopChat™</button>
+            <div class="search-container">
+              <input type="text" id="searchInput" placeholder="Cerca utenti..." />
+              <div id="searchResults"></div>
+            </div>
+            
+            <div class="header-nav">
+              <button class="nav-button" onclick="showChatList()">
+                💬 Chat
+              </button>
+              <button class="nav-button" onclick="showVideoPage()">
+                🎬 Video
+              </button>
+              <button class="nav-button primary" onclick="showMainContent(); toggleInput()">
+                ➕ Nuovo Post
+              </button>
+              <button class="nav-button" onclick="showSettingsPage()">
+                ⚙️ Impostazioni
+              </button>
+              <button class="theme-toggle nav-button" onclick="toggleTheme()">🌗</button>
+              <button class="nav-button" onclick="logoutUser()">Logout</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="container">
+        <div id="welcomeMessage" class="user-info">
+          <img id="userProfilePic" class="profile-pic" />
+          <div>
+            <div class="user-name" id="userNameDisplay"></div>
+            <div class="text-sm text-tertiary">Benvenuto su Nexiflow</div>
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area" id="inputArea">
+          <div class="post-type-selector">
+            <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
+            <button id="post-type-video" onclick="setPostType('video', this)">Video</button>
+            <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora</button>
+            <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter</button>
           </div>
           
-          <div style="text-align: center; margin-top: 20px;">
-            Hai già un account? <a href="#" onclick="showLogin()" style="color: var(--primary-solid);">Accedi</a>
+          <div id="post-text-fields" class="post-type-fields">
+            <textarea id="postText" class="form-input" rows="3" placeholder="Cosa stai pensando?"></textarea>
+            <button id="addStickerBtn" class="footer-button" onclick="toggleStickerPicker()">➕ Aggiungi Sticker</button>
+            <div id="stickerPicker" class="sticker-picker"></div>
+          </div>
+          
+          <div id="post-video-fields" class="post-type-fields hidden">
+            <textarea id="videoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+            <input type="url" id="videoLink" class="form-input" placeholder="Link del video (YouTube, etc.)"/>
+          </div>
+          
+          <div id="post-embed-fields" class="post-type-fields hidden">
+            <textarea id="embedDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+            <div class="post-type-selector">
+              <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
+              <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
+            </div>
+            <textarea id="embedCode" class="form-input" rows="4" placeholder="Codice di incorporazione (iframe)..."></textarea>
+          </div>
+          
+          <div id="post-twitter-fields" class="post-type-fields hidden">
+            <input type="url" id="twitterLink" class="form-input" placeholder="Link del post Twitter/X" />
+          </div>
+          
+          <button id="publishBtn" class="publish-button" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
+        </div>
+
+        <!-- Main Content -->
+        <div id="mainContent" class="main-content">
+          <div class="posts" id="postsContainer"></div>
+        </div>
+
+        <!-- Video Page -->
+        <div id="videoPage" class="main-content hidden">
+          <div class="post-header">
+            <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+            <div class="post-type-selector">
+              <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
+              <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+            </div>
+            <button class="nav-button primary" onclick="toggleVideoInput()">➕ Aggiungi Video</button>
+          </div>
+          
+          <div id="videoInputArea" class="input-area">
+            <div class="post-type-fields">
+              <textarea id="newVideoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+              <div class="post-type-selector">
+                <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
+                <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+              </div>
+              <textarea id="newVideoEmbedCode" class="form-input" rows="4" placeholder="Link o codice di incorporazione..."></textarea>
+            </div>
+            <button id="publishVideoBtn" class="publish-button" onclick="publishNewVideo()" disabled>Pubblica Video</button>
+          </div>
+          
+          <div class="posts" id="videoGrid"></div>
+        </div>
+
+        <!-- User Profile Page -->
+        <div id="userProfilePage" class="main-content hidden">
+          <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+          <div id="profileInfo" class="user-info"></div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+            <div>
+              <h3>Post di questo utente:</h3>
+              <div class="posts" id="userPostsContainer"></div>
+            </div>
+            <div>
+              <h3>Video di questo utente:</h3>
+              <div class="posts" id="userVideosContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="settingsPage" class="main-content hidden">
+          <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+          <div class="auth-card" style="margin-top: 2rem;">
+            <h3>Modifica Profilo</h3>
+            <div class="auth-form">
+              <label>Nome:</label>
+              <input type="text" id="editName" class="auth-input" />
+              
+              <label>Immagine Profilo:</label>
+              <div class="profile-pic-selector" id="editProfilePicSelector">
+                <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
+                <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
+                <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
+                <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
+              </div>
+              
+              <label>Bio:</label>
+              <textarea id="editBio" class="auth-input" rows="4"></textarea>
+              
+              <button onclick="saveSettings()" class="auth-button">Salva Modifiche</button>
+            </div>
           </div>
         </div>
       </div>
+
+      <footer>
+        © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
+      </footer>
     </div>
   </div>
 
-  <!-- App Content -->
-  <div id="appContent" class="hidden">
-    <header>
-      <div class="container">
-        <div class="header-content">
-          <div class="logo-section">
-            <img class="logo" src="logo1.png" alt="Logo">
-            <a href="#" class="brand" onclick="showMain()">Nexiflow</a>
-          </div>
-          
-          <div class="search-box">
-            <input type="text" class="search-input" placeholder="Cerca @username..." id="searchInput" />
-          </div>
-          
-          <div class="header-actions">
-            <button class="btn btn-ghost" onclick="showChats()">💬 LinkLoopChat™</button>
-            <button class="btn btn-ghost" onclick="showVideos()">🎬 Video</button>
-            <button class="btn btn-primary" onclick="toggleCreator()">➕ Nuovo Post</button>
-            <button class="btn btn-ghost" onclick="showSettings()">⚙️</button>
-            <button class="btn btn-ghost" onclick="toggleTheme()">🌗</button>
-            <button class="btn btn-ghost" onclick="logout()">Logout</button>
-          </div>
-        </div>
-      </div>
-    </header>
+  <!-- Video Modal -->
+  <div id="videoModal">
+    <span class="close-modal" onclick="closeModal()">×</span>
+    <div class="modal-content">
+      <div id="modalVideoContainer"></div>
+    </div>
+  </div>
 
-    <!-- Main Feed -->
-    <div id="mainView">
-      <div class="container">
-        <div class="main">
-          <div class="welcome">
-            <img class="avatar" id="userAvatar" src="" alt="Avatar">
-            <div class="welcome-text">
-              <h2 id="userName">Benvenuto</h2>
-              <p>Il tuo profilo: <span class="profile-link" id="userProfileLink" onclick="copyProfileLink()">@username00</span></p>
-              <p id="linkLoopStatus" style="font-size: 12px; color: var(--text-3); margin-top: 4px;"></p>
-            </div>
-          </div>
-
-          <!-- Post Creator -->
-          <div class="post-creator" id="postCreator">
-            <div class="post-types">
-              <button class="post-type active" onclick="setType('text', this)">Testo</button>
-              <button class="post-type" onclick="setType('video', this)">Video</button>
-              <button class="post-type" onclick="setType('embed', this)">Embed</button>
-              <button class="post-type" onclick="setType('twitter', this)">Twitter</button>
-            </div>
-            
-            <div id="textFields">
-              <div class="form-group">
-                <textarea class="form-input" id="postText" rows="3" placeholder="Cosa stai pensando?"></textarea>
-              </div>
-            </div>
-            
-            <div id="videoFields" class="hidden">
-              <div class="form-group">
-                <textarea class="form-input" id="videoDesc" rows="2" placeholder="Descrizione video..."></textarea>
-              </div>
-              <div class="form-group">
-                <input type="url" class="form-input" id="videoLink" placeholder="Link video (YouTube, etc.)">
-              </div>
-            </div>
-            
-            <div id="embedFields" class="hidden">
-              <div class="form-group">
-                <textarea class="form-input" id="embedCode" rows="4" placeholder="Codice embed (iframe)..."></textarea>
-              </div>
-            </div>
-            
-            <div id="twitterFields" class="hidden">
-              <div class="form-group">
-                <input type="url" class="form-input" id="twitterLink" placeholder="Link post Twitter/X">
-              </div>
-            </div>
-            
-            <button class="publish-btn" id="publishBtn" onclick="publish()" disabled>Pubblica</button>
-          </div>
-
-          <!-- Posts -->
-          <div class="posts" id="postsContainer"></div>
-        </div>
+  <!-- Private Chat Modal -->
+  <div id="privateChatModal">
+    <div class="chat-header">
+      <button class="close-chat-btn" onclick="closePrivateChat()">←</button>
+      <div class="chat-recipient-info">
+        <img id="chatRecipientPic" class="profile-pic" />
+        <h3 id="chatRecipientName"></h3>
       </div>
     </div>
+    <div class="chat-body" id="chatMessageHistory"></div>
+    <div class="chat-input-area">
+      <input type="text" id="privateMessageInput" class="chat-input" placeholder="Scrivi un messaggio..." />
+      <button class="send-chat-btn" onclick="sendPrivateMessage()">Invia</button>
+    </div>
+  </div>
 
-    <!-- Chat View -->
-    <div id="chatView" class="hidden">
-      <div class="chat-container">
-        <div class="chat-sidebar">
-          <div class="chat-header">
-            <h3>LinkLoopChat™</h3>
-            <p style="font-size: 12px; color: var(--text-3);">Messaggistica sicura by Nexiquar™</p>
-          </div>
-          <div class="chat-list" id="chatList">
-            <div style="padding: 20px; text-align: center; color: var(--text-3);">
-              Nessuna conversazione attiva
-            </div>
-          </div>
-        </div>
-        <div class="chat-main">
-          <div class="no-chat-selected" id="noChatSelected">
-            Seleziona una conversazione per iniziare a chattare
-          </div>
-          <div id="chatConversation" class="hidden">
-            <div class="chat-conversation-header">
-              <img class="chat-item-avatar" id="currentChatAvatar" src="" alt="">
-              <div>
-                <h4 id="currentChatName"></h4>
-                <p id="currentChatUsername" style="font-size: 12px; color: var(--text-3);"></p>
-              </div>
-            </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="chat-input-area">
-              <input type="text" class="chat-input" id="chatMessageInput" placeholder="Scrivi un messaggio..." />
-              <button class="send-btn" onclick="sendChatMessage()">Invia</button>
-            </div>
-          </div>
-        </div>
+  <!-- Chat List Modal -->
+  <div id="chatListModal">
+    <div class="chat-list-header">
+      <h3>Le tue chat</h3>
+      <button class="close-chat-btn" onclick="closeChatList()">×</button>
+    </div>
+    <div id="conversationList"></div>
+  </div>
+
+  <!-- Country Selection Modal -->
+  <div id="countryModal" class="modal-overlay">
+    <div class="auth-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1002;">
+      <h3>Seleziona il tuo Paese</h3>
+      <div class="auth-form">
+        <select id="countrySelect" class="auth-input">
+          <option value="">-- Scegli un Paese --</option>
+          <option value="Italia">Italia</option>
+          <option value="Francia">Francia</option>
+          <option value="Germania">Germania</option>
+          <option value="Spagna">Spagna</option>
+          <option value="USA">USA</option>
+          <option value="Regno Unito">Regno Unito</option>
+          <option value="Canada">Canada</option>
+          <option value="Australia">Australia</option>
+        </select>
+        <button onclick="saveCountry()" class="auth-button">Conferma</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Configurazione API
+    // Funzione per mostrare/nascondere il selettore di sticker
+    function toggleStickerPicker() {
+      const stickerPicker = document.getElementById('stickerPicker');
+      if (stickerPicker.style.display === 'flex') {
+        stickerPicker.style.display = 'none';
+      } else {
+        stickerPicker.style.display = 'flex';
+        generateStickerPreviews();
+      }
+    }
+
+    // Funzione per generare le anteprime degli sticker
+    function generateStickerPreviews() {
+      const stickerPicker = document.getElementById('stickerPicker');
+      stickerPicker.innerHTML = '';
+      const numberOfStickers = 28;
+      for (let i = 1; i <= numberOfStickers; i++) {
+        const img = document.createElement('img');
+        img.src = `stiker${i}.png`;
+        img.alt = `Sticker ${i}`;
+        img.classList.add('sticker-preview');
+        img.onclick = () => insertSticker(`stiker${i}.png`);
+        stickerPicker.appendChild(img);
+      }
+    }
+
+    // Funzione per inserire lo sticker selezionato nel campo di testo
+    function insertSticker(stickerPath) {
+      const postText = document.getElementById('postText');
+      const stickerHtml = `<img src="${stickerPath}" alt="sticker" style="width: 50px; height: auto; vertical-align: middle; margin: 0 5px;" />`;
+      postText.value += stickerHtml;
+      document.getElementById('stickerPicker').style.display = 'none';
+      checkPublishButtonState();
+    }
+
+    // API Configuration
     const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
-    const BINS = {
-      posts: "68960092f7e7a370d1f76798",
-      videos: "689600c7f7e7a370d1f767d7", 
-      users: "68c57e9cd0ea881f407cb920", // Nuovo bin per utenti con username
-      messages: "68c8103ed0ea881f407e9c06", // Nuovo bin per messaggi LinkLoopChat
-      oldUsers: "68580aba8a456b7966b3543a", // Bin originale per compatibilità
-      oldMessages: "689600f3203a8b52b5e1dafd" // Bin originale per compatibilità
-    };
+    const BIN_ID = "68960092f7e7a370d1f76798";
+    const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
+    const USER_BIN_ID = "68580aba8a456b7966b3543a";
+    const MESSAGES_BIN_ID = "689600f3203a8b52b5e1dafd";
     
-    const headers = { "Content-Type": "application/json", "X-Master-Key": API_KEY };
+    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+    const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
+    const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
+    const MESSAGES_URL = `https://api.jsonbin.io/v3/b/${MESSAGES_BIN_ID}`;
+    const headers = {
+      "Content-Type": "application/json",
+      "X-Master-Key": API_KEY
+    };
+
+    // Spotify Configuration
     const spotifyClientId = 'f77ae12dd0e7405192d95390c8b1b418';
     const redirectUri = 'https://nexiflow.netlify.app';
 
-    // Variabili globali
+    // Global Variables
     let currentUser = null;
-    let nexiquarUser = null; // Utente autenticato Nexiquar per LinkLoopChat
-    let allPosts = [], allVideos = [], allUsers = [], allMessages = {};
-    let nexiquarUsers = []; // Utenti del sistema Nexiquar
-    let currentType = 'text', currentFormat = 'horizontal';
-    let currentChatUser = null;
-    let currentView = 'main';
+    let usersData = {};
+    let allPosts = [];
+    let allVideos = [];
+    let allUsers = [];
+    let allPrivateMessages = {};
+    let currentPostType = 'text';
+    let currentEmbedFormat = 'horizontal';
+    let currentVideoPageFormat = 'vertical';
+    let newVideoFormat = 'horizontal';
+    let currentChatRecipientEmail = null;
 
-    // Utility functions
-    const $ = id => document.getElementById(id);
-    const show = id => $(id).classList.remove('hidden');
-    const hide = id => $(id).classList.add('hidden');
-    const toggle = id => $(id).classList.toggle('hidden');
+    const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
+    const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
 
-    // API functions con nuovo bin Nexiquar
-    const api = {
-      async get(bin) {
-        try {
-          const res = await fetch(`https://api.jsonbin.io/v3/b/${BINS[bin]}/latest`, { headers });
-          const data = await res.json();
-          return data.record;
-        } catch (error) {
-          console.error(`Error fetching ${bin}:`, error);
-          return { users: [], posts: [], videos: [], messages: {} };
-        }
-      },
-      async put(bin, data) {
-        return fetch(`https://api.jsonbin.io/v3/b/${BINS[bin]}`, {
-          method: 'PUT', 
-          headers, 
-          body: JSON.stringify(data)
-        });
-      },
-      // Carica utenti Nexiquar dal bin specifico
-      async getNexiquarUsers() {
-        try {
-          const res = await fetch(`https://api.jsonbin.io/v3/b/68c57e9cd0ea881f407cb920/latest`, { headers });
-          const data = await res.json();
-          return data.record.users || data.record || [];
-        } catch (error) {
-          console.error('Error fetching Nexiquar users:', error);
-          return [];
-        }
-      },
-      // Salva nuovo utente Nexiquar
-      async addNexiquarUser(userData) {
-        try {
-          nexiquarUsers.push(userData);
-          return fetch(`https://api.jsonbin.io/v3/b/68c57e9cd0ea881f407cb920`, {
-            method: 'PUT',
-            headers,
-            body: JSON.stringify(nexiquarUsers.length > 1 ? { users: nexiquarUsers } : nexiquarUsers)
-          });
-        } catch (error) {
-          console.error('Error saving Nexiquar user:', error);
-        }
-      }
-    };
-
-    // Username generation
-    function generateUsername() {
-      const name = $('regName').value.trim().toLowerCase();
-      if (!name) {
-        $('usernamePreview').textContent = '@username00';
-        return;
-      }
-      
-      const cleanName = name.replace(/[^a-z]/g, '');
-      const randomNum = Math.floor(Math.random() * 90) + 10;
-      const username = `@${cleanName}${randomNum}`;
-      $('usernamePreview').textContent = username;
+    // Utility Functions
+    function showElement(elementId) {
+      document.getElementById(elementId).classList.remove('hidden');
     }
 
-    function copyProfileLink() {
-      // Rimuovo la funzione link profilo perché non può funzionare senza routing server-side
-      alert(`Il tuo username è: ${currentUser.username}\n\nCondividi il tuo username per far trovare il tuo profilo!`);
+    function hideElement(elementId) {
+      document.getElementById(elementId).classList.add('hidden');
     }
 
-    // Load data con caricamento utenti Nexiquar
-    async function loadData() {
-      try {
-        const [posts, videos, users, messages, nexiquarUsersData] = await Promise.all([
-          api.get('posts'),
-          api.get('videos'), 
-          api.get('users'),
-          api.get('messages'),
-          api.getNexiquarUsers()
-        ]);
-        
-        allPosts = posts.posts || [];
-        allVideos = videos.videos || [];
-        allUsers = users.users || [];
-        allMessages = messages.conversations || {};
-        nexiquarUsers = Array.isArray(nexiquarUsersData) ? nexiquarUsersData : (nexiquarUsersData.users || []);
-        
-        console.log('Data loaded:', { 
-          posts: allPosts.length, 
-          users: allUsers.length, 
-          nexiquarUsers: nexiquarUsers.length 
-        });
-        
-        if (currentView === 'main') {
-          renderPosts();
-        } else if (currentView === 'chat') {
-          renderChatList();
-        }
-      } catch (err) {
-        console.error('Load error:', err);
-      }
+    function toggleElement(elementId) {
+      document.getElementById(elementId).classList.toggle('hidden');
     }
 
-    // Auth functions
-    function showLogin() { 
-      show('loginPage'); 
-      hide('registerPage'); 
-    }
-    
-    function showRegister() { 
-      hide('loginPage'); 
-      show('registerPage'); 
-      generateUsername();
-    }
-
-    function selectProfile(el) {
-      el.parentNode.querySelectorAll('.profile-option').forEach(p => p.classList.remove('selected'));
-      el.classList.add('selected');
-    }
-
-    async function register() {
-      const name = $('regName').value.trim();
-      const email = $('regEmail').value.trim();
-      const password = $('regPassword').value.trim();
-      const pic = document.querySelector('#regProfileSelector .selected').dataset.value;
-      const username = $('usernamePreview').textContent;
-
-      if (!name || !email || !password) {
-        alert('Compila tutti i campi!');
-        return;
-      }
-
-      // Controlla se email o username esistono già
-      if (allUsers.find(u => u.email === email)) {
-        alert('Email già registrata!');
-        return;
-      }
-
-      if (allUsers.find(u => u.username === username)) {
-        alert('Username già in uso, prova a cambiare nome!');
-        generateUsername();
-        return;
-      }
-
-      const newUser = { 
-        name, 
-        email, 
-        password, 
-        profilePic: pic, 
-        bio: '',
-        username: username,
-        joinDate: new Date().toISOString()
-      };
-
-      allUsers.push(newUser);
-      await api.put('users', { users: allUsers });
-      
-      // Salva nel localStorage
-      localStorage.setItem('nexiflow_userEmail', email);
-      localStorage.setItem('nexiflow_loginType', 'nexiflow');
-      
-      alert('Registrazione completata con LinkLoopChat™!');
-      showLogin();
-    }
-
-    async function login() {
-      const email = $('loginEmail').value.trim();
-      const password = $('loginPassword').value.trim();
-      
-      if (!email || !password) {
-        alert('Inserisci email e password!');
-        return;
-      }
-
-      const user = allUsers.find(u => u.email === email);
-
-      if (!user) {
-        alert('Utente non trovato!');
-        return;
-      }
-      
-      if (user.password !== password) {
-        alert('Password errata!');
-        return;
-      }
-
-      currentUser = user;
-      localStorage.setItem('nexiflow_userEmail', email);
-      localStorage.setItem('nexiflow_loginType', 'nexiflow');
-      
-      showApp();
-    }
-
-    function logout() {
-      currentUser = null;
-      nexiquarUser = null;
-      localStorage.removeItem('nexiflow_userEmail');
-      localStorage.removeItem('nexiflow_loginType');
-      localStorage.removeItem('nexiflow_nexiquarEmail');
-      localStorage.removeItem('nexiflow_nexiquarAuth');
-      showAuth();
-    }
-
-    // Google Auth
-    function handleGoogle(response) {
-      const token = parseJwt(response.credential);
-      let user = allUsers.find(u => u.email === token.email);
-      
-      if (!user) {
-        // Genera username per utenti Google
-        const cleanName = token.name.toLowerCase().replace(/[^a-z]/g, '');
-        const randomNum = Math.floor(Math.random() * 90) + 10;
-        const username = `@${cleanName}${randomNum}`;
-        
-        user = { 
-          name: token.name, 
-          email: token.email, 
-          profilePic: token.picture, 
-          bio: 'Google user',
-          username: username,
-          joinDate: new Date().toISOString()
+    // Google Sign-In Handler
+    function handleCredentialResponse(response) {
+      const decodedToken = parseJwt(response.credential);
+      let user = allUsers.find(u => u.email === decodedToken.email);
+      if (user) {
+        currentUser = user;
+        localStorage.setItem("currentUserEmail", currentUser.email);
+        showAppContent();
+      } else {
+        const newUser = {
+          name: decodedToken.name,
+          email: decodedToken.email,
+          profilePic: decodedToken.picture,
+          bio: "Accesso tramite Google",
+          country: ""
         };
-        allUsers.push(user);
-        api.put('users', { users: allUsers });
+        allUsers.push(newUser);
+        currentUser = newUser;
+        localStorage.setItem("currentUserEmail", currentUser.email);
+        showElement("countryModal");
       }
-      
-      currentUser = user;
-      localStorage.setItem('nexiflow_userEmail', user.email);
-      localStorage.setItem('nexiflow_loginType', 'google');
-      showApp();
+    }
+
+    function saveCountry() {
+      const country = document.getElementById("countrySelect").value;
+      if (!country) {
+        alert("Seleziona un Paese!");
+        return;
+      }
+      currentUser.country = country;
+      updateUsersOnServer(allUsers);
+      hideElement("countryModal");
+      showAppContent();
     }
 
     function parseJwt(token) {
+      var base64Url = token.split('.')[1];
+      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+      return JSON.parse(jsonPayload);
+    }
+
+    // Data Loading and Management
+    async function loadAllData() {
       try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(c =>
-          '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-        ).join(''));
-        return JSON.parse(jsonPayload);
+        const [postsRes, videosRes, usersRes, messagesRes] = await Promise.all([
+          fetch(BASE_URL + "/latest", { headers }),
+          fetch(VIDEO_URL + "/latest", { headers }),
+          fetch(USER_URL + "/latest", { headers }),
+          fetch(MESSAGES_URL + "/latest", { headers })
+        ]);
+
+        const postsData = await postsRes.json();
+        const videosData = await videosRes.json();
+        const usersDataRaw = await usersRes.json();
+        const messagesData = await messagesRes.json();
+
+        allPosts = postsData.record.posts || [];
+        allVideos = videosData.record.videos || [];
+        allUsers = usersDataRaw.record.users || [];
+        allPrivateMessages = messagesData.record.privateMessages || {};
+
+        usersData = allUsers.reduce((map, user) => {
+          map[user.email] = user;
+          return map;
+        }, {});
+
+        renderPosts(allPosts);
+      } catch (err) {
+        console.error("Errore nel caricamento dei dati:", err);
+      }
+    }
+
+    async function updateUsersOnServer(users) {
+      try {
+        await fetch(USER_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ users })
+        });
       } catch (error) {
-        console.error('JWT parsing error:', error);
-        throw error;
+        console.error("Errore nell'aggiornamento degli utenti:", error);
       }
     }
 
-    // Spotify Auth
-    function loginSpotify() {
-      const scope = 'user-read-private user-read-email';
-      const url = `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}`;
-      window.location.href = url;
+    async function updatePostsOnServer(posts) {
+      try {
+        await fetch(BASE_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ posts })
+        });
+      } catch (error) {
+        console.error("Errore nell'aggiornamento dei post:", error);
+      }
     }
 
-    // Navigation
-    function showAuth() { 
-      show('authContent'); 
-      hide('appContent'); 
-      showLogin(); 
+    async function updateVideosOnServer(videos) {
+      try {
+        await fetch(VIDEO_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ videos })
+        });
+      } catch (error) {
+        console.error("Errore nell'aggiornamento dei video:", error);
+      }
     }
 
-    function showApp() { 
-      hide('authContent');
-      show('appContent');
+    // Authentication Functions
+    function showLoginPage() {
+      showElement('loginPage');
+      hideElement('registerPage');
+      document.getElementById('loginEmail').focus();
+    }
+
+    function showRegisterPage() {
+      hideElement('loginPage');
+      showElement('registerPage');
+      document.getElementById('registerName').focus();
+    }
+
+    function selectProfilePic(element, type) {
+      const selector = type === 'register' ? 
+        document.getElementById('registerProfilePicSelector') : 
+        document.getElementById('editProfilePicSelector');
       
-      if (currentUser) {
-        $('userName').textContent = currentUser.name;
-        $('userAvatar').src = currentUser.profilePic;
-        $('userProfileLink').textContent = currentUser.username;
-        
-        // Mostra stato LinkLoopChat
-        const linkLoopStatus = $('linkLoopStatus');
-        if (linkLoopUser) {
-          linkLoopStatus.textContent = '✅ LinkLoopChat™ attivo - Chat disponibili';
-          linkLoopStatus.style.color = 'green';
+      selector.querySelectorAll('.profile-pic-option').forEach(img => {
+        img.classList.remove('selected');
+      });
+      element.classList.add('selected');
+    }
+
+    async function registerUser() {
+      const name = document.getElementById('registerName').value.trim();
+      const email = document.getElementById('registerEmail').value.trim();
+      const password = document.getElementById('registerPassword').value.trim();
+      const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+      const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
+
+      if (!name || !email || !password) {
+        alert("Compila tutti i campi!");
+        return;
+      }
+
+      if (allUsers.find(u => u.email === email)) {
+        alert("Esiste già un utente con questa email.");
+        return;
+      }
+
+      const newUser = { name, email, password, profilePic, bio: "" };
+
+      try {
+        allUsers.push(newUser);
+        await updateUsersOnServer(allUsers);
+        alert("Registrazione completata! Ora puoi accedere.");
+        showLoginPage();
+      } catch(err) {
+        alert("Errore durante la registrazione.");
+        console.error(err);
+      }
+    }
+
+    async function loginUser() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+
+      const user = allUsers.find(u => u.email === email);
+
+      if (user) {
+        if (user.password === password) {
+          currentUser = user;
+          localStorage.setItem("currentUserEmail", email);
+          alert(`Benvenuto, ${currentUser.name}!`);
+          showAppContent();
         } else {
-          linkLoopStatus.textContent = '⚠️ LinkLoopChat™ non attivo - Accedi per usare la chat';
-          linkLoopStatus.style.color = 'orange';
+          alert("Password non corretta. Riprova.");
         }
-        
-        showMain();
       } else {
-        showAuth();
+        alert("Utente non trovato. Controlla l'email o registrati.");
       }
     }
 
-    function showMain() {
-      currentView = 'main';
-      show('mainView');
-      hide('chatView');
-      renderPosts();
+    function logoutUser() {
+      currentUser = null;
+      localStorage.removeItem("currentUserEmail");
+      showAuthContent();
     }
 
-    function showChats() {
-      // Controlla se l'utente è loggato su Nexiflow
-      if (!currentUser) {
-        alert('Devi effettuare il login per accedere alle funzionalità di Nexiflow');
-        showAuth();
-        return;
+    function showAuthContent() {
+      showElement('authContent');
+      hideElement('appContent');
+      showLoginPage();
+    }
+
+    function showAppContent() {
+      hideElement('authContent');
+      showElement('appContent');
+      updateUserInfo();
+      showMainContent();
+    }
+
+    function updateUserInfo() {
+      if (currentUser) {
+        document.getElementById("userNameDisplay").textContent = currentUser.name;
+        document.getElementById("userProfilePic").src = currentUser.profilePic;
       }
-
-      // Controlla se l'utente ha accesso Nexiquar per LinkLoopChat
-      if (!nexiquarUser) {
-        showNexiquarAuth();
-        return;
-      }
-
-      currentView = 'chat';
-      hide('mainView');
-      show('chatView');
-      renderChatList();
     }
 
-    // Nexiquar Authentication per LinkLoopChat
-    function showNexiquarAuth() {
-      const modal = $('nexiquarAuthModal');
-      modal.classList.add('active');
-      modal.style.display = 'flex';
+    // Navigation Functions
+    function showMainContent() {
+      hideElement('videoPage');
+      hideElement('userProfilePage');
+      hideElement('settingsPage');
+      hideElement('privateChatModal');
+      hideElement('chatListModal');
+      showElement('mainContent');
     }
 
-    function closeNexiquarModal() {
-      const modal = $('nexiquarAuthModal');
-      modal.classList.remove('active');
-      modal.style.display = 'none';
+    function showVideoPage() {
+      hideElement('mainContent');
+      hideElement('userProfilePage');
+      hideElement('settingsPage');
+      hideElement('privateChatModal');
+      hideElement('chatListModal');
+      showElement('videoPage');
+      showVideos(currentVideoPageFormat);
     }
 
-    function redirectToNexiquarRegistration() {
-      // Apri la pagina di registrazione Nexiquar in una nuova finestra
-      window.open('https://nexiquarmail.wuaze.com', '_blank');
-      
-      // Chiudi il modal
-      closeNexiquarModal();
-      
-      // Mostra messaggio informativo
-      setTimeout(() => {
-        alert('Dopo la registrazione su nexiquarmail.wuaze.com, potrai utilizzare le tue credenziali Nexiquar per accedere a LinkLoopChat™.');
-      }, 1000);
-    }
-
-    async function loginNexiquar() {
-      const email = $('nexiquarEmail').value.trim();
-      const password = $('nexiquarPassword').value.trim();
-      
-      if (!email || !password) {
-        alert('Inserisci email e password Nexiquar™!');
-        return;
-      }
-
-      // Verifica che l'email sia @nexiquar.nx
-      if (!email.endsWith('@nexiquar.nx')) {
-        alert('Puoi accedere solo con un account @nexiquar.nx');
-        return;
-      }
-
-      // Cerca l'utente nel bin Nexiquar
-      const nexiquarUser_found = nexiquarUsers.find(u => 
-        u.email === email && u.password === password
-      );
-
-      if (!nexiquarUser_found) {
-        // Se non trovato, mostra messaggio di registrazione
-        if (confirm('Account non trovato. Vuoi registrarti su Nexiquar™?')) {
-          redirectToNexiquarRegistration();
-        }
-        return;
-      }
-
-      // Login riuscito
-      nexiquarUser = {
-        nome: nexiquarUser_found.nome,
-        cognome: nexiquarUser_found.cognome,
-        email: nexiquarUser_found.email,
-        nexiquarVerified: true,
-        loginDate: new Date().toISOString()
-      };
-      
-      // Salva nel localStorage
-      localStorage.setItem('nexiflow_nexiquarEmail', email);
-      localStorage.setItem('nexiflow_nexiquarAuth', 'true');
-      
-      closeNexiquarModal();
-      alert(`Benvenuto in LinkLoopChat™, ${nexiquarUser_found.nome}!`);
-      
-      // Apri automaticamente la chat
-      showChats();
-    }
-
-    function checkNexiquarAuth() {
-      const nexiquarEmail = localStorage.getItem('nexiflow_nexiquarEmail');
-      const nexiquarAuth = localStorage.getItem('nexiflow_nexiquarAuth');
-      
-      if (nexiquarEmail && nexiquarAuth === 'true') {
-        // Ricontrolla nel database
-        const foundUser = nexiquarUsers.find(u => u.email === nexiquarEmail);
-        if (foundUser) {
-          nexiquarUser = {
-            nome: foundUser.nome,
-            cognome: foundUser.cognome,
-            email: foundUser.email,
-            nexiquarVerified: true,
-            loginDate: new Date().toISOString()
-          };
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function showVideos() { 
-      alert('Sezione Video - Funzionalità in sviluppo');
-    }
-
-    function showSettings() {
+    function showSettingsPage() {
       if (!currentUser) return;
       
-      const newName = prompt('Nuovo nome:', currentUser.name);
-      const newBio = prompt('Nuova bio:', currentUser.bio || '');
-      
-      if (newName && newName !== currentUser.name) {
-        const oldUsername = currentUser.username;
-        currentUser.name = newName;
-        
-        // Rigenera username se il nome cambia
-        const cleanName = newName.toLowerCase().replace(/[^a-z]/g, '');
-        const randomNum = Math.floor(Math.random() * 90) + 10;
-        const newUsername = `@${cleanName}${randomNum}`;
-        
-        // Verifica che il nuovo username non esista
-        if (!allUsers.find(u => u.username === newUsername && u.email !== currentUser.email)) {
-          currentUser.username = newUsername;
-        }
-        
-        updateUserData();
-        $('userName').textContent = currentUser.name;
-        $('userProfileLink').textContent = currentUser.username;
-        alert('Nome e username aggiornati!');
-      }
-      
-      if (newBio !== null && newBio !== currentUser.bio) {
-        currentUser.bio = newBio;
-        updateUserData();
-        alert('Bio aggiornata!');
+      hideElement('mainContent');
+      hideElement('videoPage');
+      hideElement('userProfilePage');
+      hideElement('privateChatModal');
+      hideElement('chatListModal');
+      showElement('settingsPage');
+
+      document.getElementById('editName').value = currentUser.name;
+      document.getElementById('editBio').value = currentUser.bio || '';
+
+      const currentPic = document.querySelector(`#editProfilePicSelector img[data-value='${currentUser.profilePic}']`);
+      if (currentPic) {
+        selectProfilePic(currentPic, 'settings');
       }
     }
 
-    async function updateUserData() {
-      const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
-      if (userIndex !== -1) {
-        allUsers[userIndex] = currentUser;
-        await api.put('users', { users: allUsers });
-      }
-    }
-
-    // Theme toggle
+    // Theme Toggle
     function toggleTheme() {
-      const currentTheme = document.body.dataset.theme || 'light';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      const logo = isDark ? 'logo2.png' : 'logo1.png';
+      document.getElementById('logo').src = logo;
+    }
+
+    // Post Functions
+    function toggleInput() {
+      document.getElementById('inputArea').classList.toggle('active');
+    }
+
+    function setPostType(type, button) {
+      currentPostType = type;
       
-      document.body.dataset.theme = newTheme;
-      localStorage.setItem('nexiflow_theme', newTheme);
-    }
+      // Update active button
+      document.querySelectorAll('.post-type-selector button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      button.classList.add('active');
 
-    function loadTheme() {
-      const savedTheme = localStorage.getItem('nexiflow_theme') || 'light';
-      document.body.dataset.theme = savedTheme;
-    }
+      // Show/hide appropriate fields
+      hideElement('post-text-fields');
+      hideElement('post-video-fields');
+      hideElement('post-embed-fields');
+      hideElement('post-twitter-fields');
 
-    // Post creation
-    function toggleCreator() { 
-      $('postCreator').classList.toggle('active'); 
-    }
-
-    function setType(type, btn) {
-      currentType = type;
-      document.querySelectorAll('.post-type').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      ['textFields', 'videoFields', 'embedFields', 'twitterFields'].forEach(id => hide(id));
-      show(type + 'Fields');
-      checkPublishBtn();
-    }
-
-    function setFormat(format) {
-      currentFormat = format;
-      document.querySelectorAll('#embedFields .post-type').forEach(b => b.classList.remove('active'));
-      event.target.classList.add('active');
-    }
-
-    function checkPublishBtn() {
-      const inputs = { text: 'postText', video: 'videoLink', embed: 'embedCode', twitter: 'twitterLink' };
-      const hasContent = $(inputs[currentType])?.value.trim();
-      $('publishBtn').disabled = !hasContent;
-    }
-
-    async function publish() {
-      if (!currentUser) {
-        alert('Devi effettuare il login per pubblicare!');
-        return;
+      if (type === 'text') {
+        showElement('post-text-fields');
+        document.getElementById('postText').focus();
+      } else if (type === 'video') {
+        showElement('post-video-fields');
+        document.getElementById('videoLink').focus();
+      } else if (type === 'embed') {
+        showElement('post-embed-fields');
+        document.getElementById('embedCode').focus();
+      } else if (type === 'twitter') {
+        showElement('post-twitter-fields');
+        document.getElementById('twitterLink').focus();
       }
 
-      const inputs = {
-        text: () => ({ content: $('postText').value, description: $('postText').value }),
-        video: () => ({ content: $('videoLink').value, description: $('videoDesc').value }),
-        embed: () => ({ content: $('embedCode').value, description: $('embedDesc').value }),
-        twitter: () => ({ content: $('twitterLink').value, description: '' })
-      };
+      checkPublishButtonState();
+    }
 
-      const data = inputs[currentType]();
-      if (!data.content.trim()) return;
+    function setVideoFormat(format) {
+      currentEmbedFormat = format;
+      document.querySelectorAll('#post-embed-fields .post-type-selector button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(`embed-format-${format}`).classList.add('active');
+    }
 
-      const post = {
+    function checkPublishButtonState() {
+      let isReady = false;
+      
+      if (currentPostType === 'text' && document.getElementById('postText').value.trim() !== '') {
+        isReady = true;
+      } else if (currentPostType === 'video' && document.getElementById('videoLink').value.trim() !== '') {
+        isReady = true;
+      } else if (currentPostType === 'embed' && document.getElementById('embedCode').value.trim() !== '') {
+        isReady = true;
+      } else if (currentPostType === 'twitter' && document.getElementById('twitterLink').value.trim() !== '') {
+        isReady = true;
+      }
+
+      document.getElementById('publishBtn').disabled = !isReady;
+    }
+
+    // Add event listeners for input validation
+    document.addEventListener('DOMContentLoaded', function() {
+      const inputs = ['postText', 'videoLink', 'embedCode', 'twitterLink'];
+      inputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.addEventListener('input', checkPublishButtonState);
+        }
+      });
+    });
+
+    function getFormattedDate() {
+      const now = new Date();
+      return now.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function getPostContent(type) {
+      if (type === 'text') {
+        return document.getElementById('postText').value;
+      } else if (type === 'video') {
+        return document.getElementById('videoLink').value;
+      } else if (type === 'embed') {
+        return document.getElementById('embedCode').value;
+      } else if (type === 'twitter') {
+        return document.getElementById('twitterLink').value;
+      }
+      return '';
+    }
+
+    function getPostDescription(type) {
+      if (type === 'text') {
+        return document.getElementById('postText').value;
+      } else if (type === 'video') {
+        return document.getElementById('videoDescription').value;
+      } else if (type === 'embed') {
+        return document.getElementById('embedDescription').value;
+      }
+      return '';
+    }
+
+    async function publishPost() {
+      const content = getPostContent(currentPostType);
+      const description = getPostDescription(currentPostType);
+      
+      if (!content || !currentUser) return;
+
+      const newPost = {
         id: Date.now(),
         author: currentUser.name,
         authorEmail: currentUser.email,
-        authorUsername: currentUser.username,
         authorPic: currentUser.profilePic,
-        type: currentType,
-        ...data,
-        date: new Date().toLocaleString('it-IT'),
+        type: currentPostType,
+        content: content,
+        description: description,
+        date: getFormattedDate(),
         upvotes: 0,
         downvotes: 0,
         comments: [],
-        embedFormat: currentFormat
+        embedFormat: currentEmbedFormat
       };
 
-      allPosts.unshift(post);
-      await api.put('posts', { posts: allPosts });
-      renderPosts();
-      
+      allPosts.unshift(newPost);
+      await updatePostsOnServer(allPosts);
+      renderPosts(allPosts);
+
       // Clear form
-      ['postText', 'videoDesc', 'videoLink', 'embedDesc', 'embedCode', 'twitterLink']
-        .forEach(id => $(id) && ($(id).value = ''));
-      toggleCreator();
-      checkPublishBtn();
+      document.getElementById('postText').value = '';
+      document.getElementById('videoDescription').value = '';
+      document.getElementById('videoLink').value = '';
+      document.getElementById('embedDescription').value = '';
+      document.getElementById('embedCode').value = '';
+      document.getElementById('twitterLink').value = '';
+      checkPublishButtonState();
+      toggleInput();
     }
 
-    // Post rendering
-    function renderPosts() {
-      const container = $('postsContainer');
-      if (!container) return;
-      
+    function embedFromLink(link) {
+      if (link.includes('youtu.be')) {
+        const id = link.split('youtu.be/')[1].split('?')[0];
+        return `https://www.youtube.com/embed/${id}`;
+      } else if (link.includes('youtube.com')) {
+        const urlParams = new URLSearchParams(new URL(link).search);
+        const id = urlParams.get('v');
+        return `https://www.youtube.com/embed/${id}`;
+      }
+      return link;
+    }
+
+    function srcFromEmbed(embedCode) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(embedCode, 'text/html');
+      const iframe = doc.querySelector('iframe');
+      return iframe ? iframe.src : '';
+    }
+
+    function renderPosts(posts) {
+      const container = document.getElementById('postsContainer');
       container.innerHTML = '';
 
-      allPosts.forEach(post => {
-        const isOwner = currentUser && post.authorEmail === currentUser.email;
-        const deleteBtn = isOwner ? `<button class="action-btn" onclick="deletePost(${post.id})">❌</button>` : '';
-        const msgBtn = !isOwner && currentUser ? `<button class="post-btn" onclick="startChatFromPost('${post.authorEmail}')">✉️ Messaggio</button>` : '';
-        const usernameDisplay = post.authorUsername || '@unknown';
+      posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.className = 'post fade-in';
+        postElement.dataset.id = post.id;
 
-        let content = '';
+        const isMyPost = currentUser && post.authorEmail === currentUser.email;
+        const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
+        const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="openPrivateChat('${post.authorEmail}')">✉️ Messaggio</button>` : '';
+
+        let postContent = '';
         if (post.type === 'text') {
-          content = `<div class="post-content">${post.content}</div>`;
+          postContent = `<div class="post-content">${post.content}</div>`;
         } else if (post.type === 'video') {
-          content = `
+          postContent = `
             ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
             <div class="post-embed">
-              <iframe src="${getEmbedUrl(post.content)}"></iframe>
-            </div>`;
+              <iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          `;
         } else if (post.type === 'embed') {
-          const cls = post.embedFormat === 'vertical' ? 'vertical' : '';
-          content = `
+          const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
+          postContent = `
             ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
             <div class="post-embed">
-              <iframe class="${cls}" src="${getEmbedSrc(post.content)}"></iframe>
-            </div>`;
+              <iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          `;
         } else if (post.type === 'twitter') {
-          content = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
+          postContent = `
+            <blockquote class="twitter-tweet">
+              <a href="${post.content}"></a>
+            </blockquote>
+          `;
         }
 
-        const postEl = document.createElement('div');
-        postEl.className = 'post fade-in';
-        postEl.innerHTML = `
+        postElement.innerHTML = `
           <div class="post-header">
-            <div class="author" onclick="showProfile('${post.authorEmail}')">
-              <img src="${post.authorPic}" class="author-avatar avatar">
+            <a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')">
+              <img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo">
               <div class="author-info">
-                <h4>${post.author}</h4>
-                <div class="username-link">${usernameDisplay}</div>
-                <p>${post.date}</p>
+                <div class="author-name">${post.author}</div>
+                <div class="post-date">${post.date}</div>
               </div>
-            </div>
+            </a>
             <div class="post-actions">
-              ${deleteBtn}
+              ${deleteButton}
             </div>
           </div>
-          ${content}
+          
+          ${postContent}
+          
           <div class="post-footer">
-            <div class="votes">
-              <button class="vote-btn" onclick="vote(${post.id}, 'up')">👍 ${post.upvotes || 0}</button>
+            <div class="vote-section">
+              <button class="vote-button" onclick="votePost(${post.id}, 'up')">
+                👍 <span>${post.upvotes || 0}</span>
+              </button>
               <div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div>
-              <button class="vote-btn" onclick="vote(${post.id}, 'down')">👎 ${post.downvotes || 0}</button>
+              <button class="vote-button" onclick="votePost(${post.id}, 'down')">
+                👎 <span>${post.downvotes || 0}</span>
+              </button>
             </div>
-            <div class="post-btns">
-              <button class="post-btn" onclick="toggleComments(${post.id})">💬 Commenti (${post.comments ? post.comments.length : 0})</button>
-              ${msgBtn}
+            
+            <div class="post-actions-footer">
+              <button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>
+              ${privateMessageButton}
+              <button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button>
+              <button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button>
             </div>
+          </div>
+          
+          <div class="comments-section" id="comments-section-${post.id}">
+            <h4>Commenti:</h4>
+            <div class="comment-list" id="comments-${post.id}"></div>
+            <form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
+              <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required />
+              <button type="submit" class="comment-submit">Invia</button>
+            </form>
           </div>
         `;
-        container.appendChild(postEl);
+
+        container.appendChild(postElement);
+        renderComments(post.id, post.comments || []);
 
         if (post.type === 'twitter') {
           const script = document.createElement('script');
@@ -1518,611 +1961,807 @@
       });
     }
 
-    function getEmbedUrl(url) {
-      if (url.includes('youtu.be')) return `https://www.youtube.com/embed/${url.split('youtu.be/')[1].split('?')[0]}`;
-      if (url.includes('youtube.com')) return `https://www.youtube.com/embed/${new URL(url).searchParams.get('v')}`;
-      return url;
-    }
-
-    function getEmbedSrc(code) {
-      const doc = new DOMParser().parseFromString(code, 'text/html');
-      const iframe = doc.querySelector('iframe');
-      return iframe?.src || '';
-    }
-
-    async function vote(id, type) {
-      if (!currentUser) {
-        alert('Devi effettuare il login per votare!');
-        return;
-      }
-
+    async function votePost(id, type) {
       const post = allPosts.find(p => p.id === id);
       if (!post) return;
-      
-      post[type === 'up' ? 'upvotes' : 'downvotes'] = (post[type === 'up' ? 'upvotes' : 'downvotes'] || 0) + 1;
-      await api.put('posts', { posts: allPosts });
-      renderPosts();
+
+      if (type === 'up') {
+        post.upvotes = (post.upvotes || 0) + 1;
+      } else {
+        post.downvotes = (post.downvotes || 0) + 1;
+      }
+
+      await updatePostsOnServer(allPosts);
+      renderPosts(allPosts);
     }
 
     async function deletePost(id) {
+      if (!currentUser) {
+        alert("Devi essere loggato per eliminare un post.");
+        return;
+      }
+
       const post = allPosts.find(p => p.id === id);
-      if (!post || post.authorEmail !== currentUser.email) return;
-      
-      if (confirm('Sei sicuro di voler eliminare questo post?')) {
-        allPosts = allPosts.filter(p => p.id !== id);
-        await api.put('posts', { posts: allPosts });
-        renderPosts();
-      }
-    }
+      if (!post) return;
 
-    function showProfile(email) {
-      const user = allUsers.find(u => u.email === email);
-      if (!user) return;
-      
-      if (user.email === currentUser?.email) {
-        showSettings();
+      if (post.authorEmail !== currentUser.email) {
+        alert("Puoi eliminare solo i tuoi post.");
         return;
       }
-      
-      const profileInfo = `
-Profilo: ${user.username}
-Nome: ${user.name}
-Bio: ${user.bio || 'Nessuna bio disponibile'}
 
-Cosa vuoi fare?
-1. Invia messaggio con LinkLoopChat™
-2. Visualizza i suoi post
-3. Chiudi
-      `;
-      
-      const choice = prompt(profileInfo);
-      
-      if (choice === '1') {
-        if (!currentUser) {
-          alert('Devi effettuare il login per inviare messaggi!');
-          showAuth();
-          return;
-        }
-        startChat(user);
-      } else if (choice === '2') {
-        showUserPosts(user);
-      }
-    }
+      const password = prompt("Inserisci la tua password per confermare l'eliminazione:");
+      if (password === null) return;
 
-    function showUserPosts(user) {
-      const userPosts = allPosts.filter(p => p.authorEmail === user.email);
-      if (userPosts.length === 0) {
-        alert('Questo utente non ha ancora pubblicato post.');
+      if (password !== currentUser.password) {
+        alert("Password non corretta. Impossibile eliminare il post.");
         return;
       }
-      
-      const postsInfo = userPosts.slice(0, 5).map((post, i) => 
-        `${i + 1}. ${post.type === 'text' ? post.content.substring(0, 50) + '...' : `[${post.type.toUpperCase()}] ${post.description || 'Senza descrizione'}`} (${post.date})`
-      ).join('\n');
-      
-      alert(`Ultimi post di ${user.name} (${user.username}):\n\n${postsInfo}${userPosts.length > 5 ? '\n\n...e altri ' + (userPosts.length - 5) + ' post' : ''}`);
+
+      allPosts = allPosts.filter(p => p.id !== id);
+      await updatePostsOnServer(allPosts);
+      renderPosts(allPosts);
     }
 
     function toggleComments(postId) {
-      if (!currentUser) {
-        alert('Devi effettuare il login per commentare!');
-        return;
-      }
-
-      const post = allPosts.find(p => p.id === postId);
-      if (!post) return;
+      const commentsSection = document.getElementById(`comments-section-${postId}`);
+      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
       
-      if (!post.comments || post.comments.length === 0) {
-        const comment = prompt('Scrivi un commento:');
-        if (!comment || !comment.trim()) return;
-        
-        if (!post.comments) post.comments = [];
-        post.comments.push({
-          author: currentUser.name,
-          authorEmail: currentUser.email,
-          authorUsername: currentUser.username,
-          text: comment.trim(),
-          date: new Date().toLocaleString('it-IT')
-        });
-        
-        api.put('posts', { posts: allPosts });
-        alert('Commento aggiunto!');
-        renderPosts();
-      } else {
-        const commentsText = post.comments.map(c => 
-          `${c.author} (${c.authorUsername || '@unknown'}): ${c.text} (${c.date})`
-        ).join('\n\n');
-        
-        const action = prompt(`Commenti (${post.comments.length}):\n\n${commentsText}\n\nScrivi "nuovo" per aggiungere un commento o premi Annulla:`);
-        
-        if (action && action.toLowerCase() === 'nuovo') {
-          const newComment = prompt('Scrivi un commento:');
-          if (newComment && newComment.trim()) {
-            post.comments.push({
-              author: currentUser.name,
-              authorEmail: currentUser.email,
-              authorUsername: currentUser.username,
-              text: newComment.trim(),
-              date: new Date().toLocaleString('it-IT')
-            });
-            
-            api.put('posts', { posts: allPosts });
-            alert('Commento aggiunto!');
-            renderPosts();
-          }
-        }
+      if (commentsSection.style.display === 'block') {
+        document.getElementById(`comment-input-${postId}`).focus();
       }
     }
 
-    // Chat functions
-    function renderChatList() {
-      const chatList = $('chatList');
-      if (!chatList || !currentUser) return;
+    async function addComment(postId) {
+      const post = allPosts.find(p => p.id === postId);
+      const commentInput = document.getElementById(`comment-input-${postId}`);
+      const text = commentInput.value.trim();
 
-      // Ottieni tutte le conversazioni dell'utente corrente
-      const userConversations = Object.keys(allMessages).filter(key => 
-        key.includes(currentUser.email)
+      if (!text || !currentUser || !post) return;
+
+      if (!post.comments) {
+        post.comments = [];
+      }
+
+      post.comments.push({
+        author: currentUser.name,
+        authorEmail: currentUser.email,
+        authorPic: currentUser.profilePic,
+        text: text,
+        date: getFormattedDate()
+      });
+
+      await updatePostsOnServer(allPosts);
+      renderComments(postId, post.comments);
+      commentInput.value = '';
+    }
+
+    function renderComments(postId, comments) {
+      const commentList = document.getElementById(`comments-${postId}`);
+      commentList.innerHTML = '';
+      
+      comments.forEach(comment => {
+        const commentElement = document.createElement('div');
+        commentElement.className = 'comment';
+        commentElement.innerHTML = `
+          <strong>${comment.author}</strong>: ${comment.text}
+          <div class="post-date">${comment.date}</div>
+        `;
+        commentList.appendChild(commentElement);
+      });
+    }
+
+    // Video Functions
+    function toggleVideoInput() {
+      document.getElementById('videoInputArea').classList.toggle('active');
+    }
+
+    function setNewVideoFormat(format) {
+      newVideoFormat = format;
+      document.querySelectorAll('#videoInputArea .post-type-selector button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.getElementById(`new-video-format-${format}`).classList.add('active');
+    }
+
+    function showVideos(format, button) {
+      currentVideoPageFormat = format;
+      const videoGrid = document.getElementById('videoGrid');
+      videoGrid.innerHTML = '';
+
+      document.querySelectorAll('#videoPage .post-type-selector button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      if (button) {
+        button.classList.add('active');
+      }
+
+      const filteredVideos = allVideos.filter(v => v.format === format);
+      
+      if (filteredVideos.length === 0) {
+        videoGrid.innerHTML = `<p class="text-center">Nessun video di questo tipo è stato ancora pubblicato.</p>`;
+        return;
+      }
+
+      filteredVideos.forEach(video => {
+        const videoElement = document.createElement('div');
+        videoElement.className = 'post fade-in';
+        videoElement.dataset.id = video.id;
+
+        const isMyVideo = currentUser && video.authorEmail === currentUser.email;
+        const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})">❌</button>` : '';
+
+        videoElement.innerHTML = `
+          <div class="post-header">
+            <a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')">
+              <img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo">
+              <div class="author-info">
+                <div class="author-name">${video.author}</div>
+                <div class="post-date">${video.date}</div>
+              </div>
+            </a>
+            <div class="post-actions">
+              ${deleteButton}
+            </div>
+          </div>
+          
+          <div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
+            <iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}"
+                 src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}"
+                 title="Video player" frameborder="0"
+                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                 allowfullscreen>
+            </iframe>
+          </div>
+          
+          <div class="post-content">${video.description}</div>
+          
+          <div class="post-footer">
+            <div class="vote-section">
+              <button class="vote-button" onclick="voteVideo(${video.id}, 'up')">
+                👍 <span>${video.upvotes || 0}</span>
+              </button>
+              <div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div>
+              <button class="vote-button" onclick="voteVideo(${video.id}, 'down')">
+                👎 <span>${video.downvotes || 0}</span>
+              </button>
+            </div>
+          </div>
+        `;
+
+        videoGrid.appendChild(videoElement);
+      });
+    }
+
+    async function publishNewVideo() {
+      const embedCode = document.getElementById('newVideoEmbedCode').value.trim();
+      const description = document.getElementById('newVideoDescription').value.trim();
+
+      if (!embedCode || !currentUser) return;
+
+      const newVideo = {
+        id: Date.now(),
+        author: currentUser.name,
+        authorEmail: currentUser.email,
+        authorPic: currentUser.profilePic,
+        description: description,
+        embedCode: embedCode,
+        format: newVideoFormat,
+        date: getFormattedDate(),
+        upvotes: 0,
+        downvotes: 0,
+      };
+
+      allVideos.unshift(newVideo);
+      await updateVideosOnServer(allVideos);
+      showVideos(newVideoFormat);
+
+      document.getElementById('newVideoDescription').value = '';
+      document.getElementById('newVideoEmbedCode').value = '';
+      document.getElementById('publishVideoBtn').disabled = true;
+      toggleVideoInput();
+    }
+
+    async function voteVideo(id, type) {
+      const video = allVideos.find(v => v.id === id);
+      if (!video) return;
+
+      if (type === 'up') {
+        video.upvotes = (video.upvotes || 0) + 1;
+      } else {
+        video.downvotes = (video.downvotes || 0) + 1;
+      }
+
+      await updateVideosOnServer(allVideos);
+      showVideos(currentVideoPageFormat);
+    }
+
+    async function deleteVideo(id) {
+      if (!confirm("Sei sicuro di voler eliminare questo video?")) {
+        return;
+      }
+      
+      allVideos = allVideos.filter(v => v.id !== id);
+      await updateVideosOnServer(allVideos);
+      showVideos(currentVideoPageFormat);
+    }
+
+    function openVideoModal(embedCode, format) {
+      const videoModal = document.getElementById('videoModal');
+      const modalVideoContainer = document.getElementById('modalVideoContainer');
+      
+      modalVideoContainer.innerHTML = `
+        <iframe class="${format === 'vertical' ? 'vertical-video' : 'horizontal-video'}"
+             src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1"
+             title="Video player" frameborder="0"
+             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+             allowfullscreen>
+        </iframe>
+      `;
+      
+      videoModal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      const videoModal = document.getElementById('videoModal');
+      const modalVideoContainer = document.getElementById('modalVideoContainer');
+      modalVideoContainer.innerHTML = '';
+      videoModal.style.display = 'none';
+    }
+
+    // User Profile Functions
+    function showUserProfile(email) {
+      if (email === currentUser.email) {
+        showSettingsPage();
+        return;
+      }
+
+      const user = usersData[email];
+      if (!user) return;
+
+      hideElement('mainContent');
+      hideElement('videoPage');
+      hideElement('settingsPage');
+      hideElement('privateChatModal');
+      hideElement('chatListModal');
+      showElement('userProfilePage');
+
+      document.getElementById('profileInfo').innerHTML = `
+        <img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo">
+        <div>
+          <div class="user-name">${user.name}</div>
+          <div class="text-sm text-tertiary">Email: ${user.email}</div>
+          <div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div>
+          <button class="nav-button primary" onclick="openPrivateChat('${user.email}')" style="margin-top: 1rem;">✉️ Invia messaggio</button>
+        </div>
+      `;
+
+      const userPosts = allPosts.filter(post => post.authorEmail === email);
+      renderUserPosts(userPosts);
+
+      const userVideos = allVideos.filter(video => video.authorEmail === email);
+      renderUserVideos(userVideos);
+    }
+
+    function renderUserPosts(posts) {
+      const container = document.getElementById('userPostsContainer');
+      container.innerHTML = '';
+      
+      if (posts.length === 0) {
+        container.innerHTML = '<p>Nessun post pubblicato da questo utente.</p>';
+        return;
+      }
+
+      posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.className = 'post';
+
+        let postContent = '';
+        if (post.type === 'text') {
+          postContent = `<div class="post-content">${post.content}</div>`;
+        } else if (post.type === 'video') {
+          postContent = `
+            <div class="post-content">${post.description}</div>
+            <div class="post-embed">
+              <iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        } else if (post.type === 'embed') {
+          postContent = `
+            <div class="post-content">${post.description}</div>
+            <div class="post-embed">
+              <iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe>
+            </div>
+          `;
+        }
+
+        postElement.innerHTML = `
+          ${postContent}
+          <div class="post-date">${post.date}</div>
+        `;
+        
+        container.appendChild(postElement);
+      });
+    }
+
+    function renderUserVideos(videos) {
+      const container = document.getElementById('userVideosContainer');
+      container.innerHTML = '';
+      
+      if (videos.length === 0) {
+        container.innerHTML = '<p>Nessun video pubblicato da questo utente.</p>';
+        return;
+      }
+
+      videos.forEach(video => {
+        const videoElement = document.createElement('div');
+        videoElement.className = 'post';
+
+        videoElement.innerHTML = `
+          <div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
+            <iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}"
+                 src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}"
+                 title="Video player" frameborder="0" allowfullscreen>
+            </iframe>
+          </div>
+          <div class="post-content">${video.description}</div>
+          <div class="post-date">${video.date}</div>
+        `;
+        
+        container.appendChild(videoElement);
+      });
+    }
+
+    // Search Functions
+    document.getElementById('searchInput').addEventListener('input', filterUsers);
+
+    function filterUsers() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const searchResults = document.getElementById('searchResults');
+      searchResults.innerHTML = '';
+
+      if (query.length < 2) {
+        searchResults.style.display = 'none';
+        return;
+      }
+
+      const filtered = allUsers.filter(user => 
+        user.name.toLowerCase().includes(query) || 
+        user.email.toLowerCase().includes(query)
       );
 
-      if (userConversations.length === 0) {
-        chatList.innerHTML = `
-          <div style="padding: 20px; text-align: center; color: var(--text-3);">
-            <p>Nessuna conversazione attiva</p>
-            <p style="font-size: 12px; margin-top: 8px;">Inizia una chat cliccando "Messaggio" su un post!</p>
-          </div>
-        `;
+      if (filtered.length > 0) {
+        searchResults.style.display = 'block';
+        filtered.forEach(user => {
+          const resultItem = document.createElement('a');
+          resultItem.href = '#';
+          resultItem.className = 'search-result-item';
+          resultItem.innerHTML = `
+            <img src="${user.profilePic}" class="profile-pic" /> 
+            ${user.name}
+          `;
+          resultItem.onclick = (e) => {
+            e.preventDefault();
+            showUserProfile(user.email);
+            searchResults.style.display = 'none';
+            document.getElementById('searchInput').value = '';
+          };
+          searchResults.appendChild(resultItem);
+        });
+      } else {
+        searchResults.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('click', (event) => {
+      const searchContainer = document.querySelector('.search-container');
+      if (!searchContainer.contains(event.target)) {
+        document.getElementById('searchResults').style.display = 'none';
+      }
+    });
+
+    // Settings Functions
+    async function saveSettings() {
+      if (!currentUser) return;
+
+      const newName = document.getElementById('editName').value.trim();
+      const newBio = document.getElementById('editBio').value.trim();
+      const selectedPic = document.querySelector('#editProfilePicSelector .selected');
+      const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
+
+      if (!newName) {
+        alert("Il nome non può essere vuoto.");
         return;
       }
 
-      chatList.innerHTML = '';
-      
-      userConversations.forEach(conversationId => {
-        const otherUserEmail = conversationId.split('_to_').find(email => email !== currentUser.email);
-        const otherUser = allUsers.find(u => u.email === otherUserEmail);
-        
-        if (!otherUser) return;
+      currentUser.name = newName;
+      currentUser.bio = newBio;
+      currentUser.profilePic = newProfilePic;
 
-        const messages = allMessages[conversationId] || [];
-        const lastMessage = messages[messages.length - 1];
-
-        const chatItem = document.createElement('div');
-        chatItem.className = 'chat-item';
-        chatItem.onclick = () => selectChat(otherUser);
-        
-        chatItem.innerHTML = `
-          <img src="${otherUser.profilePic}" class="chat-item-avatar" alt="${otherUser.name}">
-          <div class="chat-item-info">
-            <h4>${otherUser.name}</h4>
-            <p>${otherUser.username}</p>
-            ${lastMessage ? `<p style="font-size: 11px; margin-top: 2px;">${lastMessage.text.substring(0, 30)}${lastMessage.text.length > 30 ? '...' : ''}</p>` : ''}
-          </div>
-        `;
-        
-        chatList.appendChild(chatItem);
-      });
+      try {
+        const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1) {
+          allUsers[userIndex] = currentUser;
+          await updateUsersOnServer(allUsers);
+          localStorage.setItem("currentUserEmail", currentUser.email);
+          alert("Impostazioni salvate con successo!");
+          updateUserInfo();
+          showMainContent();
+        }
+      } catch (error) {
+        console.error("Errore nel salvataggio delle impostazioni:", error);
+        alert("Errore nel salvataggio delle impostazioni.");
+      }
     }
 
-    function selectChat(user) {
-      currentChatUser = user;
+    // Chat Functions
+    async function openPrivateChat(recipientEmail) {
+      if (!currentUser) {
+        alert("Devi essere loggato per inviare messaggi.");
+        return;
+      }
       
-      // Aggiorna header della conversazione
-      $('currentChatName').textContent = user.name;
-      $('currentChatUsername').textContent = user.username;
-      $('currentChatAvatar').src = user.profilePic;
-      
-      // Mostra conversazione e nascondi messaggio vuoto
-      hide('noChatSelected');
-      show('chatConversation');
-      
-      // Evidenzia chat selezionata
-      document.querySelectorAll('.chat-item').forEach(item => item.classList.remove('active'));
-      event.target.closest('.chat-item')?.classList.add('active');
-      
-      renderChatMessages();
-    }
-
-    function renderChatMessages() {
-      const messagesContainer = $('chatMessages');
-      if (!messagesContainer || !currentChatUser) return;
-
-      const conversationId = getConversationId(currentUser.email, currentChatUser.email);
-      const messages = allMessages[conversationId] || [];
-
-      messagesContainer.innerHTML = '';
-
-      if (messages.length === 0) {
-        const welcomeMsg = document.createElement('div');
-        welcomeMsg.style.textAlign = 'center';
-        welcomeMsg.style.color = 'var(--text-3)';
-        welcomeMsg.style.padding = '20px';
-        welcomeMsg.innerHTML = `
-          <p>Inizia una conversazione con ${currentChatUser.name}!</p>
-          <p style="font-size: 12px; margin-top: 8px;">Powered by LinkLoopChat™</p>
-        `;
-        messagesContainer.appendChild(welcomeMsg);
+      if (currentUser.email === recipientEmail) {
+        alert("Non puoi inviare messaggi a te stesso.");
         return;
       }
 
-      messages.forEach(message => {
-        const messageEl = document.createElement('div');
-        messageEl.className = `message ${message.senderEmail === currentUser.email ? 'sent' : 'received'}`;
-        
-        messageEl.innerHTML = `
-          <div>${message.text}</div>
-          <div class="message-time">${new Date(message.timestamp).toLocaleString('it-IT')}</div>
-        `;
-        
-        messagesContainer.appendChild(messageEl);
-      });
+      currentChatRecipientEmail = recipientEmail;
+      showElement('privateChatModal');
+      hideElement('chatListModal');
 
-      // Scroll to bottom
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      const recipient = usersData[recipientEmail];
+      if (recipient) {
+        document.getElementById('chatRecipientName').textContent = recipient.name;
+        document.getElementById('chatRecipientPic').src = recipient.profilePic;
+      }
+
+      await renderPrivateMessages();
+      document.getElementById('privateMessageInput').focus();
     }
 
-    function getConversationId(email1, email2) {
+    function closePrivateChat() {
+      hideElement('privateChatModal');
+      currentChatRecipientEmail = null;
+    }
+
+    function getConversationKey(email1, email2) {
       return [email1, email2].sort().join('_to_');
     }
 
-    function startChat(user) {
-      // Controlla se l'utente è loggato su Nexiflow
-      if (!currentUser) {
-        alert('Devi effettuare il login per utilizzare la messaggistica');
-        showAuth();
-        return;
+    async function renderPrivateMessages() {
+      const chatMessageHistory = document.getElementById('chatMessageHistory');
+      chatMessageHistory.innerHTML = '';
+      
+      const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
+      const messages = allPrivateMessages[conversationKey] || [];
+
+      if (messages.length === 0) {
+        chatMessageHistory.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Inizia una conversazione!</p>';
       }
 
-      // Controlla se l'utente ha accesso Nexiquar
-      if (!nexiquarUser) {
-        showNexiquarAuth();
-        return;
-      }
+      messages.forEach(msg => {
+        const messageElement = document.createElement('div');
+        messageElement.className = `chat-message ${msg.senderEmail === currentUser.email ? 'sent' : 'received'}`;
+        messageElement.textContent = msg.text;
+        chatMessageHistory.appendChild(messageElement);
+      });
 
-      showChats();
-      setTimeout(() => selectChat(user), 100);
+      chatMessageHistory.scrollTop = chatMessageHistory.scrollHeight;
     }
 
-    function startChatFromPost(email) {
-      // Controlla se l'utente è loggato su Nexiflow
-      if (!currentUser) {
-        alert('Devi effettuare il login per utilizzare la messaggistica');
-        showAuth();
-        return;
-      }
+    async function sendPrivateMessage() {
+      const text = document.getElementById('privateMessageInput').value.trim();
+      if (!text || !currentUser || !currentChatRecipientEmail) return;
 
-      // Controlla se l'utente ha accesso Nexiquar
-      if (!nexiquarUser) {
-        showNexiquarAuth();
-        return;
-      }
-
-      const user = allUsers.find(u => u.email === email);
-      if (user) {
-        startChat(user);
-      }
-    }
-
-    async function sendChatMessage() {
-      const input = $('chatMessageInput');
-      const text = input.value.trim();
+      const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
       
-      if (!text || !currentChatUser || !currentUser) return;
-
-      const conversationId = getConversationId(currentUser.email, currentChatUser.email);
-      
-      if (!allMessages[conversationId]) {
-        allMessages[conversationId] = [];
+      if (!allPrivateMessages[conversationKey]) {
+        allPrivateMessages[conversationKey] = [];
       }
 
-      const message = {
+      const newMessage = {
         senderEmail: currentUser.email,
-        senderName: currentUser.name,
         text: text,
-        timestamp: new Date().toISOString()
+        date: new Date().toISOString()
       };
 
-      allMessages[conversationId].push(message);
+      allPrivateMessages[conversationKey].push(newMessage);
+      document.getElementById('privateMessageInput').value = '';
+
+      await renderPrivateMessages();
       
-      // Salva nel nuovo bin per i messaggi
-      await api.put('messages', { conversations: allMessages });
-      
-      input.value = '';
-      renderChatMessages();
-      renderChatList(); // Aggiorna la lista per mostrare il nuovo ultimo messaggio
-    }
-
-    // Search functionality
-    function setupSearch() {
-      const searchInput = $('searchInput');
-      if (!searchInput) return;
-
-      searchInput.addEventListener('input', e => {
-        const query = e.target.value.toLowerCase().trim();
-        
-        if (query.length < 2) {
-          hideSearchResults();
-          return;
-        }
-
-        let matches = [];
-        
-        // Cerca per username (con o senza @)
-        if (query.startsWith('@')) {
-          matches = allUsers.filter(u => 
-            u.username && u.username.toLowerCase().includes(query.toLowerCase())
-          );
-        } else {
-          // Cerca per nome o username
-          matches = allUsers.filter(u => 
-            u.name.toLowerCase().includes(query) || 
-            (u.username && u.username.toLowerCase().includes('@' + query))
-          );
-        }
-
-        showSearchResults(matches);
-      });
-    }
-
-    function showSearchResults(matches) {
-      let resultsDiv = $('searchResults');
-      
-      if (!resultsDiv) {
-        resultsDiv = document.createElement('div');
-        resultsDiv.id = 'searchResults';
-        resultsDiv.style.cssText = `
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          background: var(--surface-1);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-sm);
-          box-shadow: var(--shadow-2);
-          z-index: 1000;
-          max-height: 300px;
-          overflow-y: auto;
-        `;
-        $('searchInput').parentNode.style.position = 'relative';
-        $('searchInput').parentNode.appendChild(resultsDiv);
+      try {
+        await fetch(MESSAGES_URL, {
+          method: "PUT",
+          headers,
+          body: JSON.stringify({ privateMessages: allPrivateMessages })
+        });
+      } catch (error) {
+        console.error("Errore nell'aggiornamento dei messaggi:", error);
+        alert("Errore nell'invio del messaggio.");
       }
+    }
 
-      if (matches.length === 0) {
-        resultsDiv.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-3);">Nessun utente trovato</div>';
-        resultsDiv.style.display = 'block';
+    function showChatList() {
+      if (!currentUser) {
+        alert("Devi essere loggato per vedere le tue chat.");
         return;
       }
 
-      resultsDiv.innerHTML = '';
-      resultsDiv.style.display = 'block';
+      hideElement('mainContent');
+      hideElement('videoPage');
+      hideElement('userProfilePage');
+      hideElement('settingsPage');
+      hideElement('privateChatModal');
+      showElement('chatListModal');
+      renderConversationList();
+    }
 
-      matches.forEach(user => {
-        const item = document.createElement('div');
-        item.style.cssText = `
-          padding: 12px;
-          cursor: pointer;
-          border-bottom: 1px solid var(--border);
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          transition: background 0.2s;
-        `;
-        
-        item.innerHTML = `
-          <img src="${user.profilePic}" style="width: 32px; height: 32px; border-radius: 50%;">
-          <div>
-            <div style="font-weight: 500;">${user.name}</div>
-            <div style="font-size: 12px; color: var(--primary-solid);">${user.username}</div>
+    function closeChatList() {
+      hideElement('chatListModal');
+      showMainContent();
+    }
+
+    function renderConversationList() {
+      const conversationList = document.getElementById('conversationList');
+      conversationList.innerHTML = '';
+
+      const myConversations = Object.entries(allPrivateMessages)
+        .filter(([key, messages]) => 
+          key.includes(currentUser.email) && messages.length > 0
+        )
+        .map(([key, messages]) => {
+          const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
+          const recipient = usersData[recipientEmail];
+          const lastMessage = messages[messages.length - 1];
+          return { recipient, lastMessage };
+        })
+        .sort((a, b) => new Date(b.lastMessage.date) - new Date(a.lastMessage.date));
+
+      if (myConversations.length === 0) {
+        conversationList.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Non hai ancora conversazioni.</p>';
+        return;
+      }
+
+      myConversations.forEach(({ recipient, lastMessage }) => {
+        const conversationElement = document.createElement('a');
+        conversationElement.href = '#';
+        conversationElement.className = 'conversation-item';
+        conversationElement.onclick = (e) => {
+          e.preventDefault();
+          openPrivateChat(recipient.email);
+        };
+
+        conversationElement.innerHTML = `
+          <img src="${recipient.profilePic}" class="profile-pic" />
+          <div class="conversation-info">
+            <div class="user-name-conv">${recipient.name}</div>
+            <div class="last-message">${lastMessage.text}</div>
           </div>
         `;
         
-        item.addEventListener('mouseover', () => item.style.background = 'var(--surface-2)');
-        item.addEventListener('mouseout', () => item.style.background = 'transparent');
-        item.addEventListener('click', () => {
-          showProfile(user.email);
-          hideSearchResults();
-          $('searchInput').value = '';
-        });
-        
-        resultsDiv.appendChild(item);
+        conversationList.appendChild(conversationElement);
       });
     }
 
-    function hideSearchResults() {
-      const results = $('searchResults');
-      if (results) results.style.display = 'none';
-    }
-
-    // URL handling for profile links
-    function handleProfileUrl() {
-      const path = window.location.pathname;
-      if (path && path !== '/') {
-        const username = path.substring(1); // Remove leading slash
-        
-        // Cerca utente per username
-        const user = allUsers.find(u => u.username === '@' + username || u.username === username);
-        
-        if (user) {
-          // Mostra profilo dell'utente
-          setTimeout(() => {
-            showProfile(user.email);
-          }, 1000);
-        } else {
-          console.log('Profile not found for:', username);
-        }
-      }
-    }
-
-    // Event listeners
-    function setupEventListeners() {
-      // Chat input enter key
-      const chatInput = $('chatMessageInput');
-      if (chatInput) {
-        chatInput.addEventListener('keypress', e => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendChatMessage();
-          }
-        });
-      }
-
-      // Form validation
-      const inputIds = ['postText', 'videoLink', 'embedCode', 'twitterLink'];
-      inputIds.forEach(id => {
-        const el = $(id);
-        if (el) el.addEventListener('input', checkPublishBtn);
-      });
-
-      // Close search results when clicking outside
-      document.addEventListener('click', e => {
-        if (!e.target.closest('.search-box')) {
-          hideSearchResults();
-        }
-      });
-
-      // Name input for username generation
-      const regName = $('regName');
-      if (regName) {
-        regName.addEventListener('input', generateUsername);
-      }
-    }
-
-    // Auto-login check
-    async function checkAutoLogin() {
-      const storedEmail = localStorage.getItem('nexiflow_userEmail');
-      const loginType = localStorage.getItem('nexiflow_loginType');
+    // Translation and Summary Functions
+    async function translatePost(postId) {
+      const post = allPosts.find(p => p.id === postId);
+      if (!post) return;
       
-      if (!storedEmail) {
-        showAuth();
-        return;
-      }
-
-      // Cerca l'utente nel database
-      const user = allUsers.find(u => u.email === storedEmail);
+      const targetLang = currentUser?.country === "Russia" ? "ru" : "it";
+      const text = post.content;
       
-      if (user) {
-        currentUser = user;
-        console.log('Auto-login successful for:', user.name, user.username);
-        showApp();
-      } else {
-        // Rimuovi dati di login non validi
-        localStorage.removeItem('nexiflow_userEmail');
-        localStorage.removeItem('nexiflow_loginType');
-        showAuth();
-      }
-    }
-
-    // Spotify auth check
-    async function handleSpotifyAuth() {
-      const params = new URLSearchParams(location.hash.substring(1));
-      const token = params.get('access_token');
-      
-      if (!token) return false;
-
       try {
-        const res = await fetch('https://api.spotify.com/v1/me', {
-          headers: { Authorization: 'Bearer ' + token }
+        const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ q: text, target: targetLang })
         });
-        const spotifyUser = await res.json();
         
-        let user = allUsers.find(u => u.email === spotifyUser.email);
-        
-        if (!user) {
-          // Genera username per utenti Spotify
-          const cleanName = spotifyUser.display_name.toLowerCase().replace(/[^a-z]/g, '');
-          const randomNum = Math.floor(Math.random() * 90) + 10;
-          const username = `@${cleanName}${randomNum}`;
-          
-          user = {
-            name: spotifyUser.display_name,
-            email: spotifyUser.email,
-            profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
-            bio: 'Spotify user',
-            username: username,
-            joinDate: new Date().toISOString()
-          };
-          allUsers.push(user);
-          await api.put('users', { users: allUsers });
-        }
-        
-        currentUser = user;
-        localStorage.setItem('nexiflow_userEmail', user.email);
-        localStorage.setItem('nexiflow_loginType', 'spotify');
-        
-        // Rimuovi parametri URL
-        window.history.replaceState({}, document.title, window.location.pathname);
-        
-        showApp();
-        return true;
+        const data = await res.json();
+        const translated = data.data.translations[0].translatedText;
+        alert("Traduzione: " + translated);
       } catch (err) {
-        console.error('Spotify auth error:', err);
-        return false;
+        console.error("Errore nella traduzione:", err);
+        alert("Servizio di traduzione non disponibile al momento.");
       }
     }
 
-    // Initialize application
+    async function summarizePost(postId) {
+      const post = allPosts.find(p => p.id === postId);
+      if (!post) return;
+      
+      try {
+        const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: { text: "Fai un breve riassunto di questo testo: " + post.content }
+          })
+        });
+        
+        const data = await res.json();
+        const summary = data.candidates[0].output;
+        alert("Riassunto: " + summary);
+      } catch (err) {
+        console.error("Errore nel riassunto:", err);
+        alert("Servizio di riassunto non disponibile al momento.");
+      }
+    }
+
+    // Spotify Login
+    function loginWithSpotify() {
+      const scopes = 'user-read-private user-read-email';
+      const authUrl = `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+      window.location.href = authUrl;
+    }
+
+    // Input validation for video publishing
+    document.addEventListener('DOMContentLoaded', function() {
+      const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
+      if (newVideoEmbedCodeInput) {
+        newVideoEmbedCodeInput.addEventListener('input', () => {
+          document.getElementById('publishVideoBtn').disabled = newVideoEmbedCodeInput.value.trim() === '';
+        });
+      }
+    });
+
+    // Initialize Application
     window.onload = async () => {
-      console.log('Nexiflow initializing...');
+      const storedEmail = localStorage.getItem("currentUserEmail");
       
-      // Load theme first
-      loadTheme();
-      
-      // Load data from APIs
-      await loadData();
-      
-      // Setup event listeners
-      setupEventListeners();
-      setupSearch();
-      
-      // Check for Spotify authentication
-      const spotifyAuthHandled = await handleSpotifyAuth();
-      
-      if (!spotifyAuthHandled) {
-        // Check for auto-login
-        await checkAutoLogin();
+      if (storedEmail) {
+        await loadAllData();
+        currentUser = allUsers.find(u => u.email === storedEmail);
+        if (currentUser) {
+          showAppContent();
+        } else {
+          logoutUser();
+        }
+      } else {
+        // Check for Spotify authentication
+        const params = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = params.get('access_token');
+        
+        if (accessToken) {
+          try {
+            const spotifyUser = await fetch('https://api.spotify.com/v1/me', {
+              headers: { 'Authorization': 'Bearer ' + accessToken }
+            }).then(res => res.json());
+
+            await loadAllData();
+            const email = spotifyUser.email;
+            const user = allUsers.find(u => u.email === email);
+
+            if (user) {
+              currentUser = user;
+            } else {
+              const newUser = {
+                name: spotifyUser.display_name,
+                email: spotifyUser.email,
+                profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
+                bio: "Accesso tramite Spotify",
+                password: null
+              };
+              allUsers.push(newUser);
+              await updateUsersOnServer(allUsers);
+              currentUser = newUser;
+            }
+            
+            localStorage.setItem("currentUserEmail", currentUser.email);
+            showAppContent();
+          } catch (error) {
+            console.error("Errore durante l'autenticazione con Spotify:", error);
+            alert("Errore nell'autenticazione con Spotify.");
+            showAuthContent();
+          }
+        } else {
+          await loadAllData();
+          showAuthContent();
+        }
       }
-      
-      // Handle profile URL if present
-      handleProfileUrl();
-      
-      console.log('Nexiflow initialized successfully');
     };
 
-    // Utility functions for backward compatibility
-    function migrateOldUserData() {
-      // Questa funzione può essere usata per migrare dati dai bin precedenti
-      // se necessario in futuro
-    }
-
-    // Development helpers
-    window.nexiflowDebug = {
-      currentUser: () => currentUser,
-      linkLoopUser: () => linkLoopUser,
-      allUsers: () => allUsers,
-      allMessages: () => allMessages,
-      resetLogin: () => {
-        localStorage.removeItem('nexiflow_userEmail');
-        localStorage.removeItem('nexiflow_loginType');
-        localStorage.removeItem('nexiflow_linkLoopEmail');
-        localStorage.removeItem('nexiflow_linkLoopAuth');
-        location.reload();
-      },
-      forceLinkLoopLogin: () => {
-        linkLoopUser = { email: 'test@linkloop.com', linkLoopVerified: true };
-        localStorage.setItem('nexiflow_linkLoopEmail', 'test@linkloop.com');
-        localStorage.setItem('nexiflow_linkLoopAuth', 'true');
-        showApp();
+    // Close modals when clicking outside
+    window.onclick = function(event) {
+      const countryModal = document.getElementById("countryModal");
+      const chatListModal = document.getElementById("chatListModal");
+      
+      if (event.target == countryModal) {
+        countryModal.style.display = "none";
+      }
+      
+      if (event.target == chatListModal) {
+        closeChatList();
       }
     };
 
-    console.log('Nexiflow Enhanced loaded - Nexiquar™ LinkLoopChat™ integration ready!');
-
-    console.log('Nexiflow Enhanced loaded - Profile links & LinkLoopChat™ ready!');
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(event) {
+      // ESC to close modals
+      if (event.key === 'Escape') {
+        closeModal();
+        closePrivateChat();
+        closeChatList();
+      }
+      
+      // Enter to send chat message
+      if (event.key === 'Enter' && event.target.id === 'privateMessageInput') {
+        event.preventDefault();
+        sendPrivateMessage();
+      }
+    });
   </script>
+  <script>
+(function() {
+  // Utility per gestire la modalità "delete power"
+  let deletePowerEnabled = false;
+  let deletePowerTimeout = null;
+
+  // Funzione da chiamare per abilitare la modalità "delete power"
+  function enableDeletePower() {
+    if (deletePowerEnabled) return;
+    deletePowerEnabled = true;
+
+    // Mostra tutti i bottoni cestino (assumendo che abbiano classe .action-button)
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.style.display = 'flex';
+      btn.disabled = false;
+    });
+
+    // Mostra i bottoni cestino nei commenti se esistono
+    document.querySelectorAll('.comment .action-button').forEach(btn => {
+      btn.style.display = 'flex';
+      btn.disabled = false;
+    });
+
+    // Aggiungi handler di eliminazione per ogni cestino
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.addEventListener('click', function handler(e) {
+        // Trova l'elemento da eliminare (post o commento)
+        let post = btn.closest('.post');
+        let comment = btn.closest('.comment');
+        if (post) post.remove();
+        if (comment) comment.remove();
+      });
+    });
+
+    // Disabilita dopo 5 minuti
+    deletePowerTimeout = setTimeout(disableDeletePower, 5 * 60 * 1000);
+  }
+
+  // Funzione da chiamare per disabilitare la modalità "delete power"
+  function disableDeletePower() {
+    deletePowerEnabled = false;
+
+    // Nasconde i bottoni cestino (se normalmente nascosti)
+    document.querySelectorAll('.action-button').forEach(btn => {
+      btn.style.display = '';
+      btn.disabled = true;
+    });
+    document.querySelectorAll('.comment .action-button').forEach(btn => {
+      btn.style.display = '';
+      btn.disabled = true;
+    });
+    if (deletePowerTimeout) {
+      clearTimeout(deletePowerTimeout);
+      deletePowerTimeout = null;
+    }
+  }
+
+  // Monitoraggio della barra di ricerca
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+    searchInput.addEventListener('input', function() {
+      if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') {
+        enableDeletePower();
+      }
+    });
+  });
+})();
+</script>
 </body>
-</html>dDesc" rows="2" placeholder="Descrizione..."></textarea>
-              </div>
-              <div class="post-types">
-                <button class="post-type active" onclick="setFormat('horizontal')">Normale</button>
-                <button class="post-type" onclick="setFormat('vertical')">Short/Reel</button>
-              </div>
-              <div class="form-group">
-                <textarea class="form-input" id="embe
+</html>
