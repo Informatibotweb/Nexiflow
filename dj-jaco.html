@@ -1,42 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sito DJ Jaco</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            text-align: center;
-            padding-top: 100px;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: #fff;
-            padding: 20px 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        h1 {
-            font-size: 2.5em;
-            color: #d35400; /* Un tocco di arancione */
-        }
-        p {
-            font-size: 1.2em;
-            font-style: italic;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DJ Jacopo — Nexiflow</title>
+  <link rel="icon" type="image/png" href="nexiflow.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;700&family=Montserrat:wght@400;700&family=Monoton&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#ff4d6d;
+      --text:#f4f6f8;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Montserrat,system-ui,-apple-system,Segoe UI,Roboto,El Messiri,Arial;background:linear-gradient(180deg,#071021 0%, #071727 60%);color:var(--text);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px}
+    .container{width:100%;max-width:1100px}
+
+    /* Header con font El Messiri */
+    header{text-align:center;margin-bottom:28px}
+    .welcome{font-family:'El Messiri', serif;font-size:38px;letter-spacing:1px;margin-bottom:8px}
+    .sub{font-size:14px;opacity:0.85}
+
+    /* Titolo con font "Triangolo" (qui usiamo Monoton come alternativa simile decorativa) */
+    .triangle-text{text-align:center;margin:22px 0}
+    .triangle-text h2{margin:0;font-family:'Monoton', cursive;font-size:40px;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
+
+    /* Video grid */
+    #videos{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .video-card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6);display:flex;flex-direction:column;align-items:center}
+    .video-card iframe{width:100%;height:260px;border-radius:8px;border:0}
+    .video-title{margin-top:10px;font-size:14px;text-align:center}
+
+    /* YouTube link */
+    .yt-link{display:flex;align-items:center;gap:10px;margin-top:18px;justify-content:center}
+    .yt-link img{width:44px;height:44px}
+
+    footer{margin-top:28px;text-align:center;opacity:0.7;font-size:13px}
+
+    @media (max-width:520px){.welcome{font-size:28px}.triangle-text h2{font-size:28px}}
+  </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <div class="welcome">Benvenuti nella pagina Nexiflow di DJ Jacopo</div>
+      <div class="sub">Musica · Mix · Eventi</div>
+    </header>
 
-    <div class="container">
-        <h1>Il sito di DJ Jaco di Nexiflow</h1>
-        <p>In cantiere...</p>
-        <p>Ci vediamo presto con nuovi suoni!</p>
+    <!-- Testo "triangolo" con font decorativo -->
+    <div class="triangle-text">
+      <h2>ECCO I NOSTRI VIDEO</h2>
     </div>
 
+    <!-- Sezione video -->
+    <main id="videos">
+      <div class="video-card">
+        <iframe width="603" height="339" src="https://www.youtube.com/embed/dIZ4SDnEkt4" title="JACOPO IL DJ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div class="video-title">JACOPO IL DJ</div>
+      </div>
+
+      <div class="video-card">
+        <iframe width="603" height="339" src="https://www.youtube.com/embed/wfCwi2w4D5Q" title="Ecco la nostra nuova attrezzatura!!" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div class="video-title">Ecco la nostra nuova attrezzatura!!</div>
+      </div>
+    </main>
+
+    <!-- Icona YouTube con link al canale -->
+    <div class="yt-link">
+      <a href="https://www.youtube.com/@Djjacoelightjokeymatty" target="_blank" rel="noopener noreferrer" aria-label="Vai alla pagina YouTube di DJ Jacopo">
+        <img src="https://cdn-icons-png.flaticon.com/512/152/152810.png" alt="YouTube icon">
+      </a>
+    </div>
+
+    <footer>
+      DJ Jacopo — Nexiflow
+    </footer>
+  </div>
 </body>
 </html>
