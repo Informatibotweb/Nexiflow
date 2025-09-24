@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexiflow - Create a Channel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;700&family=Lobster&family=Source+Code+Pro&family=Oswald&family=Playfair+Display&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .draggable {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+        }
+
+        .draggable.selected {
+            outline: 2px dashed #3b82f6;
+            outline-offset: 4px;
+        }
+        
+        .draggable[data-locked="true"].selected {
+            outline: 2px dashed #ef4444; /* Red outline for locked */
+            cursor: not-allowed;
+        }
+
+        .resizer {
+            width: 10px;
+            height: 10px;
+            background: #3b82f6;
+            position: absolute;
+            right: -5px;
+            bottom: -5px;
+            cursor: se-resize;
+            display: none;
+        }
+
+        .selected .resizer {
+            display: block;
+        }
+
+        .draggable[data-locked="true"] .resizer {
+            display: none;
+        }
+        
+        #canvas {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            background-color: white;
+        }
+        
+        #canvas > * {
+            padding: 8px;
+        }
+
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+          -webkit-appearance: none; 
+          margin: 0; 
+        }
+        input[type=number] {
+          -moz-appearance: textfield;
+        }
+
+        .prop-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #374151; /* bg-gray-700 */
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.2s;
+            font-weight: bold;
+        }
+        .prop-btn:hover {
+            background-color: #4b5563; /* bg-gray-600 */
+        }
+        .prop-btn.active {
+            background-color: #3b82f6; /* bg-blue-600 */
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col h-screen overflow-hidden">
+
+    <!-- Schermata Iniziale -->
+    <div id="name-screen" class="flex flex-col items-center justify-center h-full w-full bg-gray-900 absolute top-0 left-0 z-50">
+        <div class="text-center p-8 bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full">
+            <h1 class="text-4xl font-bold mb-2">Nexiflow</h1>
+            <h2 class="text-xl text-blue-400 mb-6">Create a Channel</h2>
+            <p class="text-gray-400 mb-6">Dai un nome al tuo nuovo canale/sito. Ricorda, deve terminare con "channel".</p>
+            <form id="name-form" class="flex flex-col gap-4">
+                <input type="text" id="channel-name-input" placeholder="es. my-awesome-channel" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+                <p id="name-error" class="text-red-400 text-sm hidden">Il nome deve finire con "channel".</p>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg">Inizia a Creare</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Schermata Editor Principale -->
+    <div id="editor-screen" class="hidden h-full w-full">
+        <div class="flex h-full">
+            <!-- Pannello Sinistro (Aggiungi Elementi) -->
+            <aside class="w-80 bg-gray-800 p-4 flex flex-col h-full overflow-y-auto space-y-6 shrink-0">
+                <h2 class="text-2xl font-bold border-b border-gray-700 pb-2">Aggiungi</h2>
+                <!-- Sezione Sfondo -->
+                <div>
+                    <h3 class="font-semibold mb-3 text-lg">Sfondo Pagina</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label for="bg-color" class="block text-sm font-medium text-gray-300">Colore</label>
+                            <input type="color" id="bg-color" value="#FFFFFF" class="w-full h-10 p-1 bg-gray-700 border border-gray-600 rounded-md cursor-pointer">
+                        </div>
+                        <div>
+                            <label for="bg-image" class="block text-sm font-medium text-gray-300">Immagine</label>
+                            <input type="file" id="bg-image" accept="image/*" class="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                        </div>
+                         <button id="remove-bg-image" class="w-full text-xs bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Rimuovi Immagine</button>
+                    </div>
+                </div>
+                <!-- Sezione Aggiungi Elementi -->
+                <div>
+                    <h3 class="font-semibold mb-3 text-lg">Elementi</h3>
+                    <div class="space-y-3">
+                         <input type="text" id="text-input" placeholder="Scrivi qualcosa..." class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                         <button id="add-text-btn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Aggiungi Testo</button>
+                         <label for="add-image-input" class="w-full block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 cursor-pointer">Aggiungi Immagine</label>
+                         <input type="file" id="add-image-input" accept="image/*" class="hidden">
+                         <button id="add-nexiflow-icon" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Aggiungi Icona Nexiflow</button>
+                    </div>
+                </div>
+                <!-- Sezione Incorpora -->
+                <div>
+                    <h3 class="font-semibold mb-3 text-lg">Incorpora</h3>
+                    <div class="space-y-3">
+                         <textarea id="embed-input" placeholder="Incolla qui il codice <iframe>..." rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"></textarea>
+                         <button id="add-embed-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-black font-bold py-2 px-4 rounded-lg transition duration-300">Aggiungi Incorporazione</button>
+                    </div>
+                </div>
+                <!-- Sezione Download -->
+                <div class="!mt-auto pt-6 border-t border-gray-700">
+                    <h3 class="font-semibold mb-3 text-lg">Finalizza</h3>
+                    <p id="nexiflow-warning" class="text-xs text-yellow-400 mb-3 hidden">Ricorda di aggiungere l'icona Nexiflow.</p>
+                    <button id="download-btn" class="w-full bg-gray-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                        Scarica File HTML
+                    </button>
+                </div>
+            </aside>
+            
+            <!-- Area di Lavoro -->
+            <main class="flex-1 bg-gray-900 p-6 flex items-center justify-center">
+                <div class="w-full h-full max-w-7xl aspect-video bg-gray-700 shadow-2xl rounded-lg overflow-hidden">
+                    <div id="canvas"></div>
+                </div>
+            </main>
+
+            <!-- Pannello Destro (Proprietà) -->
+            <aside id="properties-panel" class="w-80 bg-gray-800 p-4 flex-col h-full overflow-y-auto space-y-6 shrink-0 hidden">
+                <h2 class="text-2xl font-bold border-b border-gray-700 pb-2">Proprietà</h2>
+                <!-- Proprietà Testo -->
+                <div id="text-properties" class="hidden space-y-4">
+                    <div>
+                        <label for="font-family" class="block text-sm font-medium text-gray-300">Font</label>
+                        <select id="font-family" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white">
+                            <option value="Inter">Inter</option>
+                            <option value="Roboto">Roboto</option>
+                            <option value="Lobster">Lobster</option>
+                            <option value="Source Code Pro">Source Code Pro</option>
+                            <option value="Oswald">Oswald</option>
+                            <option value="'Playfair Display'">Playfair Display</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1">
+                             <label for="font-size" class="block text-sm font-medium text-gray-300">Dimensione (px)</label>
+                             <input type="number" id="font-size" min="1" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white">
+                        </div>
+                        <div>
+                             <label for="font-color" class="block text-sm font-medium text-gray-300">Colore</label>
+                             <input type="color" id="font-color" class="w-12 h-10 p-1 bg-gray-700 border border-gray-600 rounded-md cursor-pointer">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Stile</label>
+                        <div class="flex items-center gap-2">
+                            <button id="font-bold" class="prop-btn">B</button>
+                            <button id="font-italic" class="prop-btn"><em>I</em></button>
+                            <button id="font-underline" class="prop-btn"><u>U</u></button>
+                        </div>
+                    </div>
+                     <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Allineamento</label>
+                        <div class="flex items-center gap-2">
+                            <button id="align-left" class="prop-btn">L</button>
+                            <button id="align-center" class="prop-btn">C</button>
+                            <button id="align-right" class="prop-btn">R</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Proprietà Immagine -->
+                <div id="image-properties" class="hidden space-y-4">
+                    <div>
+                        <label for="image-link" class="block text-sm font-medium text-gray-300">Link URL</label>
+                        <input type="text" id="image-link" placeholder="https://..." class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white">
+                    </div>
+                     <div>
+                        <label for="image-width" class="block text-sm font-medium text-gray-300">Larghezza (px)</label>
+                        <input type="number" id="image-width" min="10" class="w-full bg-gray-700 border border-gray-600 rounded-md px-3 py-2 text-white">
+                    </div>
+                </div>
+                 <!-- Proprietà Generali -->
+                 <div id="common-properties" class="hidden pt-6 border-t border-gray-700 space-y-2">
+                    <button id="lock-element-btn" class="w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2">
+                        <svg id="unlock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z"/></svg>
+                        <svg id="lock-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill hidden" viewBox="0 0 16 16"><path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+                        <span id="lock-text">Blocca Elemento</span>
+                    </button>
+                    <button id="delete-element-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Elimina Elemento</button>
+                 </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Modale di Download -->
+    <div id="download-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+        <div class="bg-gray-800 rounded-lg p-8 max-w-lg w-full text-center shadow-2xl">
+            <h3 class="text-2xl font-bold mb-4">Istruzioni per la Pubblicazione</h3>
+            <p class="text-gray-300 mb-6">
+                Per mettere online il tuo canale, segui questi passaggi. <strong class="text-yellow-400">È importante non rinominare il file!</strong>
+            </p>
+            <div class="text-left bg-gray-900 p-4 rounded-md space-y-2 mb-6">
+                <p>1. Vai su GitHub: <a href="https://github.com/Informatibotweb/Nexiflow" target="_blank" class="text-blue-400 hover:underline">github.com/Informatibotweb/Nexiflow</a></p>
+                <p>2. Clicca su <code class="bg-gray-700 px-1.5 py-0.5 rounded-sm text-sm">Add file</code> > <code class="bg-gray-700 px-1.5 py-0.5 rounded-sm text-sm">Upload files</code>.</p>
+                <p>3. Trascina il file <code id="modal-filename" class="bg-gray-700 px-1.5 py-0.5 rounded-sm text-sm"></code> che stai per scaricare.</p>
+                <p>4. Clicca su <code class="bg-gray-700 px-1.5 py-0.5 rounded-sm text-sm">Commit changes</code> in fondo alla pagina.</p>
+            </div>
+            <div class="flex justify-center gap-4">
+                <button id="cancel-download-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Annulla</button>
+                <button id="confirm-download-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors">Capito, Scarica</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Riferimenti DOM
+            const nameScreen = document.getElementById('name-screen');
+            const editorScreen = document.getElementById('editor-screen');
+            const nameForm = document.getElementById('name-form');
+            const nameInput = document.getElementById('channel-name-input');
+            const nameError = document.getElementById('name-error');
+            const canvas = document.getElementById('canvas');
+            
+            // Controlli Aggiunta
+            const bgColorInput = document.getElementById('bg-color');
+            const bgImageInput = document.getElementById('bg-image');
+            const removeBgImageBtn = document.getElementById('remove-bg-image');
+            const addTextBtn = document.getElementById('add-text-btn');
+            const textInput = document.getElementById('text-input');
+            const addImageInput = document.getElementById('add-image-input');
+            const addEmbedBtn = document.getElementById('add-embed-btn');
+            const embedInput = document.getElementById('embed-input');
+            const addNexiflowIconBtn = document.getElementById('add-nexiflow-icon');
+            const downloadBtn = document.getElementById('download-btn');
+            const nexiflowWarning = document.getElementById('nexiflow-warning');
+
+            // Pannello Proprietà
+            const propertiesPanel = document.getElementById('properties-panel');
+            const textProperties = document.getElementById('text-properties');
+            const imageProperties = document.getElementById('image-properties');
+            const commonProperties = document.getElementById('common-properties');
+            const fontFamilySelect = document.getElementById('font-family');
+            const fontSizeInput = document.getElementById('font-size');
+            const fontColorInput = document.getElementById('font-color');
+            const imageLinkInput = document.getElementById('image-link');
+            const imageWidthInput = document.getElementById('image-width');
+            const deleteElementBtn = document.getElementById('delete-element-btn');
+            const lockElementBtn = document.getElementById('lock-element-btn');
+            const lockText = document.getElementById('lock-text');
+            const lockIcon = document.getElementById('lock-icon');
+            const unlockIcon = document.getElementById('unlock-icon');
+            const fontBoldBtn = document.getElementById('font-bold');
+            const fontItalicBtn = document.getElementById('font-italic');
+            const fontUnderlineBtn = document.getElementById('font-underline');
+            const alignLeftBtn = document.getElementById('align-left');
+            const alignCenterBtn = document.getElementById('align-center');
+            const alignRightBtn = document.getElementById('align-right');
+            
+            // Modale Download
+            const downloadModal = document.getElementById('download-modal');
+            const modalFilename = document.getElementById('modal-filename');
+            const cancelDownloadBtn = document.getElementById('cancel-download-btn');
+            const confirmDownloadBtn = document.getElementById('confirm-download-btn');
+
+
+            // Stato Applicazione
+            let channelName = '';
+            let selectedElement = null;
+            let nexiflowIconAdded = false;
+
+            // --- LOGICA INIZIALE ---
+            nameForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = nameInput.value.trim();
+                if (name.toLowerCase().endsWith('channel')) {
+                    channelName = name;
+                    nameScreen.classList.add('hidden');
+                    editorScreen.classList.remove('hidden');
+                    updateDownloadButtonState();
+                } else {
+                    nameError.classList.remove('hidden');
+                }
+            });
+            nameInput.addEventListener('input', () => { nameError.classList.add('hidden'); });
+
+            // --- CONTROLLI SFONDO ---
+            bgColorInput.addEventListener('input', (e) => {
+                canvas.style.backgroundColor = e.target.value;
+                canvas.style.backgroundImage = 'none';
+            });
+            bgImageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        canvas.style.backgroundImage = `url(${event.target.result})`;
+                        canvas.style.backgroundSize = 'cover';
+                        canvas.style.backgroundPosition = 'center';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            removeBgImageBtn.addEventListener('click', () => {
+                canvas.style.backgroundImage = 'none';
+                bgColorInput.value = '#FFFFFF';
+                canvas.style.backgroundColor = '#FFFFFF';
+                bgImageInput.value = '';
+            });
+            
+            // --- FUNZIONI CREAZIONE ELEMENTI ---
+            const createElement = (type, options = {}) => {
+                let element;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'draggable';
+                wrapper.style.top = options.top || '50px';
+                wrapper.style.left = options.left || '50px';
+                wrapper.dataset.type = type;
+                if(options.isNexiflow) wrapper.dataset.nexiflowIcon = 'true';
+
+                switch (type) {
+                    case 'text':
+                        element = document.createElement('div');
+                        element.textContent = options.text || 'Testo di esempio';
+                        element.style.fontSize = '20px';
+                        element.style.color = 'black';
+                        element.style.fontFamily = 'Inter';
+                        element.setAttribute('contenteditable', 'true');
+                        wrapper.appendChild(element);
+                        break;
+                    case 'image':
+                        const linkWrapper = document.createElement('a');
+                        if (options.href) {
+                            linkWrapper.href = options.href;
+                            linkWrapper.target = '_blank';
+                        }
+                        element = document.createElement('img');
+                        element.src = options.src;
+                        element.style.width = options.width || '150px';
+                        element.style.height = 'auto';
+                        linkWrapper.appendChild(element);
+                        wrapper.appendChild(linkWrapper);
+                        break;
+                    case 'embed':
+                        wrapper.innerHTML = options.code;
+                        const iframe = wrapper.querySelector('iframe');
+                        if(iframe) {
+                            iframe.style.width = '100%';
+                            iframe.style.height = '100%';
+                        }
+                        wrapper.style.width = '300px';
+                        wrapper.style.height = '200px';
+                        wrapper.style.resize = 'both';
+                        wrapper.style.overflow = 'hidden';
+                        break;
+                }
+
+                makeInteractive(wrapper);
+                canvas.appendChild(wrapper);
+                selectElement(wrapper);
+            };
+
+            // Event Listeners per Aggiungere Elementi
+            addTextBtn.addEventListener('click', () => {
+                createElement('text', { text: textInput.value || 'Nuovo Testo' });
+                textInput.value = '';
+            });
+
+            addImageInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => createElement('image', { src: event.target.result });
+                    reader.readAsDataURL(file);
+                }
+                e.target.value = '';
+            });
+            
+            addEmbedBtn.addEventListener('click', () => {
+                const code = embedInput.value.trim();
+                if(code.startsWith('<iframe') && code.endsWith('>')) {
+                    createElement('embed', { code: code });
+                    embedInput.value = '';
+                } else {
+                    alert('Per favore, inserisci un codice <iframe> valido.');
+                }
+            });
+
+            addNexiflowIconBtn.addEventListener('click', () => {
+                if (nexiflowIconAdded) return alert('Hai già aggiunto l-icona di Nexiflow!');
+                const nexiflowPNGasSVG = `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cGF0aCBmaWxsPSIjM2I4MmY2IiBkPSJNMTEzLjcgMTguM2MtMS44LTEuOC00LjMtMi44LTYuOS0yLjhIMjEuMkM3LjcgMTUuNSAwIDI3IDAgNDEuOHY0NC40YzAgMTQuOCAxMiAyNi.OCAyNi44IDI2LjhoNzQuNGMxNC44IDAgMjYuOC0xMiAyNi44LTI2LjhWODIuMmwtMTQuMy02My45ek0yNC4zIDk5LjVWNDQuM2M3LjEtNC40IDE1LjQtNy4yIDI0LjQtNy4yIDUgMCA5LjguOSAxNC4yIDIuN3Y1Ny40SDI0LjN6bTMyLjggMHYtNTdjNC4yLTEuMyA4LjEtMiAxMS43LTJzNy41LjcgMTEuNyAybDUuMS0xLjVWMzUuNWMtNi4xLTEuOS0xMy0zLTE5LjgtMy05LjcgMC0xOC44IDIuOS0yNi44IDguMnY1Ny43aDE4LjF6bTMwLjYgMHYtNTQuMWM1LjMgMS43IDEwLjIgNCAxNC41IDdjMi44IDEuOSA1LjQgNC4yIDcuNiA2Ljh2NDAuNWgtMzIuMXptLTMuNi01Ny44bC01LjIgMS41VjM3LjVjMy40LS44IDctMS4yIDEwLjctMS4yIDQuMSAwIDguMS42IDEyIDEuN3Y1Ny45SDg0LjF2LTU5LjV6Ii8+PC9zdmc+`;
+                createElement('image', { src: nexiflowPNGasSVG, href: 'https://nexiflow.netlify.app', width: '60px', isNexiflow: true });
+                nexiflowIconAdded = true;
+                updateDownloadButtonState();
+            });
+
+
+            // --- GESTIONE INTERATTIVITÀ ELEMENTI ---
+            function makeInteractive(element) {
+                // Dragging
+                element.onmousedown = (e) => {
+                    if (e.target.closest('[contenteditable="true"]') || element.dataset.locked === 'true') return;
+                    selectElement(element);
+                    e.preventDefault();
+                    
+                    const canvasRect = canvas.getBoundingClientRect();
+                    let shiftX = e.clientX - element.getBoundingClientRect().left;
+                    let shiftY = e.clientY - element.getBoundingClientRect().top;
+
+                    const moveAt = (clientX, clientY) => {
+                        let newLeft = clientX - canvasRect.left - shiftX;
+                        let newTop = clientY - canvasRect.top - shiftY;
+                        
+                        if (newLeft < 0) newLeft = 0;
+                        if (newTop < 0) newTop = 0;
+                        if (newLeft + element.offsetWidth > canvas.offsetWidth) newLeft = canvas.offsetWidth - element.offsetWidth;
+                        if (newTop + element.offsetHeight > canvas.offsetHeight) newTop = canvas.offsetHeight - element.offsetHeight;
+
+                        element.style.left = newLeft + 'px';
+                        element.style.top = newTop + 'px';
+                    };
+
+                    const onMouseMove = (event) => moveAt(event.clientX, event.clientY);
+                    document.addEventListener('mousemove', onMouseMove);
+                    
+                    document.onmouseup = () => {
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.onmouseup = null;
+                    };
+                };
+                element.ondragstart = () => false;
+
+                // Resizing
+                const resizer = document.createElement('div');
+                resizer.className = 'resizer';
+                element.appendChild(resizer);
+
+                resizer.addEventListener('mousedown', (e) => {
+                    if (element.dataset.locked === 'true') return;
+                    e.stopPropagation(); 
+                    e.preventDefault();
+                    let original_w = parseFloat(getComputedStyle(element, null).getPropertyValue('width').replace('px', ''));
+                    let original_h = parseFloat(getComputedStyle(element, null).getPropertyValue('height').replace('px', ''));
+                    let original_mouse_x = e.pageX;
+                    let original_mouse_y = e.pageY;
+                    
+                    const resize = (e) => {
+                        const width = original_w + (e.pageX - original_mouse_x);
+                        const height = original_h + (e.pageY - original_mouse_y);
+                        if (width > 20) element.style.width = width + 'px';
+                        if (height > 20) element.style.height = height + 'px';
+                    }
+                    
+                    const stopResize = () => {
+                        document.removeEventListener('mousemove', resize);
+                        document.removeEventListener('mouseup', stopResize);
+                    }
+                    
+                    document.addEventListener('mousemove', resize);
+                    document.addEventListener('mouseup', stopResize);
+                });
+            }
+
+            // --- GESTIONE PANNELLO PROPRIETÀ ---
+            const selectElement = (element) => {
+                if (selectedElement) {
+                    selectedElement.classList.remove('selected');
+                }
+                selectedElement = element;
+                selectedElement.classList.add('selected');
+                updatePropertiesPanel();
+            };
+
+            const deselectAll = () => {
+                if (selectedElement) {
+                    selectedElement.classList.remove('selected');
+                    selectedElement = null;
+                }
+                propertiesPanel.classList.add('hidden');
+            };
+
+            canvas.addEventListener('mousedown', (e) => { if (e.target === canvas) deselectAll(); });
+
+            const updatePropertiesPanel = () => {
+                if (!selectedElement) {
+                    propertiesPanel.classList.add('hidden');
+                    return;
+                }
+                propertiesPanel.classList.remove('hidden');
+                commonProperties.classList.remove('hidden');
+                textProperties.classList.add('hidden');
+                imageProperties.classList.add('hidden');
+                
+                const isLocked = selectedElement.dataset.locked === 'true';
+                lockText.textContent = isLocked ? 'Sblocca Elemento' : 'Blocca Elemento';
+                unlockIcon.classList.toggle('hidden', isLocked);
+                lockIcon.classList.toggle('hidden', !isLocked);
+
+                const type = selectedElement.dataset.type;
+                if (type === 'text') {
+                    textProperties.classList.remove('hidden');
+                    const textDiv = selectedElement.querySelector('div');
+                    fontFamilySelect.value = textDiv.style.fontFamily;
+                    fontSizeInput.value = parseInt(textDiv.style.fontSize);
+                    fontColorInput.value = rgbToHex(textDiv.style.color);
+                    // Update style buttons
+                    fontBoldBtn.classList.toggle('active', textDiv.style.fontWeight === 'bold');
+                    fontItalicBtn.classList.toggle('active', textDiv.style.fontStyle === 'italic');
+                    fontUnderlineBtn.classList.toggle('active', textDiv.style.textDecoration === 'underline');
+                    // Update alignment buttons
+                    alignLeftBtn.classList.toggle('active', textDiv.style.textAlign === 'left' || !textDiv.style.textAlign);
+                    alignCenterBtn.classList.toggle('active', textDiv.style.textAlign === 'center');
+                    alignRightBtn.classList.toggle('active', textDiv.style.textAlign === 'right');
+                } else if (type === 'image') {
+                    imageProperties.classList.remove('hidden');
+                    const link = selectedElement.querySelector('a');
+                    const img = selectedElement.querySelector('img');
+                    imageLinkInput.value = link ? link.href : '';
+                    imageWidthInput.value = parseInt(img.style.width);
+                }
+            };
+            
+            // Listeners proprietà testo
+            fontFamilySelect.addEventListener('input', (e) => { if(selectedElement) selectedElement.querySelector('div').style.fontFamily = e.target.value; });
+            fontSizeInput.addEventListener('input', (e) => { if(selectedElement) selectedElement.querySelector('div').style.fontSize = e.target.value + 'px'; });
+            fontColorInput.addEventListener('input', (e) => { if(selectedElement) selectedElement.querySelector('div').style.color = e.target.value; });
+
+            const toggleTextStyle = (style, value, defaultValue) => {
+                if(!selectedElement) return;
+                const textDiv = selectedElement.querySelector('div');
+                textDiv.style[style] = textDiv.style[style] === value ? defaultValue : value;
+                updatePropertiesPanel();
+            };
+            fontBoldBtn.addEventListener('click', () => toggleTextStyle('fontWeight', 'bold', 'normal'));
+            fontItalicBtn.addEventListener('click', () => toggleTextStyle('fontStyle', 'italic', 'normal'));
+            fontUnderlineBtn.addEventListener('click', () => toggleTextStyle('textDecoration', 'underline', 'none'));
+            
+            const setTextAlign = (align) => {
+                if(!selectedElement) return;
+                selectedElement.querySelector('div').style.textAlign = align;
+                updatePropertiesPanel();
+            }
+            alignLeftBtn.addEventListener('click', () => setTextAlign('left'));
+            alignCenterBtn.addEventListener('click', () => setTextAlign('center'));
+            alignRightBtn.addEventListener('click', () => setTextAlign('right'));
+
+            // Listeners proprietà immagine
+            imageLinkInput.addEventListener('input', (e) => {
+                if(selectedElement) {
+                    const link = selectedElement.querySelector('a');
+                    if(link) link.href = e.target.value;
+                }
+            });
+            imageWidthInput.addEventListener('input', (e) => {
+                if(selectedElement) {
+                    selectedElement.querySelector('img').style.width = e.target.value + 'px';
+                }
+            });
+            
+            // Listeners proprietà comuni
+            lockElementBtn.addEventListener('click', () => {
+                if (!selectedElement) return;
+                const isLocked = selectedElement.dataset.locked === 'true';
+                selectedElement.dataset.locked = isLocked ? 'false' : 'true';
+                updatePropertiesPanel();
+            });
+            deleteElementBtn.addEventListener('click', () => {
+                if(selectedElement) {
+                    if (selectedElement.dataset.nexiflowIcon === 'true') {
+                        nexiflowIconAdded = false;
+                        updateDownloadButtonState();
+                    }
+                    selectedElement.remove();
+                    deselectAll();
+                }
+            });
+
+            // --- LOGICA DOWNLOAD ---
+            const updateDownloadButtonState = () => {
+                downloadBtn.disabled = !nexiflowIconAdded;
+                nexiflowWarning.classList.toggle('hidden', nexiflowIconAdded);
+            };
+
+            downloadBtn.addEventListener('click', () => {
+                modalFilename.textContent = `${channelName}.html`;
+                downloadModal.classList.remove('hidden');
+            });
+            
+            cancelDownloadBtn.addEventListener('click', () => {
+                downloadModal.classList.add('hidden');
+            });
+            
+            confirmDownloadBtn.addEventListener('click', () => {
+                downloadModal.classList.add('hidden');
+                performDownload();
+            });
+
+            const performDownload = () => {
+                deselectAll();
+                const canvasClone = canvas.cloneNode(true);
+                canvasClone.querySelectorAll('.resizer').forEach(r => r.remove());
+                canvasClone.querySelectorAll('[contenteditable="true"]').forEach(el => el.removeAttribute('contenteditable'));
+                canvasClone.querySelectorAll('[data-locked]').forEach(el => el.removeAttribute('data-locked'));
+                canvasClone.querySelectorAll('[data-nexiflow-icon]').forEach(el => el.removeAttribute('data-nexiflow-icon'));
+
+                const finalHTML = `
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${channelName}</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; font-family: Inter, sans-serif; }
+        #container {
+            width: 100%; height: 100%; position: relative;
+            background-color: ${canvas.style.backgroundColor || 'white'};
+            ${canvas.style.backgroundImage ? `background-image: ${canvas.style.backgroundImage};` : ''}
+            background-size: cover; background-position: center; overflow: hidden;
+        }
+        #container > * { position: absolute; user-select: none; padding: 8px; box-sizing: border-box; }
+        img, iframe { width: 100%; height: 100%; display: block; }
+        a { text-decoration: none; color: inherit; }
+    </style>
+</head>
+<body><div id="container">${canvasClone.innerHTML}</div></body>
+</html>`;
+                const blob = new Blob([finalHTML.trim()], { type: 'text/html' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `${channelName}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+
+            const rgbToHex = (rgb) => {
+                if (!rgb || !rgb.includes('rgb')) return '#000000';
+                let [r, g, b] = rgb.match(/\d+/g).map(Number);
+                return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+            };
+        });
+    </script>
+</body>
+</html>
