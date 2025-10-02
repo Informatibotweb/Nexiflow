@@ -878,153 +878,6 @@
       margin-top: var(--spacing-md);
     }
 
-    /* INIZIO NUOVO CSS PER MEDIA */
-.file-input-wrapper { 
-  width: 100%; 
-}
-
-.file-input-label {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 2rem;
-  background: var(--bg-secondary);
-  border: 2px dashed var(--border-light);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.file-input-label:hover {
-  border-color: var(--primary);
-  background: var(--bg-tertiary);
-  color: var(--primary);
-}
-
-.file-input-wrapper input[type="file"] { 
-  display: none; 
-}
-
-.image-preview-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.image-preview {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow-md);
-}
-
-.image-preview img,
-.image-preview video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.remove-image {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  width: 24px;
-  height: 24px;
-  border-radius: var(--radius-full);
-  background: var(--danger);
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  transition: transform 0.2s;
-}
-
-.remove-image:hover { 
-  transform: scale(1.1); 
-}
-
-.post-media-grid {
-  display: grid;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.post-media-grid.single { 
-  grid-template-columns: 1fr; 
-}
-
-.post-media-grid.double { 
-  grid-template-columns: repeat(2, 1fr); 
-}
-
-.post-media-grid.multiple { 
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-}
-
-.post-media-grid img,
-.post-media-grid video {
-  width: 100%;
-  height: 100%;
-  max-height: 500px;
-  object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.post-media-grid img:hover,
-.post-media-grid video:hover {
-  transform: scale(1.02);
-}
-
-.media-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.media-modal.active { 
-  display: flex; 
-}
-
-.media-modal-content {
-  max-width: 90vw;
-  max-height: 90vh;
-  position: relative;
-}
-
-.media-modal-content img,
-.media-modal-content video {
-  max-width: 100%;
-  max-height: 90vh;
-  border-radius: var(--radius-lg);
-}
-
-.close-modal {
-  position: absolute;
-  top: -40px;
-  right: 0;
-  color: white;
-  font-size: 2rem;
-  cursor: pointer;
-  background: none;
-  border: none;
-}
-/* FINE NUOVO CSS PER MEDIA */
-
     .sticker-preview {
       width: 40px;
       height: 40px;
@@ -1351,7 +1204,6 @@
             <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
             <button id="post-type-video" onclick="setPostType('video', this)">Video</button>
             <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora</button>
-            <button id="post-type-media" onclick="setPostType('media', this)">Media</button>
             <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter</button>
           </div>
           
@@ -1374,18 +1226,6 @@
             </div>
             <textarea id="embedCode" class="form-input" rows="4" placeholder="Codice di incorporazione (iframe)..."></textarea>
           </div>
-
-          <div id="post-media-fields" class="post-type-fields hidden">
-  <textarea id="mediaDescription" class="form-input" rows="2" placeholder="Descrizione (opzionale)..."></textarea>
-  <div class="file-input-wrapper">
-    <label for="mediaFiles" class="file-input-label">
-      📁 Carica Immagini o Video
-      <span style="font-size: 0.875rem;">(Max 10 file)</span>
-    </label>
-    <input type="file" id="mediaFiles" accept="image/*,video/*" multiple onchange="handleMediaFiles(this)">
-  </div>
-  <div id="mediaPreviewContainer" class="image-preview-container"></div>
-</div>
           
           <div id="post-twitter-fields" class="post-type-fields hidden">
             <input type="url" id="twitterLink" class="form-input" placeholder="Link del post Twitter/X" />
@@ -1592,7 +1432,6 @@
     let allPrivateMessages = {};
     let currentPostType = 'text';
     let currentEmbedFormat = 'horizontal';
-    let uploadedMediaFiles = [];
     let currentVideoPageFormat = 'vertical';
     let newVideoFormat = 'horizontal';
     let currentChatRecipientEmail = null;
@@ -1876,38 +1715,37 @@
       document.getElementById('inputArea').classList.toggle('active');
     }
 
- function setPostType(type, button) {
-  currentPostType = type;
-  
-  document.querySelectorAll('.post-type-selector button').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  button.classList.add('active');
+    function setPostType(type, button) {
+      currentPostType = type;
+      
+      // Update active button
+      document.querySelectorAll('.post-type-selector button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      button.classList.add('active');
 
-  hideElement('post-text-fields');
-  hideElement('post-media-fields');
-  hideElement('post-video-fields');
-  hideElement('post-embed-fields');
-  hideElement('post-twitter-fields');
+      // Show/hide appropriate fields
+      hideElement('post-text-fields');
+      hideElement('post-video-fields');
+      hideElement('post-embed-fields');
+      hideElement('post-twitter-fields');
 
-  if (type === 'text') {
-    showElement('post-text-fields');
-    document.getElementById('postText').focus();
-  } else if (type === 'media') {
-    showElement('post-media-fields');
-  } else if (type === 'video') {
-    showElement('post-video-fields');
-    document.getElementById('videoLink').focus();
-  } else if (type === 'embed') {
-    showElement('post-embed-fields');
-    document.getElementById('embedCode').focus();
-  } else if (type === 'twitter') {
-    showElement('post-twitter-fields');
-    document.getElementById('twitterLink').focus();
-  }
+      if (type === 'text') {
+        showElement('post-text-fields');
+        document.getElementById('postText').focus();
+      } else if (type === 'video') {
+        showElement('post-video-fields');
+        document.getElementById('videoLink').focus();
+      } else if (type === 'embed') {
+        showElement('post-embed-fields');
+        document.getElementById('embedCode').focus();
+      } else if (type === 'twitter') {
+        showElement('post-twitter-fields');
+        document.getElementById('twitterLink').focus();
+      }
 
-  checkPublishButtonState();
-}
+      checkPublishButtonState();
+    }
 
     function setVideoFormat(format) {
       currentEmbedFormat = format;
@@ -1917,23 +1755,18 @@
       document.getElementById(`embed-format-${format}`).classList.add('active');
     }
 
-function checkPublishButtonState() {
-  let isReady = false;
-  
-  if (currentPostType === 'text' && document.getElementById('postText').value.trim() !== '') {
-    isReady = true;
-  } else if (currentPostType === 'media' && uploadedMediaFiles.length > 0) {
-    isReady = true;
-  } else if (currentPostType === 'video' && document.getElementById('videoLink').value.trim() !== '') {
-    isReady = true;
-  } else if (currentPostType === 'embed' && document.getElementById('embedCode').value.trim() !== '') {
-    isReady = true;
-  } else if (currentPostType === 'twitter' && document.getElementById('twitterLink').value.trim() !== '') {
-    isReady = true;
-  }
-
-  document.getElementById('publishBtn').disabled = !isReady;
-}
+    function checkPublishButtonState() {
+      let isReady = false;
+      
+      if (currentPostType === 'text' && document.getElementById('postText').value.trim() !== '') {
+        isReady = true;
+      } else if (currentPostType === 'video' && document.getElementById('videoLink').value.trim() !== '') {
+        isReady = true;
+      } else if (currentPostType === 'embed' && document.getElementById('embedCode').value.trim() !== '') {
+        isReady = true;
+      } else if (currentPostType === 'twitter' && document.getElementById('twitterLink').value.trim() !== '') {
+        isReady = true;
+      }
 
       document.getElementById('publishBtn').disabled = !isReady;
     }
@@ -1978,131 +1811,26 @@ function checkPublishButtonState() {
       return '';
     }
 
-    function handleMediaFiles(input) {
-  const files = Array.from(input.files);
-  if (files.length > 10) {
-    alert("Puoi caricare massimo 10 file!");
-    return;
-  }
-
-  uploadedMediaFiles = [];
-  const container = document.getElementById('mediaPreviewContainer');
-  container.innerHTML = '';
-
-  files.forEach((file, index) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      uploadedMediaFiles.push({
-        data: e.target.result,
-        type: file.type.startsWith('image/') ? 'image' : 'video'
-      });
-
-      const preview = document.createElement('div');
-      preview.className = 'image-preview';
-      
-      if (file.type.startsWith('image/')) {
-        preview.innerHTML = `
-          <img src="${e.target.result}" />
-          <button class="remove-image" onclick="removeMedia(${index})">×</button>
-        `;
-      } else {
-        preview.innerHTML = `
-          <video src="${e.target.result}" muted></video>
-          <button class="remove-image" onclick="removeMedia(${index})">×</button>
-        `;
-      }
-      
-      container.appendChild(preview);
-    };
-    reader.readAsDataURL(file);
-  });
-
-  checkPublishButtonState();
-}
-
-function removeMedia(index) {
-  uploadedMediaFiles.splice(index, 1);
-  const input = document.getElementById('mediaFiles');
-  input.value = '';
-  
-  const container = document.getElementById('mediaPreviewContainer');
-  container.innerHTML = '';
-  
-  uploadedMediaFiles.forEach((media, i) => {
-    const preview = document.createElement('div');
-    preview.className = 'image-preview';
-    
-    if (media.type === 'image') {
-      preview.innerHTML = `
-        <img src="${media.data}" />
-        <button class="remove-image" onclick="removeMedia(${i})">×</button>
-      `;
-    } else {
-      preview.innerHTML = `
-        <video src="${media.data}" muted></video>
-        <button class="remove-image" onclick="removeMedia(${i})">×</button>
-      `;
-    }
-    
-    container.appendChild(preview);
-  });
-
-  checkPublishButtonState();
-}
-
-function openMediaModal(src, type) {
-  const modal = document.getElementById('mediaModal');
-  const content = document.getElementById('modalMediaContent');
-  
-  if (type === 'image') {
-    content.innerHTML = `<img src="${src}" />`;
-  } else {
-    content.innerHTML = `<video src="${src}" controls autoplay></video>`;
-  }
-  
-  modal.classList.add('active');
-}
-
-function closeMediaModal() {
-  const modal = document.getElementById('mediaModal');
-  const content = document.getElementById('modalMediaContent');
-  content.innerHTML = '';
-  modal.classList.remove('active');
-}
-
     async function publishPost() {
       const content = getPostContent(currentPostType);
       const description = getPostDescription(currentPostType);
       
       if (!content || !currentUser) return;
 
-let newPost = {
-  id: Date.now(),
-  author: currentUser.name,
-  authorEmail: currentUser.email,
-  authorPic: currentUser.profilePic,
-  type: currentPostType,
-  date: getFormattedDate(),
-  upvotes: 0,
-  downvotes: 0,
-  comments: []
-};
-
-if (currentPostType === 'text') {
-  newPost.content = document.getElementById('postText').value;
-} else if (currentPostType === 'media') {
-  newPost.content = document.getElementById('mediaDescription').value;
-  newPost.media = uploadedMediaFiles;
-} else if (currentPostType === 'video') {
-  newPost.content = document.getElementById('videoLink').value;
-  newPost.description = document.getElementById('videoDescription').value;
-} else if (currentPostType === 'embed') {
-  newPost.content = document.getElementById('embedCode').value;
-  newPost.description = document.getElementById('embedDescription').value;
-  newPost.embedFormat = currentEmbedFormat;
-} else if (currentPostType === 'twitter') {
-  newPost.content = document.getElementById('twitterLink').value;
-}
+      const newPost = {
+        id: Date.now(),
+        author: currentUser.name,
+        authorEmail: currentUser.email,
+        authorPic: currentUser.profilePic,
+        type: currentPostType,
+        content: content,
+        description: description,
+        date: getFormattedDate(),
+        upvotes: 0,
+        downvotes: 0,
+        comments: [],
+        embedFormat: currentEmbedFormat
+      };
 
       allPosts.unshift(newPost);
       await updatePostsOnServer(allPosts);
@@ -2115,10 +1843,6 @@ if (currentPostType === 'text') {
       document.getElementById('embedDescription').value = '';
       document.getElementById('embedCode').value = '';
       document.getElementById('twitterLink').value = '';
-      document.getElementById('mediaDescription').value = '';
-document.getElementById('mediaFiles').value = '';
-document.getElementById('mediaPreviewContainer').innerHTML = '';
-uploadedMediaFiles = [];
       checkPublishButtonState();
       toggleInput();
     }
@@ -2158,20 +1882,6 @@ uploadedMediaFiles = [];
         let postContent = '';
         if (post.type === 'text') {
           postContent = `<div class="post-content">${post.content}</div>`;
-          } else if (post.type === 'media') {
-  const gridClass = post.media.length === 1 ? 'single' : post.media.length === 2 ? 'double' : 'multiple';
-  postContent = `
-    ${post.content ? `<div class="post-content">${post.content}</div>` : ''}
-    <div class="post-media-grid ${gridClass}">
-      ${post.media.map((m) => {
-        if (m.type === 'image') {
-          return `<img src="${m.data}" onclick="openMediaModal('${m.data}', 'image')" />`;
-        } else {
-          return `<video src="${m.data}" onclick="openMediaModal('${m.data}', 'video')" muted></video>`;
-        }
-      }).join('')}
-    </div>
-  `;
         } else if (post.type === 'video') {
           postContent = `
             ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
@@ -3053,12 +2763,5 @@ uploadedMediaFiles = [];
   });
 })();
 </script>
-<!-- Modal per visualizzare media a schermo intero -->
-<div id="mediaModal" class="media-modal" onclick="closeMediaModal()">
-  <div class="media-modal-content" onclick="event.stopPropagation()">
-    <button class="close-modal" onclick="closeMediaModal()">×</button>
-    <div id="modalMediaContent"></div>
-  </div>
-</div>
 </body>
 </html>
