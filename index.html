@@ -1,2766 +1,1557 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BHXQ3M8FYD"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-BHXQ3M8FYD');
-  </script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Nexiflow™ by Nexiquar</title>
-  <link rel="icon" type="image/png" href="nexiflow.png">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-    :root {
-      --primary: #00D4FF;
-      --primary-dark: #00B8E6;
-      --secondary: #6366F1;
-      --accent: #F59E0B;
-      --success: #10B981;
-      --danger: #EF4444;
-      --warning: #F59E0B;
-      
-      --bg-primary: #FFFFFF;
-      --bg-secondary: #F8FAFC;
-      --bg-tertiary: #F1F5F9;
-      
-      --text-primary: #0F172A;
-      --text-secondary: #475569;
-      --text-tertiary: #94A3B8;
-      
-      --border-light: #E2E8F0;
-      --border-medium: #CBD5E1;
-      
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-      
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 20px;
-      --radius-full: 9999px;
-      
-      --spacing-xs: 0.5rem;
-      --spacing-sm: 0.75rem;
-      --spacing-md: 1rem;
-      --spacing-lg: 1.5rem;
-      --spacing-xl: 2rem;
-      --spacing-2xl: 3rem;
-    }
-
-    /* Dark mode variables */
-    body.dark-mode {
-      --bg-primary: #0F172A;
-      --bg-secondary: #1E293B;
-      --bg-tertiary: #334155;
-      
-      --text-primary: #F8FAFC;
-      --text-secondary: #CBD5E1;
-      --text-tertiary: #64748B;
-      
-      --border-light: #334155;
-      --border-medium: #475569;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      line-height: 1.6;
-      transition: all 0.3s ease;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 var(--spacing-md);
-    }
-
-    /* Header Styles */
-    header {
-      background: var(--bg-primary);
-      border-bottom: 1px solid var(--border-light);
-      padding: var(--spacing-md) 0;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(10px);
-    }
-
-    .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--spacing-lg);
-    }
-
-    .logo-section {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-    }
-
-    #logo {
-      height: 40px;
-      width: auto;
-    }
-
-    .brand-name {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    .header-nav {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .nav-button {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      padding: var(--spacing-xs) var(--spacing-md);
-      border: none;
-      border-radius: var(--radius-full);
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .nav-button:hover {
-      background: var(--bg-tertiary);
-      color: var(--text-primary);
-    }
-
-    .nav-button.primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .nav-button.primary:hover {
-      background: var(--primary-dark);
-    }
-
-    .theme-toggle {
-      width: 40px;
-      height: 40px;
-      border-radius: var(--radius-full);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
-
-    /* Search Styles */
-    .search-container {
-      position: relative;
-      min-width: 200px;
-    }
-
-    #searchInput {
-      width: 100%;
-      padding: var(--spacing-xs) var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      font-size: 0.875rem;
-      transition: all 0.2s ease;
-    }
-
-    #searchInput:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgb(0 212 255 / 0.1);
-    }
-
-    #searchResults {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      z-index: 50;
-      display: none;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .search-result-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-sm) var(--spacing-md);
-      text-decoration: none;
-      color: var(--text-primary);
-      transition: background 0.2s ease;
-    }
-
-    .search-result-item:hover {
-      background: var(--bg-secondary);
-    }
-
-    .search-result-item img {
-      width: 32px;
-      height: 32px;
-      border-radius: var(--radius-full);
-      object-fit: cover;
-    }
-
-    /* User Info */
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      background: var(--bg-primary);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      margin: var(--spacing-lg) 0;
-    }
-
-    .profile-pic {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--radius-full);
-      object-fit: cover;
-    }
-
-    .user-name {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    /* Main Content */
-    .main-content {
-      padding: var(--spacing-lg) 0;
-    }
-
-    /* Input Area */
-    .input-area {
-      background: var(--bg-primary);
-      border-radius: var(--radius-xl);
-      padding: var(--spacing-xl);
-      margin-bottom: var(--spacing-xl);
-      box-shadow: var(--shadow-md);
-      display: none;
-    }
-
-    .input-area.active {
-      display: block;
-      animation: slideDown 0.3s ease;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .post-type-selector {
-      display: flex;
-      gap: var(--spacing-xs);
-      margin-bottom: var(--spacing-lg);
-      padding: 4px;
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-    }
-
-    .post-type-selector button {
-      flex: 1;
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: none;
-      border-radius: var(--radius-sm);
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .post-type-selector button.active {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .post-type-fields {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-md);
-    }
-
-    .form-input {
-      padding: var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      font-size: 1rem;
-      transition: all 0.2s ease;
-      resize: vertical;
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgb(0 212 255 / 0.1);
-    }
-
-    .publish-button {
-      padding: var(--spacing-md) var(--spacing-xl);
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      margin-top: var(--spacing-md);
-    }
-
-    .publish-button:hover:not(:disabled) {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-
-    .publish-button:disabled {
-      background: var(--text-tertiary);
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Posts */
-    .posts {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-xl);
-    }
-
-    .post {
-      background: var(--bg-primary);
-      border-radius: var(--radius-xl);
-      padding: var(--spacing-xl);
-      box-shadow: var(--shadow-md);
-      transition: all 0.3s ease;
-      position: relative;
-    }
-
-    .post:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-2px);
-    }
-
-    .post-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--spacing-lg);
-    }
-
-    .post-author {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      text-decoration: none;
-      color: var(--text-primary);
-    }
-
-    .post-author .profile-pic {
-      width: 40px;
-      height: 40px;
-    }
-
-    .author-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .author-name {
-      font-weight: 600;
-      font-size: 0.875rem;
-    }
-
-    .post-date {
-      font-size: 0.75rem;
-      color: var(--text-tertiary);
-    }
-
-    .post-actions {
-      display: flex;
-      gap: var(--spacing-xs);
-    }
-
-    .action-button {
-      width: 32px;
-      height: 32px;
-      border: none;
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .action-button:hover {
-      background: var(--danger);
-      color: white;
-    }
-
-    .post-content {
-      margin-bottom: var(--spacing-lg);
-      line-height: 1.7;
-    }
-
-    .post-embed {
-      margin-top: var(--spacing-md);
-      border-radius: var(--radius-lg);
-      overflow: hidden;
-    }
-
-    .post-embed iframe {
-      width: 100%;
-      height: 400px;
-      border: none;
-    }
-
-    .post-embed .vertical-video {
-      height: 600px;
-      max-width: 400px;
-      margin: 0 auto;
-    }
-
-    .post-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: var(--spacing-md);
-      padding-top: var(--spacing-md);
-      border-top: 1px solid var(--border-light);
-    }
-
-    .vote-section {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .vote-button {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-xs);
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .vote-button:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .vote-count {
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-
-    .post-actions-footer {
-      display: flex;
-      gap: var(--spacing-sm);
-    }
-
-    .footer-button {
-      padding: var(--spacing-xs) var(--spacing-sm);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      font-size: 0.875rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-
-    .footer-button:hover {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    /* Comments */
-    .comments-section {
-      margin-top: var(--spacing-lg);
-      padding-top: var(--spacing-lg);
-      border-top: 1px solid var(--border-light);
-      display: none;
-    }
-
-    .comment {
-      background: var(--bg-secondary);
-      padding: var(--spacing-md);
-      border-radius: var(--radius-md);
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .comment-form {
-      display: flex;
-      gap: var(--spacing-sm);
-      margin-top: var(--spacing-md);
-    }
-
-    .comment-input {
-      flex: 1;
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-    }
-
-    .comment-submit {
-      padding: var(--spacing-sm) var(--spacing-lg);
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius-full);
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    /* Chat Styles - FIXED FOR MOBILE */
-    #privateChatModal {
-      position: fixed;
-      bottom: 0;
-      right: 0;
-      width: 100%;
-      max-width: 400px;
-      height: 70vh;
-      background: var(--bg-primary);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-      box-shadow: var(--shadow-xl);
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-      animation: slideUpChat 0.3s ease;
-    }
-
-    @keyframes slideUpChat {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
-    }
-
-    .chat-header {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-lg);
-      border-bottom: 1px solid var(--border-light);
-      background: var(--bg-primary);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }
-
-    .close-chat-btn {
-      width: 32px;
-      height: 32px;
-      border: none;
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .chat-recipient-info {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-sm);
-    }
-
-    .chat-recipient-info .profile-pic {
-      width: 36px;
-      height: 36px;
-    }
-
-    .chat-body {
-      flex: 1;
-      padding: var(--spacing-md);
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-sm);
-    }
-
-    .chat-message {
-      max-width: 80%;
-      padding: var(--spacing-sm) var(--spacing-md);
-      border-radius: var(--radius-lg);
-      word-wrap: break-word;
-    }
-
-    .chat-message.sent {
-      background: var(--primary);
-      color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: var(--spacing-xs);
-    }
-
-    .chat-message.received {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      align-self: flex-start;
-      border-bottom-left-radius: var(--spacing-xs);
-    }
-
-    .chat-input-area {
-      display: flex;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      border-top: 1px solid var(--border-light);
-      background: var(--bg-primary);
-    }
-
-    .chat-input {
-      flex: 1;
-      padding: var(--spacing-sm) var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-full);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-    }
-
-    .send-chat-btn {
-      padding: var(--spacing-sm) var(--spacing-lg);
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius-full);
-      font-weight: 500;
-      cursor: pointer;
-    }
-
-    /* Chat List Modal */
-    #chatListModal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 500px;
-      max-height: 80vh;
-      background: var(--bg-primary);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-xl);
-      display: none;
-      flex-direction: column;
-      z-index: 1001;
-    }
-
-    .chat-list-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: var(--spacing-lg);
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .chat-list-header h3 {
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    #conversationList {
-      flex: 1;
-      overflow-y: auto;
-      padding: var(--spacing-md);
-    }
-
-    .conversation-item {
-      display: flex;
-      align-items: center;
-      gap: var(--spacing-md);
-      padding: var(--spacing-md);
-      border-radius: var(--radius-md);
-      text-decoration: none;
-      color: var(--text-primary);
-      transition: background 0.2s ease;
-    }
-
-    .conversation-item:hover {
-      background: var(--bg-secondary);
-    }
-
-    .conversation-item .profile-pic {
-      width: 48px;
-      height: 48px;
-    }
-
-    .conversation-info {
-      flex: 1;
-    }
-
-    .user-name-conv {
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-
-    .last-message {
-      font-size: 0.875rem;
-      color: var(--text-tertiary);
-    }
-
-    /* Auth Pages */
-    .auth-container {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: var(--spacing-lg);
-    }
-
-    .auth-card {
-      background: var(--bg-primary);
-      padding: var(--spacing-2xl);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-lg);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .auth-card h2 {
-      text-align: center;
-      margin-bottom: var(--spacing-xl);
-      font-size: 1.75rem;
-      font-weight: 700;
-    }
-
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-lg);
-    }
-
-    .auth-input {
-      padding: var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      font-size: 1rem;
-    }
-
-    .auth-button {
-      padding: var(--spacing-md);
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .auth-button:hover {
-      background: var(--primary-dark);
-    }
-
-    .auth-divider {
-      text-align: center;
-      color: var(--text-tertiary);
-      margin: var(--spacing-md) 0;
-    }
-
-    .social-login {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-
-    .social-login:hover {
-      background: var(--bg-tertiary);
-    }
-
-    .social-login img {
-      width: 20px;
-      height: 20px;
-    }
-
-    .auth-link {
-      text-align: center;
-      margin-top: var(--spacing-lg);
-    }
-
-    .auth-link a {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    /* Profile Picture Selector */
-    .profile-pic-selector {
-      display: flex;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-md);
-      background: var(--bg-secondary);
-    }
-
-    .profile-pic-option {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--radius-full);
-      object-fit: cover;
-      cursor: pointer;
-      border: 2px solid transparent;
-      transition: all 0.2s ease;
-    }
-
-    .profile-pic-option:hover {
-      transform: scale(1.05);
-    }
-
-    .profile-pic-option.selected {
-      border-color: var(--primary);
-      transform: scale(1.05);
-    }
-
-    /* Sticker Picker */
-    .sticker-picker {
-      display: none;
-      flex-wrap: wrap;
-      gap: var(--spacing-sm);
-      padding: var(--spacing-md);
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
-      margin-top: var(--spacing-md);
-    }
-
-    .sticker-preview {
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      border-radius: var(--radius-sm);
-      transition: transform 0.2s ease;
-    }
-
-    .sticker-preview:hover {
-      transform: scale(1.1);
-    }
-
-    /* Modal Overlay */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      display: none;
-    }
-
-    .modal-overlay.active {
-      display: block;
-    }
-
-    /* Video Modal */
-    #videoModal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .modal-content {
-      position: relative;
-      max-width: 90vw;
-      max-height: 90vh;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: -40px;
-      right: 0;
-      color: white;
-      font-size: 2rem;
-      cursor: pointer;
-      z-index: 1001;
-    }
-
-    .modal-content iframe {
-      border-radius: var(--radius-lg);
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: var(--spacing-2xl);
-      color: var(--text-tertiary);
-      border-top: 1px solid var(--border-light);
-      margin-top: var(--spacing-2xl);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-      .container {
-        padding: 0 var(--spacing-sm);
-      }
-
-      .header-content {
-        flex-wrap: wrap;
-        gap: var(--spacing-md);
-      }
-
-      .header-nav {
-        order: 3;
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      .search-container {
-        min-width: 150px;
-      }
-
-      .brand-name {
-        font-size: 1.25rem;
-      }
-
-      .post {
-        padding: var(--spacing-lg);
-      }
-
-      .post-footer {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .vote-section {
-        justify-content: center;
-      }
-
-      .post-actions-footer {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-
-      .comment-form {
-        flex-direction: column;
-      }
-
-      /* Mobile Chat Fix */
-      #privateChatModal {
-        bottom: 0;
-        right: 0;
-        left: 0;
-        width: 100%;
-        max-width: none;
-        height: 100vh;
-        border-radius: 0;
-      }
-
-      .chat-header {
-        border-radius: 0;
-      }
-
-      #chatListModal {
-        width: 100%;
-        height: 100vh;
-        max-width: none;
-        max-height: none;
-        border-radius: 0;
-        top: 0;
-        left: 0;
-        transform: none;
-      }
-
-      .auth-container {
-        padding: var(--spacing-md);
-      }
-
-      .auth-card {
-        padding: var(--spacing-xl);
-      }
-    }
-
-    @media (max-width: 480px) {
-      .header-content {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .logo-section {
-        justify-content: center;
-      }
-
-      .nav-button {
-        font-size: 0.75rem;
-        padding: var(--spacing-xs);
-      }
-
-      .post-type-selector {
-        flex-direction: column;
-      }
-
-      .post-type-selector button {
-        flex: none;
-      }
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(20px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.3s ease;
-    }
-
-    .slide-up {
-      animation: slideUp 0.3s ease;
-    }
-
-    /* Utility Classes */
-    .hidden { display: none !important; }
-    .visible { display: block !important; }
-    .flex { display: flex !important; }
-    .text-center { text-align: center; }
-    .text-left { text-align: left; }
-    .text-right { text-align: right; }
-    .font-bold { font-weight: 600; }
-    .font-semibold { font-weight: 500; }
-    .text-sm { font-size: 0.875rem; }
-    .text-xs { font-size: 0.75rem; }
-  </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BHXQ3M8FYD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-BHXQ3M8FYD');
+</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nexiflow™ by Nexiquar</title>
+<link rel="icon" type="image/png" href="nexiflow.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+:root {
+--primary: #00D4FF; --primary-dark: #00B8E6; --secondary: #6366F1; --accent: #F59E0B;
+--success: #10B981; --danger: #EF4444; --warning: #F59E0B; --bg-primary: #FFFFFF;
+--bg-secondary: #F8FAFC; --bg-tertiary: #F1F5F9; --text-primary: #0F172A;
+--text-secondary: #475569; --text-tertiary: #94A3B8; --border-light: #E2E8F0;
+--border-medium: #CBD5E1; --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+--radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 20px;
+--radius-full: 9999px; --spacing-xs: 0.5rem; --spacing-sm: 0.75rem;
+--spacing-md: 1rem; --spacing-lg: 1.5rem; --spacing-xl: 2rem; --spacing-2xl: 3rem;
+}
+body.dark-mode {
+--bg-primary: #0F172A; --bg-secondary: #1E293B; --bg-tertiary: #334155;
+--text-primary: #F8FAFC; --text-secondary: #CBD5E1; --text-tertiary: #64748B;
+--border-light: #334155; --border-medium: #475569;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background: var(--bg-secondary); color: var(--text-primary);
+line-height: 1.6; transition: all 0.3s ease; min-height: 100vh;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-md); }
+header {
+background: var(--bg-primary); border-bottom: 1px solid var(--border-light);
+padding: var(--spacing-md) 0; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px);
+}
+.header-content { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); }
+.logo-section { display: flex; align-items: center; gap: var(--spacing-md); }
+#logo { height: 40px; width: auto; }
+.brand-name { font-size: 1.5rem; font-weight: 700; color: var(--primary); text-decoration: none; }
+.header-nav { display: flex; align-items: center; gap: var(--spacing-sm); }
+.nav-button {
+display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-md);
+border: none; border-radius: var(--radius-full); background: transparent; color: var(--text-secondary);
+font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+}
+.nav-button:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+.nav-button.primary { background: var(--primary); color: white; }
+.nav-button.primary:hover { background: var(--primary-dark); }
+.theme-toggle {
+width: 40px; height: 40px; border-radius: var(--radius-full); display: flex;
+align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.search-container { position: relative; min-width: 200px; }
+#searchInput {
+width: 100%; padding: var(--spacing-xs) var(--spacing-md); border: 1px solid var(--border-light);
+border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-primary);
+font-size: 0.875rem; transition: all 0.2s ease;
+}
+#searchInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgb(0 212 255 / 0.1); }
+#searchResults {
+position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary);
+border: 1px solid var(--border-light); border-radius: var(--radius-md);
+box-shadow: var(--shadow-lg); z-index: 50; display: none; max-height: 300px; overflow-y: auto;
+}
+.search-result-item {
+display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-sm) var(--spacing-md);
+text-decoration: none; color: var(--text-primary); transition: background 0.2s ease;
+}
+.search-result-item:hover { background: var(--bg-secondary); }
+.search-result-item img { width: 32px; height: 32px; border-radius: var(--radius-full); object-fit: cover; }
+.user-info {
+display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-md);
+background: var(--bg-primary); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+margin: var(--spacing-lg) 0;
+}
+.profile-pic { width: 48px; height: 48px; border-radius: var(--radius-full); object-fit: cover; }
+.user-name { font-weight: 600; color: var(--text-primary); }
+.main-content { padding: var(--spacing-lg) 0; }
+.input-area {
+background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl);
+margin-bottom: var(--spacing-xl); box-shadow: var(--shadow-md); display: none;
+}
+.input-area.active { display: block; animation: slideDown 0.3s ease; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.post-type-selector {
+display: flex; gap: var(--spacing-xs); margin-bottom: var(--spacing-lg); padding: 4px;
+background: var(--bg-secondary); border-radius: var(--radius-md); flex-wrap: wrap; /* Aggiunto per responsiveness */
+}
+.post-type-selector button {
+flex: 1; padding: var(--spacing-sm) var(--spacing-md); border: none; border-radius: var(--radius-sm);
+background: transparent; color: var(--text-secondary); font-size: 0.875rem; font-weight: 500;
+cursor: pointer; transition: all 0.2s ease;
+}
+.post-type-selector button.active {
+background: var(--bg-primary); color: var(--text-primary); box-shadow: var(--shadow-sm);
+}
+.post-type-fields { display: flex; flex-direction: column; gap: var(--spacing-md); }
+.form-input {
+padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-md);
+background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem;
+transition: all 0.2s ease; resize: vertical;
+}
+.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgb(0 212 255 / 0.1); }
+.publish-button {
+padding: var(--spacing-md) var(--spacing-xl); background: var(--primary); color: white; border: none;
+border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; cursor: pointer;
+transition: all 0.2s ease; margin-top: var(--spacing-md);
+}
+.publish-button:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+.publish-button:disabled { background: var(--text-tertiary); cursor: not-allowed; transform: none; }
+.posts { display: flex; flex-direction: column; gap: var(--spacing-xl); }
+.post {
+background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl);
+box-shadow: var(--shadow-md); transition: all 0.3s ease; position: relative;
+}
+.post:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.post-header {
+display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg);
+}
+.post-author { display: flex; align-items: center; gap: var(--spacing-sm); text-decoration: none; color: var(--text-primary); }
+.post-author .profile-pic { width: 40px; height: 40px; }
+.author-info { display: flex; flex-direction: column; }
+.author-name { font-weight: 600; font-size: 0.875rem; }
+.post-date { font-size: 0.75rem; color: var(--text-tertiary); }
+.post-actions { display: flex; gap: var(--spacing-xs); }
+.action-button {
+width: 32px; height: 32px; border: none; border-radius: var(--radius-full); background: var(--bg-secondary);
+color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease; display: flex;
+align-items: center; justify-content: center;
+}
+.action-button:hover { background: var(--danger); color: white; }
+.post-content { margin-bottom: var(--spacing-lg); line-height: 1.7; }
+/* START: Stili per i contenuti caricati */
+.post-uploaded-content img, .post-uploaded-content video {
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: var(--radius-lg);
+    margin-top: var(--spacing-md);
+}
+/* END: Stili per i contenuti caricati */
+.post-embed { margin-top: var(--spacing-md); border-radius: var(--radius-lg); overflow: hidden; }
+.post-embed iframe { width: 100%; height: 400px; border: none; }
+.post-embed .vertical-video { height: 600px; max-width: 400px; margin: 0 auto; }
+.post-footer {
+display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+gap: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--border-light);
+}
+.vote-section { display: flex; align-items: center; gap: var(--spacing-sm); }
+.vote-button {
+display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-sm);
+border: 1px solid var(--border-light); border-radius: var(--radius-full); background: var(--bg-secondary);
+color: var(--text-secondary); font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease;
+}
+.vote-button:hover { border-color: var(--primary); color: var(--primary); }
+.vote-count { font-weight: 600; color: var(--text-primary); }
+.post-actions-footer { display: flex; gap: var(--spacing-sm); }
+.footer-button {
+padding: var(--spacing-xs) var(--spacing-sm); border: 1px solid var(--border-light);
+border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-secondary);
+font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+}
+.footer-button:hover { background: var(--primary); color: white; border-color: var(--primary); }
+.comments-section {
+margin-top: var(--spacing-lg); padding-top: var(--spacing-lg);
+border-top: 1px solid var(--border-light); display: none;
+}
+.comment { background: var(--bg-secondary); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm); }
+.comment-form { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
+.comment-input {
+flex: 1; padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--border-light);
+border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-primary);
+}
+.comment-submit {
+padding: var(--spacing-sm) var(--spacing-lg); background: var(--primary); color: white; border: none;
+border-radius: var(--radius-full); font-weight: 500; cursor: pointer;
+}
+#privateChatModal {
+position: fixed; bottom: 0; right: 0; width: 100%; max-width: 400px; height: 70vh;
+background: var(--bg-primary); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+box-shadow: var(--shadow-xl); display: none; flex-direction: column; z-index: 1000;
+animation: slideUpChat 0.3s ease;
+}
+@keyframes slideUpChat { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.chat-header {
+display: flex; align-items: center; gap: var(--spacing-sm); padding: var(--spacing-lg);
+border-bottom: 1px solid var(--border-light); background: var(--bg-primary);
+border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.close-chat-btn {
+width: 32px; height: 32px; border: none; border-radius: var(--radius-full); background: var(--bg-secondary);
+color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.chat-recipient-info { display: flex; align-items: center; gap: var(--spacing-sm); }
+.chat-recipient-info .profile-pic { width: 36px; height: 36px; }
+.chat-body {
+flex: 1; padding: var(--spacing-md); overflow-y: auto; display: flex;
+flex-direction: column; gap: var(--spacing-sm);
+}
+.chat-message { max-width: 80%; padding: var(--spacing-sm) var(--spacing-md); border-radius: var(--radius-lg); word-wrap: break-word; }
+.chat-message.sent { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: var(--spacing-xs); }
+.chat-message.received { background: var(--bg-secondary); color: var(--text-primary); align-self: flex-start; border-bottom-left-radius: var(--spacing-xs); }
+.chat-input-area {
+display: flex; gap: var(--spacing-sm); padding: var(--spacing-md);
+border-top: 1px solid var(--border-light); background: var(--bg-primary);
+}
+.chat-input {
+flex: 1; padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--border-light);
+border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-primary);
+}
+.send-chat-btn {
+padding: var(--spacing-sm) var(--spacing-lg); background: var(--primary); color: white; border: none;
+border-radius: var(--radius-full); font-weight: 500; cursor: pointer;
+}
+#chatListModal {
+position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px;
+max-height: 80vh; background: var(--bg-primary); border-radius: var(--radius-xl);
+box-shadow: var(--shadow-xl); display: none; flex-direction: column; z-index: 1001;
+}
+.chat-list-header { display: flex; justify-content: space-between; align-items: center; padding: var(--spacing-lg); border-bottom: 1px solid var(--border-light); }
+.chat-list-header h3 { font-size: 1.25rem; font-weight: 600; }
+#conversationList { flex: 1; overflow-y: auto; padding: var(--spacing-md); }
+.conversation-item {
+display: flex; align-items: center; gap: var(--spacing-md); padding: var(--spacing-md);
+border-radius: var(--radius-md); text-decoration: none; color: var(--text-primary); transition: background 0.2s ease;
+}
+.conversation-item:hover { background: var(--bg-secondary); }
+.conversation-item .profile-pic { width: 48px; height: 48px; }
+.conversation-info { flex: 1; }
+.user-name-conv { font-weight: 600; margin-bottom: 2px; }
+.last-message { font-size: 0.875rem; color: var(--text-tertiary); }
+.auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--spacing-lg); }
+.auth-card {
+background: var(--bg-primary); padding: var(--spacing-2xl); border-radius: var(--radius-xl);
+box-shadow: var(--shadow-lg); width: 100%; max-width: 400px;
+}
+.auth-card h2 { text-align: center; margin-bottom: var(--spacing-xl); font-size: 1.75rem; font-weight: 700; }
+.auth-form { display: flex; flex-direction: column; gap: var(--spacing-lg); }
+.auth-input {
+padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-md);
+background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem;
+}
+.auth-button {
+padding: var(--spacing-md); background: var(--primary); color: white; border: none;
+border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+}
+.auth-button:hover { background: var(--primary-dark); }
+.auth-divider { text-align: center; color: var(--text-tertiary); margin: var(--spacing-md) 0; }
+.social-login {
+display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm); padding: var(--spacing-md);
+border: 1px solid var(--border-light); border-radius: var(--radius-md); background: var(--bg-secondary);
+color: var(--text-primary); text-decoration: none; transition: all 0.2s ease;
+}
+.social-login:hover { background: var(--bg-tertiary); }
+.social-login img { width: 20px; height: 20px; }
+.auth-link { text-align: center; margin-top: var(--spacing-lg); }
+.auth-link a { color: var(--primary); text-decoration: none; }
+.profile-pic-selector {
+display: flex; gap: var(--spacing-sm); padding: var(--spacing-md); border: 1px solid var(--border-light);
+border-radius: var(--radius-md); background: var(--bg-secondary);
+}
+.profile-pic-option {
+width: 48px; height: 48px; border-radius: var(--radius-full); object-fit: cover;
+cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease;
+}
+.profile-pic-option:hover { transform: scale(1.05); }
+.profile-pic-option.selected { border-color: var(--primary); transform: scale(1.05); }
+.sticker-picker {
+display: none; flex-wrap: wrap; gap: var(--spacing-sm); padding: var(--spacing-md);
+background: var(--bg-secondary); border-radius: var(--radius-md); margin-top: var(--spacing-md);
+}
+.sticker-preview {
+width: 40px; height: 40px; cursor: pointer; border-radius: var(--radius-sm); transition: transform 0.2s ease;
+}
+.sticker-preview:hover { transform: scale(1.1); }
+.modal-overlay {
+position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0, 0, 0, 0.5); z-index: 999; display: none;
+}
+.modal-overlay.active { display: block; }
+#videoModal {
+position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9);
+display: none; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal-content { position: relative; max-width: 90vw; max-height: 90vh; }
+.close-modal { position: absolute; top: -40px; right: 0; color: white; font-size: 2rem; cursor: pointer; z-index: 1001; }
+.modal-content iframe { border-radius: var(--radius-lg); }
+footer {
+text-align: center; padding: var(--spacing-2xl); color: var(--text-tertiary);
+border-top: 1px solid var(--border-light); margin-top: var(--spacing-2xl);
+}
+@media (max-width: 768px) {
+.container { padding: 0 var(--spacing-sm); }
+.header-content { flex-wrap: wrap; gap: var(--spacing-md); }
+.header-nav { order: 3; width: 100%; justify-content: center; flex-wrap: wrap; }
+.search-container { min-width: 150px; }
+.brand-name { font-size: 1.25rem; }
+.post { padding: var(--spacing-lg); }
+.post-footer { flex-direction: column; align-items: stretch; }
+.vote-section { justify-content: center; }
+.post-actions-footer { justify-content: center; flex-wrap: wrap; }
+.comment-form { flex-direction: column; }
+#privateChatModal { bottom: 0; right: 0; left: 0; width: 100%; max-width: none; height: 100vh; border-radius: 0; }
+.chat-header { border-radius: 0; }
+#chatListModal { width: 100%; height: 100vh; max-width: none; max-height: none; border-radius: 0; top: 0; left: 0; transform: none; }
+.auth-container { padding: var(--spacing-md); }
+.auth-card { padding: var(--spacing-xl); }
+}
+@media (max-width: 480px) {
+.header-content { flex-direction: column; text-align: center; }
+.logo-section { justify-content: center; }
+.nav-button { font-size: 0.75rem; padding: var(--spacing-xs); }
+.post-type-selector { flex-direction: column; }
+.post-type-selector button { flex: none; }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.fade-in { animation: fadeIn 0.3s ease; }
+.slide-up { animation: slideUp 0.3s ease; }
+.hidden { display: none !important; } .visible { display: block !important; } .flex { display: flex !important; }
+.text-center { text-align: center; } .text-left { text-align: left; } .text-right { text-align: right; }
+.font-bold { font-weight: 600; } .font-semibold { font-weight: 500; }
+.text-sm { font-size: 0.875rem; } .text-xs { font-size: 0.75rem; }
+</style>
 </head>
 <body>
-  <script src="https://accounts.google.com/gsi/client" defer async></script>
-  
-  <div class="modal-overlay" id="modalOverlay"></div>
-  
-  <div class="container">
-    <!-- Auth Content -->
-    <div id="authContent">
-      <div id="loginPage">
-        <div class="auth-container">
-          <div class="auth-card">
-            <h2>Accedi a Nexiflow</h2>
-            <div class="auth-form">
-              <input type="email" id="loginEmail" class="auth-input" placeholder="Email" />
-              <input type="password" id="loginPassword" class="auth-input" placeholder="Password" />
-              <button onclick="loginUser()" class="auth-button">Accedi</button>
-              
-              <div class="auth-divider">o</div>
-              
-              <div id="g_id_onload"
-                   data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com"
-                   data-callback="handleCredentialResponse">
-              </div>
-              <div class="g_id_signin" data-type="standard"></div>
-              
-              <button onclick="loginWithSpotify()" class="social-login">
-                <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify" />
-                Accedi con Spotify
-              </button>
-            </div>
-            
-            <div class="auth-link">
-              Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="registerPage" class="hidden">
-        <div class="auth-container">
-          <div class="auth-card">
-            <h2>Registrati su Nexiflow</h2>
-            <div class="auth-form">
-              <input type="text" id="registerName" class="auth-input" placeholder="Nome" />
-              <input type="email" id="registerEmail" class="auth-input" placeholder="Email" />
-              <input type="password" id="registerPassword" class="auth-input" placeholder="Password" />
-              
-              <label>Scegli un'immagine profilo:</label>
-              <div class="profile-pic-selector" id="registerProfilePicSelector">
-                <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
-                <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
-                <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
-                <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
-              </div>
-              
-              <button onclick="registerUser()" class="auth-button">Registrati</button>
-            </div>
-            
-            <div class="auth-link">
-              Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- App Content -->
-    <div id="appContent" class="hidden">
-      <header>
-        <div class="container">
-          <div class="header-content">
-            <div class="logo-section">
-              <img id="logo" src="logo1.png" alt="Nexiflow Logo">
-              <a href="#" class="brand-name" onclick="showMainContent()">Nexiflow</a>
-            </div>
-            
-            <div class="search-container">
-              <input type="text" id="searchInput" placeholder="Cerca utenti..." />
-              <div id="searchResults"></div>
-            </div>
-            
-            <div class="header-nav">
-              <button class="nav-button" onclick="showChatList()">
-                💬 Chat
-              </button>
-              <button class="nav-button" onclick="showVideoPage()">
-                🎬 Video
-              </button>
-              <button class="nav-button primary" onclick="showMainContent(); toggleInput()">
-                ➕ Nuovo Post
-              </button>
-              <button class="nav-button" onclick="showSettingsPage()">
-                ⚙️ Impostazioni
-              </button>
-              <button class="theme-toggle nav-button" onclick="toggleTheme()">🌗</button>
-              <button class="nav-button" onclick="logoutUser()">Logout</button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div class="container">
-        <div id="welcomeMessage" class="user-info">
-          <img id="userProfilePic" class="profile-pic" />
-          <div>
-            <div class="user-name" id="userNameDisplay"></div>
-            <div class="text-sm text-tertiary">Benvenuto su Nexiflow</div>
-          </div>
-        </div>
-
-        <!-- Input Area -->
-        <div class="input-area" id="inputArea">
-          <div class="post-type-selector">
-            <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
-            <button id="post-type-video" onclick="setPostType('video', this)">Video</button>
-            <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora</button>
-            <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter</button>
-          </div>
-          
-          <div id="post-text-fields" class="post-type-fields">
-            <textarea id="postText" class="form-input" rows="3" placeholder="Cosa stai pensando?"></textarea>
-            <button id="addStickerBtn" class="footer-button" onclick="toggleStickerPicker()">➕ Aggiungi Sticker</button>
-            <div id="stickerPicker" class="sticker-picker"></div>
-          </div>
-          
-          <div id="post-video-fields" class="post-type-fields hidden">
-            <textarea id="videoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
-            <input type="url" id="videoLink" class="form-input" placeholder="Link del video (YouTube, etc.)"/>
-          </div>
-          
-          <div id="post-embed-fields" class="post-type-fields hidden">
-            <textarea id="embedDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
-            <div class="post-type-selector">
-              <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
-              <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
-            </div>
-            <textarea id="embedCode" class="form-input" rows="4" placeholder="Codice di incorporazione (iframe)..."></textarea>
-          </div>
-          
-          <div id="post-twitter-fields" class="post-type-fields hidden">
-            <input type="url" id="twitterLink" class="form-input" placeholder="Link del post Twitter/X" />
-          </div>
-          
-          <button id="publishBtn" class="publish-button" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
-        </div>
-
-        <!-- Main Content -->
-        <div id="mainContent" class="main-content">
-          <div class="posts" id="postsContainer"></div>
-        </div>
-
-        <!-- Video Page -->
-        <div id="videoPage" class="main-content hidden">
-          <div class="post-header">
-            <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
-            <div class="post-type-selector">
-              <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
-              <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
-            </div>
-            <button class="nav-button primary" onclick="toggleVideoInput()">➕ Aggiungi Video</button>
-          </div>
-          
-          <div id="videoInputArea" class="input-area">
-            <div class="post-type-fields">
-              <textarea id="newVideoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
-              <div class="post-type-selector">
-                <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
-                <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
-              </div>
-              <textarea id="newVideoEmbedCode" class="form-input" rows="4" placeholder="Link o codice di incorporazione..."></textarea>
-            </div>
-            <button id="publishVideoBtn" class="publish-button" onclick="publishNewVideo()" disabled>Pubblica Video</button>
-          </div>
-          
-          <div class="posts" id="videoGrid"></div>
-        </div>
-
-        <!-- User Profile Page -->
-        <div id="userProfilePage" class="main-content hidden">
-          <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
-          <div id="profileInfo" class="user-info"></div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
-            <div>
-              <h3>Post di questo utente:</h3>
-              <div class="posts" id="userPostsContainer"></div>
-            </div>
-            <div>
-              <h3>Video di questo utente:</h3>
-              <div class="posts" id="userVideosContainer"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Settings Page -->
-        <div id="settingsPage" class="main-content hidden">
-          <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
-          <div class="auth-card" style="margin-top: 2rem;">
-            <h3>Modifica Profilo</h3>
-            <div class="auth-form">
-              <label>Nome:</label>
-              <input type="text" id="editName" class="auth-input" />
-              
-              <label>Immagine Profilo:</label>
-              <div class="profile-pic-selector" id="editProfilePicSelector">
-                <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
-                <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
-                <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
-                <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
-              </div>
-              
-              <label>Bio:</label>
-              <textarea id="editBio" class="auth-input" rows="4"></textarea>
-              
-              <button onclick="saveSettings()" class="auth-button">Salva Modifiche</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <footer>
-        © 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
-      </footer>
-    </div>
-  </div>
-
-  <!-- Video Modal -->
-  <div id="videoModal">
-    <span class="close-modal" onclick="closeModal()">×</span>
-    <div class="modal-content">
-      <div id="modalVideoContainer"></div>
-    </div>
-  </div>
-
-  <!-- Private Chat Modal -->
-  <div id="privateChatModal">
-    <div class="chat-header">
-      <button class="close-chat-btn" onclick="closePrivateChat()">←</button>
-      <div class="chat-recipient-info">
-        <img id="chatRecipientPic" class="profile-pic" />
-        <h3 id="chatRecipientName"></h3>
-      </div>
-    </div>
-    <div class="chat-body" id="chatMessageHistory"></div>
-    <div class="chat-input-area">
-      <input type="text" id="privateMessageInput" class="chat-input" placeholder="Scrivi un messaggio..." />
-      <button class="send-chat-btn" onclick="sendPrivateMessage()">Invia</button>
-    </div>
-  </div>
-
-  <!-- Chat List Modal -->
-  <div id="chatListModal">
-    <div class="chat-list-header">
-      <h3>Le tue chat</h3>
-      <button class="close-chat-btn" onclick="closeChatList()">×</button>
-    </div>
-    <div id="conversationList"></div>
-  </div>
-
-  <!-- Country Selection Modal -->
-  <div id="countryModal" class="modal-overlay">
-    <div class="auth-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1002;">
-      <h3>Seleziona il tuo Paese</h3>
-      <div class="auth-form">
-        <select id="countrySelect" class="auth-input">
-          <option value="">-- Scegli un Paese --</option>
-          <option value="Italia">Italia</option>
-          <option value="Francia">Francia</option>
-          <option value="Germania">Germania</option>
-          <option value="Spagna">Spagna</option>
-          <option value="USA">USA</option>
-          <option value="Regno Unito">Regno Unito</option>
-          <option value="Canada">Canada</option>
-          <option value="Australia">Australia</option>
-        </select>
-        <button onclick="saveCountry()" class="auth-button">Conferma</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Funzione per mostrare/nascondere il selettore di sticker
-    function toggleStickerPicker() {
-      const stickerPicker = document.getElementById('stickerPicker');
-      if (stickerPicker.style.display === 'flex') {
-        stickerPicker.style.display = 'none';
-      } else {
-        stickerPicker.style.display = 'flex';
-        generateStickerPreviews();
-      }
-    }
-
-    // Funzione per generare le anteprime degli sticker
-    function generateStickerPreviews() {
-      const stickerPicker = document.getElementById('stickerPicker');
-      stickerPicker.innerHTML = '';
-      const numberOfStickers = 28;
-      for (let i = 1; i <= numberOfStickers; i++) {
-        const img = document.createElement('img');
-        img.src = `stiker${i}.png`;
-        img.alt = `Sticker ${i}`;
-        img.classList.add('sticker-preview');
-        img.onclick = () => insertSticker(`stiker${i}.png`);
-        stickerPicker.appendChild(img);
-      }
-    }
-
-    // Funzione per inserire lo sticker selezionato nel campo di testo
-    function insertSticker(stickerPath) {
-      const postText = document.getElementById('postText');
-      const stickerHtml = `<img src="${stickerPath}" alt="sticker" style="width: 50px; height: auto; vertical-align: middle; margin: 0 5px;" />`;
-      postText.value += stickerHtml;
-      document.getElementById('stickerPicker').style.display = 'none';
-      checkPublishButtonState();
-    }
-
-    // API Configuration
-    const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
-    const BIN_ID = "68960092f7e7a370d1f76798";
-    const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
-    const USER_BIN_ID = "68580aba8a456b7966b3543a";
-    const MESSAGES_BIN_ID = "689600f3203a8b52b5e1dafd";
-    
-    const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-    const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
-    const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
-    const MESSAGES_URL = `https://api.jsonbin.io/v3/b/${MESSAGES_BIN_ID}`;
-    const headers = {
-      "Content-Type": "application/json",
-      "X-Master-Key": API_KEY
+<script src="https://accounts.google.com/gsi/client" defer async></script>
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="container">
+<div id="authContent">
+<div id="loginPage">
+<div class="auth-container">
+<div class="auth-card">
+<h2>Accedi a Nexiflow</h2>
+<div class="auth-form">
+<input type="email" id="loginEmail" class="auth-input" placeholder="Email" />
+<input type="password" id="loginPassword" class="auth-input" placeholder="Password" />
+<button onclick="loginUser()" class="auth-button">Accedi</button>
+<div class="auth-divider">o</div>
+<div id="g_id_onload"
+data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com"
+data-callback="handleCredentialResponse">
+</div>
+<div class="g_id_signin" data-type="standard"></div>
+<button onclick="loginWithSpotify()" class="social-login">
+<img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify" />
+Accedi con Spotify
+</button>
+</div>
+<div class="auth-link">
+Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a>
+</div>
+</div>
+</div>
+</div>
+<div id="registerPage" class="hidden">
+<div class="auth-container">
+<div class="auth-card">
+<h2>Registrati su Nexiflow</h2>
+<div class="auth-form">
+<input type="text" id="registerName" class="auth-input" placeholder="Nome" />
+<input type="email" id="registerEmail" class="auth-input" placeholder="Email" />
+<input type="password" id="registerPassword" class="auth-input" placeholder="Password" />
+<label>Scegli un'immagine profilo:</label>
+<div class="profile-pic-selector" id="registerProfilePicSelector">
+<img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
+<img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
+<img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
+<img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
+</div>
+<button onclick="registerUser()" class="auth-button">Registrati</button>
+</div>
+<div class="auth-link">
+Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="appContent" class="hidden">
+<header>
+<div class="container">
+<div class="header-content">
+<div class="logo-section">
+<img id="logo" src="logo1.png" alt="Nexiflow Logo">
+<a href="#" class="brand-name" onclick="showMainContent()">Nexiflow</a>
+</div>
+<div class="search-container">
+<input type="text" id="searchInput" placeholder="Cerca utenti..." />
+<div id="searchResults"></div>
+</div>
+<div class="header-nav">
+<button class="nav-button" onclick="showChatList()">💬 Chat</button>
+<button class="nav-button" onclick="showVideoPage()">🎬 Video</button>
+<button class="nav-button primary" onclick="showMainContent(); toggleInput()">➕ Nuovo Post</button>
+<button class="nav-button" onclick="showSettingsPage()">⚙️ Impostazioni</button>
+<button class="theme-toggle nav-button" onclick="toggleTheme()">🌗</button>
+<button class="nav-button" onclick="logoutUser()">Logout</button>
+</div>
+</div>
+</div>
+</header>
+<div class="container">
+<div id="welcomeMessage" class="user-info">
+<img id="userProfilePic" class="profile-pic" />
+<div>
+<div class="user-name" id="userNameDisplay"></div>
+<div class="text-sm text-tertiary">Benvenuto su Nexiflow</div>
+</div>
+</div>
+<div class="input-area" id="inputArea">
+<div class="post-type-selector">
+<button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
+<button id="post-type-video" onclick="setPostType('video', this)">Video</button>
+<button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora</button>
+<button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter</button>
+<button id="post-type-upload" onclick="setPostType('upload', this)">🖼️ Carica File</button>
+</div>
+<div id="post-text-fields" class="post-type-fields">
+<textarea id="postText" class="form-input" rows="3" placeholder="Cosa stai pensando?"></textarea>
+<button id="addStickerBtn" class="footer-button" onclick="toggleStickerPicker()">➕ Aggiungi Sticker</button>
+<div id="stickerPicker" class="sticker-picker"></div>
+</div>
+<div id="post-video-fields" class="post-type-fields hidden">
+<textarea id="videoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+<input type="url" id="videoLink" class="form-input" placeholder="Link del video (YouTube, etc.)"/>
+</div>
+<div id="post-embed-fields" class="post-type-fields hidden">
+<textarea id="embedDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+<div class="post-type-selector">
+<button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
+<button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
+</div>
+<textarea id="embedCode" class="form-input" rows="4" placeholder="Codice di incorporazione (iframe)..."></textarea>
+</div>
+<div id="post-twitter-fields" class="post-type-fields hidden">
+<input type="url" id="twitterLink" class="form-input" placeholder="Link del post Twitter/X" />
+</div>
+<div id="post-upload-fields" class="post-type-fields hidden">
+    <label>Seleziona un'immagine o un video:</label>
+    <input type="file" id="fileUploadInput" class="form-input" accept="image/*,video/*">
+    <textarea id="uploadCaption" class="form-input" rows="2" placeholder="Aggiungi una didascalia..."></textarea>
+</div>
+<button id="publishBtn" class="publish-button" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
+</div>
+<div id="mainContent" class="main-content">
+<div class="posts" id="postsContainer"></div>
+</div>
+<div id="videoPage" class="main-content hidden">
+<div class="post-header">
+<button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+<div class="post-type-selector">
+<button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
+<button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+</div>
+<button class="nav-button primary" onclick="toggleVideoInput()">➕ Aggiungi Video</button>
+</div>
+<div id="videoInputArea" class="input-area">
+<div class="post-type-fields">
+<textarea id="newVideoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+<div class="post-type-selector">
+<button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
+<button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+</div>
+<textarea id="newVideoEmbedCode" class="form-input" rows="4" placeholder="Link o codice di incorporazione..."></textarea>
+</div>
+<button id="publishVideoBtn" class="publish-button" onclick="publishNewVideo()" disabled>Pubblica Video</button>
+</div>
+<div class="posts" id="videoGrid"></div>
+</div>
+<div id="userProfilePage" class="main-content hidden">
+<button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+<div id="profileInfo" class="user-info"></div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+<div>
+<h3>Post di questo utente:</h3>
+<div class="posts" id="userPostsContainer"></div>
+</div>
+<div>
+<h3>Video di questo utente:</h3>
+<div class="posts" id="userVideosContainer"></div>
+</div>
+</div>
+</div>
+<div id="settingsPage" class="main-content hidden">
+<button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+<div class="auth-card" style="margin-top: 2rem;">
+<h3>Modifica Profilo</h3>
+<div class="auth-form">
+<label>Nome:</label>
+<input type="text" id="editName" class="auth-input" />
+<label>Immagine Profilo:</label>
+<div class="profile-pic-selector" id="editProfilePicSelector">
+<img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
+<img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
+<img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
+<img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
+</div>
+<label>Bio:</label>
+<textarea id="editBio" class="auth-input" rows="4"></textarea>
+<button onclick="saveSettings()" class="auth-button">Salva Modifiche</button>
+</div>
+</div>
+</div>
+</div>
+<footer>
+© 2025 Nexiflow™ - by Nexiquar - Tutti i diritti riservati
+</footer>
+</div>
+</div>
+<div id="videoModal">
+<span class="close-modal" onclick="closeModal()">×</span>
+<div class="modal-content">
+<div id="modalVideoContainer"></div>
+</div>
+</div>
+<div id="privateChatModal">
+<div class="chat-header">
+<button class="close-chat-btn" onclick="closePrivateChat()">←</button>
+<div class="chat-recipient-info">
+<img id="chatRecipientPic" class="profile-pic" />
+<h3 id="chatRecipientName"></h3>
+</div>
+</div>
+<div class="chat-body" id="chatMessageHistory"></div>
+<div class="chat-input-area">
+<input type="text" id="privateMessageInput" class="chat-input" placeholder="Scrivi un messaggio..." />
+<button class="send-chat-btn" onclick="sendPrivateMessage()">Invia</button>
+</div>
+</div>
+<div id="chatListModal">
+<div class="chat-list-header">
+<h3>Le tue chat</h3>
+<button class="close-chat-btn" onclick="closeChatList()">×</button>
+</div>
+<div id="conversationList"></div>
+</div>
+<div id="countryModal" class="modal-overlay">
+<div class="auth-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1002;">
+<h3>Seleziona il tuo Paese</h3>
+<div class="auth-form">
+<select id="countrySelect" class="auth-input">
+<option value="">-- Scegli un Paese --</option>
+<option value="Italia">Italia</option>
+<option value="Francia">Francia</option>
+<option value="Germania">Germania</option>
+<option value="Spagna">Spagna</option>
+<option value="USA">USA</option>
+<option value="Regno Unito">Regno Unito</option>
+<option value="Canada">Canada</option>
+<option value="Australia">Australia</option>
+</select>
+<button onclick="saveCountry()" class="auth-button">Conferma</button>
+</div>
+</div>
+</div>
+<script>
+// Le funzioni esistenti rimangono qui...
+function toggleStickerPicker() {
+const stickerPicker = document.getElementById('stickerPicker');
+if (stickerPicker.style.display === 'flex') {
+stickerPicker.style.display = 'none';
+} else {
+stickerPicker.style.display = 'flex';
+generateStickerPreviews();
+}
+}
+function generateStickerPreviews() {
+const stickerPicker = document.getElementById('stickerPicker');
+stickerPicker.innerHTML = '';
+const numberOfStickers = 28;
+for (let i = 1; i <= numberOfStickers; i++) {
+const img = document.createElement('img');
+img.src = `stiker${i}.png`;
+img.alt = `Sticker ${i}`;
+img.classList.add('sticker-preview');
+img.onclick = () => insertSticker(`stiker${i}.png`);
+stickerPicker.appendChild(img);
+}
+}
+function insertSticker(stickerPath) {
+const postText = document.getElementById('postText');
+const stickerHtml = `<img src="${stickerPath}" alt="sticker" style="width: 50px; height: auto; vertical-align: middle; margin: 0 5px;" />`;
+postText.value += stickerHtml;
+document.getElementById('stickerPicker').style.display = 'none';
+checkPublishButtonState();
+}
+const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
+const BIN_ID = "68960092f7e7a370d1f76798";
+const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
+const USER_BIN_ID = "68580aba8a456b7966b3543a";
+const MESSAGES_BIN_ID = "689600f3203a8b52b5e1dafd";
+const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
+const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
+const MESSAGES_URL = `https://api.jsonbin.io/v3/b/${MESSAGES_BIN_ID}`;
+const headers = { "Content-Type": "application/json", "X-Master-Key": API_KEY };
+const spotifyClientId = 'f77ae12dd0e7405192d95390c8b1b418';
+const redirectUri = 'https://nexiflow.netlify.app';
+let currentUser = null;
+let usersData = {};
+let allPosts = [];
+let allVideos = [];
+let allUsers = [];
+let allPrivateMessages = {};
+let currentPostType = 'text';
+let currentEmbedFormat = 'horizontal';
+let currentVideoPageFormat = 'vertical';
+let newVideoFormat = 'horizontal';
+let currentChatRecipientEmail = null;
+function showElement(elementId) { document.getElementById(elementId).classList.remove('hidden'); }
+function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
+function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
+function handleCredentialResponse(response) {
+const decodedToken = parseJwt(response.credential);
+let user = allUsers.find(u => u.email === decodedToken.email);
+if (user) {
+currentUser = user;
+localStorage.setItem("currentUserEmail", currentUser.email);
+showAppContent();
+} else {
+const newUser = {
+name: decodedToken.name,
+email: decodedToken.email,
+profilePic: decodedToken.picture,
+bio: "Accesso tramite Google",
+country: ""
+};
+allUsers.push(newUser);
+currentUser = newUser;
+localStorage.setItem("currentUserEmail", currentUser.email);
+showElement("countryModal");
+}
+}
+function saveCountry() {
+const country = document.getElementById("countrySelect").value;
+if (!country) {
+alert("Seleziona un Paese!");
+return;
+}
+currentUser.country = country;
+updateUsersOnServer(allUsers);
+hideElement("countryModal");
+showAppContent();
+}
+function parseJwt(token) {
+var base64Url = token.split('.')[1];
+var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+}).join(''));
+return JSON.parse(jsonPayload);
+}
+async function loadAllData() {
+try {
+const [postsRes, videosRes, usersRes, messagesRes] = await Promise.all([
+fetch(BASE_URL + "/latest", { headers }),
+fetch(VIDEO_URL + "/latest", { headers }),
+fetch(USER_URL + "/latest", { headers }),
+fetch(MESSAGES_URL + "/latest", { headers })
+]);
+const postsData = await postsRes.json();
+const videosData = await videosRes.json();
+const usersDataRaw = await usersRes.json();
+const messagesData = await messagesRes.json();
+allPosts = postsData.record.posts || [];
+allVideos = videosData.record.videos || [];
+allUsers = usersDataRaw.record.users || [];
+allPrivateMessages = messagesData.record.privateMessages || {};
+usersData = allUsers.reduce((map, user) => {
+map[user.email] = user;
+return map;
+}, {});
+renderPosts(allPosts);
+} catch (err) {
+console.error("Errore nel caricamento dei dati:", err);
+}
+}
+async function updateUsersOnServer(users) {
+try { await fetch(USER_URL, { method: "PUT", headers, body: JSON.stringify({ users }) }); }
+catch (error) { console.error("Errore nell'aggiornamento degli utenti:", error); }
+}
+async function updatePostsOnServer(posts) {
+try { await fetch(BASE_URL, { method: "PUT", headers, body: JSON.stringify({ posts }) }); }
+catch (error) { console.error("Errore nell'aggiornamento dei post:", error); }
+}
+async function updateVideosOnServer(videos) {
+try { await fetch(VIDEO_URL, { method: "PUT", headers, body: JSON.stringify({ videos }) }); }
+catch (error) { console.error("Errore nell'aggiornamento dei video:", error); }
+}
+function showLoginPage() {
+showElement('loginPage');
+hideElement('registerPage');
+document.getElementById('loginEmail').focus();
+}
+function showRegisterPage() {
+hideElement('loginPage');
+showElement('registerPage');
+document.getElementById('registerName').focus();
+}
+function selectProfilePic(element, type) {
+const selector = type === 'register' ?
+document.getElementById('registerProfilePicSelector') :
+document.getElementById('editProfilePicSelector');
+selector.querySelectorAll('.profile-pic-option').forEach(img => {
+img.classList.remove('selected');
+});
+element.classList.add('selected');
+}
+async function registerUser() {
+const name = document.getElementById('registerName').value.trim();
+const email = document.getElementById('registerEmail').value.trim();
+const password = document.getElementById('registerPassword').value.trim();
+const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
+if (!name || !email || !password) {
+alert("Compila tutti i campi!");
+return;
+}
+if (allUsers.find(u => u.email === email)) {
+alert("Esiste già un utente con questa email.");
+return;
+}
+const newUser = { name, email, password, profilePic, bio: "" };
+try {
+allUsers.push(newUser);
+await updateUsersOnServer(allUsers);
+alert("Registrazione completata! Ora puoi accedere.");
+showLoginPage();
+} catch(err) {
+alert("Errore durante la registrazione.");
+console.error(err);
+}
+}
+async function loginUser() {
+const email = document.getElementById('loginEmail').value.trim();
+const password = document.getElementById('loginPassword').value.trim();
+const user = allUsers.find(u => u.email === email);
+if (user) {
+if (user.password === password) {
+currentUser = user;
+localStorage.setItem("currentUserEmail", email);
+alert(`Benvenuto, ${currentUser.name}!`);
+showAppContent();
+} else {
+alert("Password non corretta. Riprova.");
+}
+} else {
+alert("Utente non trovato. Controlla l'email o registrati.");
+}
+}
+function logoutUser() {
+currentUser = null;
+localStorage.removeItem("currentUserEmail");
+showAuthContent();
+}
+function showAuthContent() {
+showElement('authContent');
+hideElement('appContent');
+showLoginPage();
+}
+function showAppContent() {
+hideElement('authContent');
+showElement('appContent');
+updateUserInfo();
+showMainContent();
+}
+function updateUserInfo() {
+if (currentUser) {
+document.getElementById("userNameDisplay").textContent = currentUser.name;
+document.getElementById("userProfilePic").src = currentUser.profilePic;
+}
+}
+function showMainContent() {
+hideElement('videoPage');
+hideElement('userProfilePage');
+hideElement('settingsPage');
+hideElement('privateChatModal');
+hideElement('chatListModal');
+showElement('mainContent');
+}
+function showVideoPage() {
+hideElement('mainContent');
+hideElement('userProfilePage');
+hideElement('settingsPage');
+hideElement('privateChatModal');
+hideElement('chatListModal');
+showElement('videoPage');
+showVideos(currentVideoPageFormat);
+}
+function showSettingsPage() {
+if (!currentUser) return;
+hideElement('mainContent');
+hideElement('videoPage');
+hideElement('userProfilePage');
+hideElement('privateChatModal');
+hideElement('chatListModal');
+showElement('settingsPage');
+document.getElementById('editName').value = currentUser.name;
+document.getElementById('editBio').value = currentUser.bio || '';
+const currentPic = document.querySelector(`#editProfilePicSelector img[data-value='${currentUser.profilePic}']`);
+if (currentPic) { selectProfilePic(currentPic, 'settings'); }
+}
+function toggleTheme() {
+document.body.classList.toggle('dark-mode');
+const isDark = document.body.classList.contains('dark-mode');
+const logo = isDark ? 'logo2.png' : 'logo1.png';
+document.getElementById('logo').src = logo;
+}
+function toggleInput() { document.getElementById('inputArea').classList.toggle('active'); }
+// START: Funzione setPostType MODIFICATA
+function setPostType(type, button) {
+currentPostType = type;
+// Usa il selettore corretto che è dentro #inputArea
+document.querySelectorAll('#inputArea .post-type-selector button').forEach(btn => btn.classList.remove('active'));
+button.classList.add('active');
+hideElement('post-text-fields');
+hideElement('post-video-fields');
+hideElement('post-embed-fields');
+hideElement('post-twitter-fields');
+hideElement('post-upload-fields'); // Nascondi anche la nuova area
+if (type === 'text') { showElement('post-text-fields'); document.getElementById('postText').focus(); }
+else if (type === 'video') { showElement('post-video-fields'); document.getElementById('videoLink').focus(); }
+else if (type === 'embed') { showElement('post-embed-fields'); document.getElementById('embedCode').focus(); }
+else if (type === 'twitter') { showElement('post-twitter-fields'); document.getElementById('twitterLink').focus(); }
+else if (type === 'upload') { showElement('post-upload-fields'); document.getElementById('fileUploadInput').focus(); } // Mostra la nuova area
+checkPublishButtonState();
+}
+// END: Funzione setPostType MODIFICATA
+function setVideoFormat(format) {
+currentEmbedFormat = format;
+document.querySelectorAll('#post-embed-fields .post-type-selector button').forEach(btn => btn.classList.remove('active'));
+document.getElementById(`embed-format-${format}`).classList.add('active');
+}
+// START: Funzione checkPublishButtonState MODIFICATA
+function checkPublishButtonState() {
+let isReady = false;
+if (currentPostType === 'text' && document.getElementById('postText').value.trim() !== '') isReady = true;
+else if (currentPostType === 'video' && document.getElementById('videoLink').value.trim() !== '') isReady = true;
+else if (currentPostType === 'embed' && document.getElementById('embedCode').value.trim() !== '') isReady = true;
+else if (currentPostType === 'twitter' && document.getElementById('twitterLink').value.trim() !== '') isReady = true;
+else if (currentPostType === 'upload' && document.getElementById('fileUploadInput').files.length > 0) isReady = true; // Controllo per il file
+document.getElementById('publishBtn').disabled = !isReady;
+}
+// END: Funzione checkPublishButtonState MODIFICATA
+document.addEventListener('DOMContentLoaded', function() {
+// Aggiungo il nuovo input file alla lista degli input da monitorare
+const inputs = ['postText', 'videoLink', 'embedCode', 'twitterLink', 'fileUploadInput'];
+inputs.forEach(id => {
+const element = document.getElementById(id);
+if (element) element.addEventListener('input', checkPublishButtonState);
+});
+});
+function getFormattedDate() {
+const now = new Date();
+return now.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
+}
+// START: Funzioni per la gestione dei file
+/**
+ * Converte un file in una stringa Base64.
+ * Questo permette di "salvare" l'immagine/video come testo su JsonBin.
+ */
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+}
+// END: Funzioni per la gestione dei file
+async function publishPost() {
+    const publishBtn = document.getElementById('publishBtn');
+    publishBtn.disabled = true; // Disabilita subito per evitare doppi click
+    publishBtn.textContent = 'Pubblicazione...';
+    let newPost = {
+        id: Date.now(), author: currentUser.name, authorEmail: currentUser.email,
+        authorPic: currentUser.profilePic, date: getFormattedDate(), upvotes: 0, downvotes: 0,
+        comments: [], type: currentPostType
     };
-
-    // Spotify Configuration
-    const spotifyClientId = 'f77ae12dd0e7405192d95390c8b1b418';
-    const redirectUri = 'https://nexiflow.netlify.app';
-
-    // Global Variables
-    let currentUser = null;
-    let usersData = {};
-    let allPosts = [];
-    let allVideos = [];
-    let allUsers = [];
-    let allPrivateMessages = {};
-    let currentPostType = 'text';
-    let currentEmbedFormat = 'horizontal';
-    let currentVideoPageFormat = 'vertical';
-    let newVideoFormat = 'horizontal';
-    let currentChatRecipientEmail = null;
-
-    const UP_EMOJIS = ['😍', '💞', '❤️‍🔥', '😘', '👍'];
-    const DOWN_EMOJIS = ['🤢', '🤮', '👎', '💩', '😱', '😢'];
-
-    // Utility Functions
-    function showElement(elementId) {
-      document.getElementById(elementId).classList.remove('hidden');
-    }
-
-    function hideElement(elementId) {
-      document.getElementById(elementId).classList.add('hidden');
-    }
-
-    function toggleElement(elementId) {
-      document.getElementById(elementId).classList.toggle('hidden');
-    }
-
-    // Google Sign-In Handler
-    function handleCredentialResponse(response) {
-      const decodedToken = parseJwt(response.credential);
-      let user = allUsers.find(u => u.email === decodedToken.email);
-      if (user) {
-        currentUser = user;
-        localStorage.setItem("currentUserEmail", currentUser.email);
-        showAppContent();
-      } else {
-        const newUser = {
-          name: decodedToken.name,
-          email: decodedToken.email,
-          profilePic: decodedToken.picture,
-          bio: "Accesso tramite Google",
-          country: ""
-        };
-        allUsers.push(newUser);
-        currentUser = newUser;
-        localStorage.setItem("currentUserEmail", currentUser.email);
-        showElement("countryModal");
-      }
-    }
-
-    function saveCountry() {
-      const country = document.getElementById("countrySelect").value;
-      if (!country) {
-        alert("Seleziona un Paese!");
-        return;
-      }
-      currentUser.country = country;
-      updateUsersOnServer(allUsers);
-      hideElement("countryModal");
-      showAppContent();
-    }
-
-    function parseJwt(token) {
-      var base64Url = token.split('.')[1];
-      var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    }
-
-    // Data Loading and Management
-    async function loadAllData() {
-      try {
-        const [postsRes, videosRes, usersRes, messagesRes] = await Promise.all([
-          fetch(BASE_URL + "/latest", { headers }),
-          fetch(VIDEO_URL + "/latest", { headers }),
-          fetch(USER_URL + "/latest", { headers }),
-          fetch(MESSAGES_URL + "/latest", { headers })
-        ]);
-
-        const postsData = await postsRes.json();
-        const videosData = await videosRes.json();
-        const usersDataRaw = await usersRes.json();
-        const messagesData = await messagesRes.json();
-
-        allPosts = postsData.record.posts || [];
-        allVideos = videosData.record.videos || [];
-        allUsers = usersDataRaw.record.users || [];
-        allPrivateMessages = messagesData.record.privateMessages || {};
-
-        usersData = allUsers.reduce((map, user) => {
-          map[user.email] = user;
-          return map;
-        }, {});
-
-        renderPosts(allPosts);
-      } catch (err) {
-        console.error("Errore nel caricamento dei dati:", err);
-      }
-    }
-
-    async function updateUsersOnServer(users) {
-      try {
-        await fetch(USER_URL, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({ users })
-        });
-      } catch (error) {
-        console.error("Errore nell'aggiornamento degli utenti:", error);
-      }
-    }
-
-    async function updatePostsOnServer(posts) {
-      try {
-        await fetch(BASE_URL, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({ posts })
-        });
-      } catch (error) {
-        console.error("Errore nell'aggiornamento dei post:", error);
-      }
-    }
-
-    async function updateVideosOnServer(videos) {
-      try {
-        await fetch(VIDEO_URL, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({ videos })
-        });
-      } catch (error) {
-        console.error("Errore nell'aggiornamento dei video:", error);
-      }
-    }
-
-    // Authentication Functions
-    function showLoginPage() {
-      showElement('loginPage');
-      hideElement('registerPage');
-      document.getElementById('loginEmail').focus();
-    }
-
-    function showRegisterPage() {
-      hideElement('loginPage');
-      showElement('registerPage');
-      document.getElementById('registerName').focus();
-    }
-
-    function selectProfilePic(element, type) {
-      const selector = type === 'register' ? 
-        document.getElementById('registerProfilePicSelector') : 
-        document.getElementById('editProfilePicSelector');
-      
-      selector.querySelectorAll('.profile-pic-option').forEach(img => {
-        img.classList.remove('selected');
-      });
-      element.classList.add('selected');
-    }
-
-    async function registerUser() {
-      const name = document.getElementById('registerName').value.trim();
-      const email = document.getElementById('registerEmail').value.trim();
-      const password = document.getElementById('registerPassword').value.trim();
-      const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
-      const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
-
-      if (!name || !email || !password) {
-        alert("Compila tutti i campi!");
-        return;
-      }
-
-      if (allUsers.find(u => u.email === email)) {
-        alert("Esiste già un utente con questa email.");
-        return;
-      }
-
-      const newUser = { name, email, password, profilePic, bio: "" };
-
-      try {
-        allUsers.push(newUser);
-        await updateUsersOnServer(allUsers);
-        alert("Registrazione completata! Ora puoi accedere.");
-        showLoginPage();
-      } catch(err) {
-        alert("Errore durante la registrazione.");
-        console.error(err);
-      }
-    }
-
-    async function loginUser() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value.trim();
-
-      const user = allUsers.find(u => u.email === email);
-
-      if (user) {
-        if (user.password === password) {
-          currentUser = user;
-          localStorage.setItem("currentUserEmail", email);
-          alert(`Benvenuto, ${currentUser.name}!`);
-          showAppContent();
-        } else {
-          alert("Password non corretta. Riprova.");
-        }
-      } else {
-        alert("Utente non trovato. Controlla l'email o registrati.");
-      }
-    }
-
-    function logoutUser() {
-      currentUser = null;
-      localStorage.removeItem("currentUserEmail");
-      showAuthContent();
-    }
-
-    function showAuthContent() {
-      showElement('authContent');
-      hideElement('appContent');
-      showLoginPage();
-    }
-
-    function showAppContent() {
-      hideElement('authContent');
-      showElement('appContent');
-      updateUserInfo();
-      showMainContent();
-    }
-
-    function updateUserInfo() {
-      if (currentUser) {
-        document.getElementById("userNameDisplay").textContent = currentUser.name;
-        document.getElementById("userProfilePic").src = currentUser.profilePic;
-      }
-    }
-
-    // Navigation Functions
-    function showMainContent() {
-      hideElement('videoPage');
-      hideElement('userProfilePage');
-      hideElement('settingsPage');
-      hideElement('privateChatModal');
-      hideElement('chatListModal');
-      showElement('mainContent');
-    }
-
-    function showVideoPage() {
-      hideElement('mainContent');
-      hideElement('userProfilePage');
-      hideElement('settingsPage');
-      hideElement('privateChatModal');
-      hideElement('chatListModal');
-      showElement('videoPage');
-      showVideos(currentVideoPageFormat);
-    }
-
-    function showSettingsPage() {
-      if (!currentUser) return;
-      
-      hideElement('mainContent');
-      hideElement('videoPage');
-      hideElement('userProfilePage');
-      hideElement('privateChatModal');
-      hideElement('chatListModal');
-      showElement('settingsPage');
-
-      document.getElementById('editName').value = currentUser.name;
-      document.getElementById('editBio').value = currentUser.bio || '';
-
-      const currentPic = document.querySelector(`#editProfilePicSelector img[data-value='${currentUser.profilePic}']`);
-      if (currentPic) {
-        selectProfilePic(currentPic, 'settings');
-      }
-    }
-
-    // Theme Toggle
-    function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
-      const isDark = document.body.classList.contains('dark-mode');
-      const logo = isDark ? 'logo2.png' : 'logo1.png';
-      document.getElementById('logo').src = logo;
-    }
-
-    // Post Functions
-    function toggleInput() {
-      document.getElementById('inputArea').classList.toggle('active');
-    }
-
-    function setPostType(type, button) {
-      currentPostType = type;
-      
-      // Update active button
-      document.querySelectorAll('.post-type-selector button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      button.classList.add('active');
-
-      // Show/hide appropriate fields
-      hideElement('post-text-fields');
-      hideElement('post-video-fields');
-      hideElement('post-embed-fields');
-      hideElement('post-twitter-fields');
-
-      if (type === 'text') {
-        showElement('post-text-fields');
-        document.getElementById('postText').focus();
-      } else if (type === 'video') {
-        showElement('post-video-fields');
-        document.getElementById('videoLink').focus();
-      } else if (type === 'embed') {
-        showElement('post-embed-fields');
-        document.getElementById('embedCode').focus();
-      } else if (type === 'twitter') {
-        showElement('post-twitter-fields');
-        document.getElementById('twitterLink').focus();
-      }
-
-      checkPublishButtonState();
-    }
-
-    function setVideoFormat(format) {
-      currentEmbedFormat = format;
-      document.querySelectorAll('#post-embed-fields .post-type-selector button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.getElementById(`embed-format-${format}`).classList.add('active');
-    }
-
-    function checkPublishButtonState() {
-      let isReady = false;
-      
-      if (currentPostType === 'text' && document.getElementById('postText').value.trim() !== '') {
-        isReady = true;
-      } else if (currentPostType === 'video' && document.getElementById('videoLink').value.trim() !== '') {
-        isReady = true;
-      } else if (currentPostType === 'embed' && document.getElementById('embedCode').value.trim() !== '') {
-        isReady = true;
-      } else if (currentPostType === 'twitter' && document.getElementById('twitterLink').value.trim() !== '') {
-        isReady = true;
-      }
-
-      document.getElementById('publishBtn').disabled = !isReady;
-    }
-
-    // Add event listeners for input validation
-    document.addEventListener('DOMContentLoaded', function() {
-      const inputs = ['postText', 'videoLink', 'embedCode', 'twitterLink'];
-      inputs.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-          element.addEventListener('input', checkPublishButtonState);
-        }
-      });
-    });
-
-    function getFormattedDate() {
-      const now = new Date();
-      return now.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
-    }
-
-    function getPostContent(type) {
-      if (type === 'text') {
-        return document.getElementById('postText').value;
-      } else if (type === 'video') {
-        return document.getElementById('videoLink').value;
-      } else if (type === 'embed') {
-        return document.getElementById('embedCode').value;
-      } else if (type === 'twitter') {
-        return document.getElementById('twitterLink').value;
-      }
-      return '';
-    }
-
-    function getPostDescription(type) {
-      if (type === 'text') {
-        return document.getElementById('postText').value;
-      } else if (type === 'video') {
-        return document.getElementById('videoDescription').value;
-      } else if (type === 'embed') {
-        return document.getElementById('embedDescription').value;
-      }
-      return '';
-    }
-
-    async function publishPost() {
-      const content = getPostContent(currentPostType);
-      const description = getPostDescription(currentPostType);
-      
-      if (!content || !currentUser) return;
-
-      const newPost = {
-        id: Date.now(),
-        author: currentUser.name,
-        authorEmail: currentUser.email,
-        authorPic: currentUser.profilePic,
-        type: currentPostType,
-        content: content,
-        description: description,
-        date: getFormattedDate(),
-        upvotes: 0,
-        downvotes: 0,
-        comments: [],
-        embedFormat: currentEmbedFormat
-      };
-
-      allPosts.unshift(newPost);
-      await updatePostsOnServer(allPosts);
-      renderPosts(allPosts);
-
-      // Clear form
-      document.getElementById('postText').value = '';
-      document.getElementById('videoDescription').value = '';
-      document.getElementById('videoLink').value = '';
-      document.getElementById('embedDescription').value = '';
-      document.getElementById('embedCode').value = '';
-      document.getElementById('twitterLink').value = '';
-      checkPublishButtonState();
-      toggleInput();
-    }
-
-    function embedFromLink(link) {
-      if (link.includes('youtu.be')) {
-        const id = link.split('youtu.be/')[1].split('?')[0];
-        return `https://www.youtube.com/embed/${id}`;
-      } else if (link.includes('youtube.com')) {
-        const urlParams = new URLSearchParams(new URL(link).search);
-        const id = urlParams.get('v');
-        return `https://www.youtube.com/embed/${id}`;
-      }
-      return link;
-    }
-
-    function srcFromEmbed(embedCode) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(embedCode, 'text/html');
-      const iframe = doc.querySelector('iframe');
-      return iframe ? iframe.src : '';
-    }
-
-    function renderPosts(posts) {
-      const container = document.getElementById('postsContainer');
-      container.innerHTML = '';
-
-      posts.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.className = 'post fade-in';
-        postElement.dataset.id = post.id;
-
-        const isMyPost = currentUser && post.authorEmail === currentUser.email;
-        const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
-        const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="openPrivateChat('${post.authorEmail}')">✉️ Messaggio</button>` : '';
-
-        let postContent = '';
-        if (post.type === 'text') {
-          postContent = `<div class="post-content">${post.content}</div>`;
-        } else if (post.type === 'video') {
-          postContent = `
-            ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
-            <div class="post-embed">
-              <iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          `;
-        } else if (post.type === 'embed') {
-          const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
-          postContent = `
-            ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
-            <div class="post-embed">
-              <iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          `;
-        } else if (post.type === 'twitter') {
-          postContent = `
-            <blockquote class="twitter-tweet">
-              <a href="${post.content}"></a>
-            </blockquote>
-          `;
-        }
-
-        postElement.innerHTML = `
-          <div class="post-header">
-            <a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')">
-              <img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo">
-              <div class="author-info">
-                <div class="author-name">${post.author}</div>
-                <div class="post-date">${post.date}</div>
-              </div>
-            </a>
-            <div class="post-actions">
-              ${deleteButton}
-            </div>
-          </div>
-          
-          ${postContent}
-          
-          <div class="post-footer">
-            <div class="vote-section">
-              <button class="vote-button" onclick="votePost(${post.id}, 'up')">
-                👍 <span>${post.upvotes || 0}</span>
-              </button>
-              <div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div>
-              <button class="vote-button" onclick="votePost(${post.id}, 'down')">
-                👎 <span>${post.downvotes || 0}</span>
-              </button>
-            </div>
-            
-            <div class="post-actions-footer">
-              <button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>
-              ${privateMessageButton}
-              <button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button>
-              <button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button>
-            </div>
-          </div>
-          
-          <div class="comments-section" id="comments-section-${post.id}">
-            <h4>Commenti:</h4>
-            <div class="comment-list" id="comments-${post.id}"></div>
-            <form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
-              <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required />
-              <button type="submit" class="comment-submit">Invia</button>
-            </form>
-          </div>
-        `;
-
-        container.appendChild(postElement);
-        renderComments(post.id, post.comments || []);
-
-        if (post.type === 'twitter') {
-          const script = document.createElement('script');
-          script.src = 'https://platform.twitter.com/widgets.js';
-          document.body.appendChild(script);
-        }
-      });
-    }
-
-    async function votePost(id, type) {
-      const post = allPosts.find(p => p.id === id);
-      if (!post) return;
-
-      if (type === 'up') {
-        post.upvotes = (post.upvotes || 0) + 1;
-      } else {
-        post.downvotes = (post.downvotes || 0) + 1;
-      }
-
-      await updatePostsOnServer(allPosts);
-      renderPosts(allPosts);
-    }
-
-    async function deletePost(id) {
-      if (!currentUser) {
-        alert("Devi essere loggato per eliminare un post.");
-        return;
-      }
-
-      const post = allPosts.find(p => p.id === id);
-      if (!post) return;
-
-      if (post.authorEmail !== currentUser.email) {
-        alert("Puoi eliminare solo i tuoi post.");
-        return;
-      }
-
-      const password = prompt("Inserisci la tua password per confermare l'eliminazione:");
-      if (password === null) return;
-
-      if (password !== currentUser.password) {
-        alert("Password non corretta. Impossibile eliminare il post.");
-        return;
-      }
-
-      allPosts = allPosts.filter(p => p.id !== id);
-      await updatePostsOnServer(allPosts);
-      renderPosts(allPosts);
-    }
-
-    function toggleComments(postId) {
-      const commentsSection = document.getElementById(`comments-section-${postId}`);
-      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
-      
-      if (commentsSection.style.display === 'block') {
-        document.getElementById(`comment-input-${postId}`).focus();
-      }
-    }
-
-    async function addComment(postId) {
-      const post = allPosts.find(p => p.id === postId);
-      const commentInput = document.getElementById(`comment-input-${postId}`);
-      const text = commentInput.value.trim();
-
-      if (!text || !currentUser || !post) return;
-
-      if (!post.comments) {
-        post.comments = [];
-      }
-
-      post.comments.push({
-        author: currentUser.name,
-        authorEmail: currentUser.email,
-        authorPic: currentUser.profilePic,
-        text: text,
-        date: getFormattedDate()
-      });
-
-      await updatePostsOnServer(allPosts);
-      renderComments(postId, post.comments);
-      commentInput.value = '';
-    }
-
-    function renderComments(postId, comments) {
-      const commentList = document.getElementById(`comments-${postId}`);
-      commentList.innerHTML = '';
-      
-      comments.forEach(comment => {
-        const commentElement = document.createElement('div');
-        commentElement.className = 'comment';
-        commentElement.innerHTML = `
-          <strong>${comment.author}</strong>: ${comment.text}
-          <div class="post-date">${comment.date}</div>
-        `;
-        commentList.appendChild(commentElement);
-      });
-    }
-
-    // Video Functions
-    function toggleVideoInput() {
-      document.getElementById('videoInputArea').classList.toggle('active');
-    }
-
-    function setNewVideoFormat(format) {
-      newVideoFormat = format;
-      document.querySelectorAll('#videoInputArea .post-type-selector button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      document.getElementById(`new-video-format-${format}`).classList.add('active');
-    }
-
-    function showVideos(format, button) {
-      currentVideoPageFormat = format;
-      const videoGrid = document.getElementById('videoGrid');
-      videoGrid.innerHTML = '';
-
-      document.querySelectorAll('#videoPage .post-type-selector button').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      
-      if (button) {
-        button.classList.add('active');
-      }
-
-      const filteredVideos = allVideos.filter(v => v.format === format);
-      
-      if (filteredVideos.length === 0) {
-        videoGrid.innerHTML = `<p class="text-center">Nessun video di questo tipo è stato ancora pubblicato.</p>`;
-        return;
-      }
-
-      filteredVideos.forEach(video => {
-        const videoElement = document.createElement('div');
-        videoElement.className = 'post fade-in';
-        videoElement.dataset.id = video.id;
-
-        const isMyVideo = currentUser && video.authorEmail === currentUser.email;
-        const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})">❌</button>` : '';
-
-        videoElement.innerHTML = `
-          <div class="post-header">
-            <a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')">
-              <img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo">
-              <div class="author-info">
-                <div class="author-name">${video.author}</div>
-                <div class="post-date">${video.date}</div>
-              </div>
-            </a>
-            <div class="post-actions">
-              ${deleteButton}
-            </div>
-          </div>
-          
-          <div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
-            <iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}"
-                 src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}"
-                 title="Video player" frameborder="0"
-                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                 allowfullscreen>
-            </iframe>
-          </div>
-          
-          <div class="post-content">${video.description}</div>
-          
-          <div class="post-footer">
-            <div class="vote-section">
-              <button class="vote-button" onclick="voteVideo(${video.id}, 'up')">
-                👍 <span>${video.upvotes || 0}</span>
-              </button>
-              <div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div>
-              <button class="vote-button" onclick="voteVideo(${video.id}, 'down')">
-                👎 <span>${video.downvotes || 0}</span>
-              </button>
-            </div>
-          </div>
-        `;
-
-        videoGrid.appendChild(videoElement);
-      });
-    }
-
-    async function publishNewVideo() {
-      const embedCode = document.getElementById('newVideoEmbedCode').value.trim();
-      const description = document.getElementById('newVideoDescription').value.trim();
-
-      if (!embedCode || !currentUser) return;
-
-      const newVideo = {
-        id: Date.now(),
-        author: currentUser.name,
-        authorEmail: currentUser.email,
-        authorPic: currentUser.profilePic,
-        description: description,
-        embedCode: embedCode,
-        format: newVideoFormat,
-        date: getFormattedDate(),
-        upvotes: 0,
-        downvotes: 0,
-      };
-
-      allVideos.unshift(newVideo);
-      await updateVideosOnServer(allVideos);
-      showVideos(newVideoFormat);
-
-      document.getElementById('newVideoDescription').value = '';
-      document.getElementById('newVideoEmbedCode').value = '';
-      document.getElementById('publishVideoBtn').disabled = true;
-      toggleVideoInput();
-    }
-
-    async function voteVideo(id, type) {
-      const video = allVideos.find(v => v.id === id);
-      if (!video) return;
-
-      if (type === 'up') {
-        video.upvotes = (video.upvotes || 0) + 1;
-      } else {
-        video.downvotes = (video.downvotes || 0) + 1;
-      }
-
-      await updateVideosOnServer(allVideos);
-      showVideos(currentVideoPageFormat);
-    }
-
-    async function deleteVideo(id) {
-      if (!confirm("Sei sicuro di voler eliminare questo video?")) {
-        return;
-      }
-      
-      allVideos = allVideos.filter(v => v.id !== id);
-      await updateVideosOnServer(allVideos);
-      showVideos(currentVideoPageFormat);
-    }
-
-    function openVideoModal(embedCode, format) {
-      const videoModal = document.getElementById('videoModal');
-      const modalVideoContainer = document.getElementById('modalVideoContainer');
-      
-      modalVideoContainer.innerHTML = `
-        <iframe class="${format === 'vertical' ? 'vertical-video' : 'horizontal-video'}"
-             src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1"
-             title="Video player" frameborder="0"
-             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-             allowfullscreen>
-        </iframe>
-      `;
-      
-      videoModal.style.display = 'flex';
-    }
-
-    function closeModal() {
-      const videoModal = document.getElementById('videoModal');
-      const modalVideoContainer = document.getElementById('modalVideoContainer');
-      modalVideoContainer.innerHTML = '';
-      videoModal.style.display = 'none';
-    }
-
-    // User Profile Functions
-    function showUserProfile(email) {
-      if (email === currentUser.email) {
-        showSettingsPage();
-        return;
-      }
-
-      const user = usersData[email];
-      if (!user) return;
-
-      hideElement('mainContent');
-      hideElement('videoPage');
-      hideElement('settingsPage');
-      hideElement('privateChatModal');
-      hideElement('chatListModal');
-      showElement('userProfilePage');
-
-      document.getElementById('profileInfo').innerHTML = `
-        <img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo">
-        <div>
-          <div class="user-name">${user.name}</div>
-          <div class="text-sm text-tertiary">Email: ${user.email}</div>
-          <div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div>
-          <button class="nav-button primary" onclick="openPrivateChat('${user.email}')" style="margin-top: 1rem;">✉️ Invia messaggio</button>
-        </div>
-      `;
-
-      const userPosts = allPosts.filter(post => post.authorEmail === email);
-      renderUserPosts(userPosts);
-
-      const userVideos = allVideos.filter(video => video.authorEmail === email);
-      renderUserVideos(userVideos);
-    }
-
-    function renderUserPosts(posts) {
-      const container = document.getElementById('userPostsContainer');
-      container.innerHTML = '';
-      
-      if (posts.length === 0) {
-        container.innerHTML = '<p>Nessun post pubblicato da questo utente.</p>';
-        return;
-      }
-
-      posts.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.className = 'post';
-
-        let postContent = '';
-        if (post.type === 'text') {
-          postContent = `<div class="post-content">${post.content}</div>`;
-        } else if (post.type === 'video') {
-          postContent = `
-            <div class="post-content">${post.description}</div>
-            <div class="post-embed">
-              <iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
-        } else if (post.type === 'embed') {
-          postContent = `
-            <div class="post-content">${post.description}</div>
-            <div class="post-embed">
-              <iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe>
-            </div>
-          `;
-        }
-
-        postElement.innerHTML = `
-          ${postContent}
-          <div class="post-date">${post.date}</div>
-        `;
-        
-        container.appendChild(postElement);
-      });
-    }
-
-    function renderUserVideos(videos) {
-      const container = document.getElementById('userVideosContainer');
-      container.innerHTML = '';
-      
-      if (videos.length === 0) {
-        container.innerHTML = '<p>Nessun video pubblicato da questo utente.</p>';
-        return;
-      }
-
-      videos.forEach(video => {
-        const videoElement = document.createElement('div');
-        videoElement.className = 'post';
-
-        videoElement.innerHTML = `
-          <div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
-            <iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}"
-                 src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}"
-                 title="Video player" frameborder="0" allowfullscreen>
-            </iframe>
-          </div>
-          <div class="post-content">${video.description}</div>
-          <div class="post-date">${video.date}</div>
-        `;
-        
-        container.appendChild(videoElement);
-      });
-    }
-
-    // Search Functions
-    document.getElementById('searchInput').addEventListener('input', filterUsers);
-
-    function filterUsers() {
-      const query = document.getElementById('searchInput').value.toLowerCase();
-      const searchResults = document.getElementById('searchResults');
-      searchResults.innerHTML = '';
-
-      if (query.length < 2) {
-        searchResults.style.display = 'none';
-        return;
-      }
-
-      const filtered = allUsers.filter(user => 
-        user.name.toLowerCase().includes(query) || 
-        user.email.toLowerCase().includes(query)
-      );
-
-      if (filtered.length > 0) {
-        searchResults.style.display = 'block';
-        filtered.forEach(user => {
-          const resultItem = document.createElement('a');
-          resultItem.href = '#';
-          resultItem.className = 'search-result-item';
-          resultItem.innerHTML = `
-            <img src="${user.profilePic}" class="profile-pic" /> 
-            ${user.name}
-          `;
-          resultItem.onclick = (e) => {
-            e.preventDefault();
-            showUserProfile(user.email);
-            searchResults.style.display = 'none';
-            document.getElementById('searchInput').value = '';
-          };
-          searchResults.appendChild(resultItem);
-        });
-      } else {
-        searchResults.style.display = 'none';
-      }
-    }
-
-    document.addEventListener('click', (event) => {
-      const searchContainer = document.querySelector('.search-container');
-      if (!searchContainer.contains(event.target)) {
-        document.getElementById('searchResults').style.display = 'none';
-      }
-    });
-
-    // Settings Functions
-    async function saveSettings() {
-      if (!currentUser) return;
-
-      const newName = document.getElementById('editName').value.trim();
-      const newBio = document.getElementById('editBio').value.trim();
-      const selectedPic = document.querySelector('#editProfilePicSelector .selected');
-      const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
-
-      if (!newName) {
-        alert("Il nome non può essere vuoto.");
-        return;
-      }
-
-      currentUser.name = newName;
-      currentUser.bio = newBio;
-      currentUser.profilePic = newProfilePic;
-
-      try {
-        const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
-        if (userIndex !== -1) {
-          allUsers[userIndex] = currentUser;
-          await updateUsersOnServer(allUsers);
-          localStorage.setItem("currentUserEmail", currentUser.email);
-          alert("Impostazioni salvate con successo!");
-          updateUserInfo();
-          showMainContent();
-        }
-      } catch (error) {
-        console.error("Errore nel salvataggio delle impostazioni:", error);
-        alert("Errore nel salvataggio delle impostazioni.");
-      }
-    }
-
-    // Chat Functions
-    async function openPrivateChat(recipientEmail) {
-      if (!currentUser) {
-        alert("Devi essere loggato per inviare messaggi.");
-        return;
-      }
-      
-      if (currentUser.email === recipientEmail) {
-        alert("Non puoi inviare messaggi a te stesso.");
-        return;
-      }
-
-      currentChatRecipientEmail = recipientEmail;
-      showElement('privateChatModal');
-      hideElement('chatListModal');
-
-      const recipient = usersData[recipientEmail];
-      if (recipient) {
-        document.getElementById('chatRecipientName').textContent = recipient.name;
-        document.getElementById('chatRecipientPic').src = recipient.profilePic;
-      }
-
-      await renderPrivateMessages();
-      document.getElementById('privateMessageInput').focus();
-    }
-
-    function closePrivateChat() {
-      hideElement('privateChatModal');
-      currentChatRecipientEmail = null;
-    }
-
-    function getConversationKey(email1, email2) {
-      return [email1, email2].sort().join('_to_');
-    }
-
-    async function renderPrivateMessages() {
-      const chatMessageHistory = document.getElementById('chatMessageHistory');
-      chatMessageHistory.innerHTML = '';
-      
-      const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
-      const messages = allPrivateMessages[conversationKey] || [];
-
-      if (messages.length === 0) {
-        chatMessageHistory.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Inizia una conversazione!</p>';
-      }
-
-      messages.forEach(msg => {
-        const messageElement = document.createElement('div');
-        messageElement.className = `chat-message ${msg.senderEmail === currentUser.email ? 'sent' : 'received'}`;
-        messageElement.textContent = msg.text;
-        chatMessageHistory.appendChild(messageElement);
-      });
-
-      chatMessageHistory.scrollTop = chatMessageHistory.scrollHeight;
-    }
-
-    async function sendPrivateMessage() {
-      const text = document.getElementById('privateMessageInput').value.trim();
-      if (!text || !currentUser || !currentChatRecipientEmail) return;
-
-      const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
-      
-      if (!allPrivateMessages[conversationKey]) {
-        allPrivateMessages[conversationKey] = [];
-      }
-
-      const newMessage = {
-        senderEmail: currentUser.email,
-        text: text,
-        date: new Date().toISOString()
-      };
-
-      allPrivateMessages[conversationKey].push(newMessage);
-      document.getElementById('privateMessageInput').value = '';
-
-      await renderPrivateMessages();
-      
-      try {
-        await fetch(MESSAGES_URL, {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({ privateMessages: allPrivateMessages })
-        });
-      } catch (error) {
-        console.error("Errore nell'aggiornamento dei messaggi:", error);
-        alert("Errore nell'invio del messaggio.");
-      }
-    }
-
-    function showChatList() {
-      if (!currentUser) {
-        alert("Devi essere loggato per vedere le tue chat.");
-        return;
-      }
-
-      hideElement('mainContent');
-      hideElement('videoPage');
-      hideElement('userProfilePage');
-      hideElement('settingsPage');
-      hideElement('privateChatModal');
-      showElement('chatListModal');
-      renderConversationList();
-    }
-
-    function closeChatList() {
-      hideElement('chatListModal');
-      showMainContent();
-    }
-
-    function renderConversationList() {
-      const conversationList = document.getElementById('conversationList');
-      conversationList.innerHTML = '';
-
-      const myConversations = Object.entries(allPrivateMessages)
-        .filter(([key, messages]) => 
-          key.includes(currentUser.email) && messages.length > 0
-        )
-        .map(([key, messages]) => {
-          const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
-          const recipient = usersData[recipientEmail];
-          const lastMessage = messages[messages.length - 1];
-          return { recipient, lastMessage };
-        })
-        .sort((a, b) => new Date(b.lastMessage.date) - new Date(a.lastMessage.date));
-
-      if (myConversations.length === 0) {
-        conversationList.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Non hai ancora conversazioni.</p>';
-        return;
-      }
-
-      myConversations.forEach(({ recipient, lastMessage }) => {
-        const conversationElement = document.createElement('a');
-        conversationElement.href = '#';
-        conversationElement.className = 'conversation-item';
-        conversationElement.onclick = (e) => {
-          e.preventDefault();
-          openPrivateChat(recipient.email);
-        };
-
-        conversationElement.innerHTML = `
-          <img src="${recipient.profilePic}" class="profile-pic" />
-          <div class="conversation-info">
-            <div class="user-name-conv">${recipient.name}</div>
-            <div class="last-message">${lastMessage.text}</div>
-          </div>
-        `;
-        
-        conversationList.appendChild(conversationElement);
-      });
-    }
-
-    // Translation and Summary Functions
-    async function translatePost(postId) {
-      const post = allPosts.find(p => p.id === postId);
-      if (!post) return;
-      
-      const targetLang = currentUser?.country === "Russia" ? "ru" : "it";
-      const text = post.content;
-      
-      try {
-        const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ q: text, target: targetLang })
-        });
-        
-        const data = await res.json();
-        const translated = data.data.translations[0].translatedText;
-        alert("Traduzione: " + translated);
-      } catch (err) {
-        console.error("Errore nella traduzione:", err);
-        alert("Servizio di traduzione non disponibile al momento.");
-      }
-    }
-
-    async function summarizePost(postId) {
-      const post = allPosts.find(p => p.id === postId);
-      if (!post) return;
-      
-      try {
-        const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt: { text: "Fai un breve riassunto di questo testo: " + post.content }
-          })
-        });
-        
-        const data = await res.json();
-        const summary = data.candidates[0].output;
-        alert("Riassunto: " + summary);
-      } catch (err) {
-        console.error("Errore nel riassunto:", err);
-        alert("Servizio di riassunto non disponibile al momento.");
-      }
-    }
-
-    // Spotify Login
-    function loginWithSpotify() {
-      const scopes = 'user-read-private user-read-email';
-      const authUrl = `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
-      window.location.href = authUrl;
-    }
-
-    // Input validation for video publishing
-    document.addEventListener('DOMContentLoaded', function() {
-      const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
-      if (newVideoEmbedCodeInput) {
-        newVideoEmbedCodeInput.addEventListener('input', () => {
-          document.getElementById('publishVideoBtn').disabled = newVideoEmbedCodeInput.value.trim() === '';
-        });
-      }
-    });
-
-    // Initialize Application
-    window.onload = async () => {
-      const storedEmail = localStorage.getItem("currentUserEmail");
-      
-      if (storedEmail) {
-        await loadAllData();
-        currentUser = allUsers.find(u => u.email === storedEmail);
-        if (currentUser) {
-          showAppContent();
-        } else {
-          logoutUser();
-        }
-      } else {
-        // Check for Spotify authentication
-        const params = new URLSearchParams(window.location.hash.substring(1));
-        const accessToken = params.get('access_token');
-        
-        if (accessToken) {
-          try {
-            const spotifyUser = await fetch('https://api.spotify.com/v1/me', {
-              headers: { 'Authorization': 'Bearer ' + accessToken }
-            }).then(res => res.json());
-
-            await loadAllData();
-            const email = spotifyUser.email;
-            const user = allUsers.find(u => u.email === email);
-
-            if (user) {
-              currentUser = user;
-            } else {
-              const newUser = {
-                name: spotifyUser.display_name,
-                email: spotifyUser.email,
-                profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
-                bio: "Accesso tramite Spotify",
-                password: null
-              };
-              allUsers.push(newUser);
-              await updateUsersOnServer(allUsers);
-              currentUser = newUser;
+    try {
+        if (currentPostType === 'upload') {
+            const fileInput = document.getElementById('fileUploadInput');
+            const caption = document.getElementById('uploadCaption').value.trim();
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Nessun file selezionato!");
+                publishBtn.textContent = 'Pubblica su Nexiflow';
+                checkPublishButtonState();
+                return;
             }
-            
-            localStorage.setItem("currentUserEmail", currentUser.email);
-            showAppContent();
-          } catch (error) {
-            console.error("Errore durante l'autenticazione con Spotify:", error);
-            alert("Errore nell'autenticazione con Spotify.");
-            showAuthContent();
-          }
+            alert(`Inizio la conversione del file. Questo potrebbe richiedere tempo per file video di grandi dimensioni.`);
+            // Simula il salvataggio su Drive convertendo il file in Base64
+            const fileDataUrl = await fileToBase64(file);
+            newPost.content = fileDataUrl; // Salvato come testo su JsonBin
+            newPost.description = caption; // La didascalia
+            newPost.fileType = file.type; // es. 'image/png' o 'video/mp4'
         } else {
-          await loadAllData();
-          showAuthContent();
+            // Logica esistente per altri tipi di post
+            const content = (currentPostType === 'text') ? document.getElementById('postText').value :
+                            (currentPostType === 'video') ? document.getElementById('videoLink').value :
+                            (currentPostType === 'embed') ? document.getElementById('embedCode').value :
+                            document.getElementById('twitterLink').value;
+            const description = (currentPostType === 'text') ? '' :
+                                (currentPostType === 'video') ? document.getElementById('videoDescription').value :
+                                document.getElementById('embedDescription').value;
+            if (!content.trim()) return;
+            newPost.content = content;
+            newPost.description = description;
+            if (currentPostType === 'embed') {
+                newPost.embedFormat = currentEmbedFormat;
+            }
         }
-      }
-    };
-
-    // Close modals when clicking outside
-    window.onclick = function(event) {
-      const countryModal = document.getElementById("countryModal");
-      const chatListModal = document.getElementById("chatListModal");
-      
-      if (event.target == countryModal) {
-        countryModal.style.display = "none";
-      }
-      
-      if (event.target == chatListModal) {
-        closeChatList();
-      }
-    };
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', function(event) {
-      // ESC to close modals
-      if (event.key === 'Escape') {
-        closeModal();
-        closePrivateChat();
-        closeChatList();
-      }
-      
-      // Enter to send chat message
-      if (event.key === 'Enter' && event.target.id === 'privateMessageInput') {
-        event.preventDefault();
-        sendPrivateMessage();
-      }
-    });
-  </script>
-  <script>
-(function() {
-  // Utility per gestire la modalità "delete power"
-  let deletePowerEnabled = false;
-  let deletePowerTimeout = null;
-
-  // Funzione da chiamare per abilitare la modalità "delete power"
-  function enableDeletePower() {
-    if (deletePowerEnabled) return;
-    deletePowerEnabled = true;
-
-    // Mostra tutti i bottoni cestino (assumendo che abbiano classe .action-button)
-    document.querySelectorAll('.action-button').forEach(btn => {
-      btn.style.display = 'flex';
-      btn.disabled = false;
-    });
-
-    // Mostra i bottoni cestino nei commenti se esistono
-    document.querySelectorAll('.comment .action-button').forEach(btn => {
-      btn.style.display = 'flex';
-      btn.disabled = false;
-    });
-
-    // Aggiungi handler di eliminazione per ogni cestino
-    document.querySelectorAll('.action-button').forEach(btn => {
-      btn.addEventListener('click', function handler(e) {
-        // Trova l'elemento da eliminare (post o commento)
-        let post = btn.closest('.post');
-        let comment = btn.closest('.comment');
-        if (post) post.remove();
-        if (comment) comment.remove();
-      });
-    });
-
-    // Disabilita dopo 5 minuti
-    deletePowerTimeout = setTimeout(disableDeletePower, 5 * 60 * 1000);
-  }
-
-  // Funzione da chiamare per disabilitare la modalità "delete power"
-  function disableDeletePower() {
-    deletePowerEnabled = false;
-
-    // Nasconde i bottoni cestino (se normalmente nascosti)
-    document.querySelectorAll('.action-button').forEach(btn => {
-      btn.style.display = '';
-      btn.disabled = true;
-    });
-    document.querySelectorAll('.comment .action-button').forEach(btn => {
-      btn.style.display = '';
-      btn.disabled = true;
-    });
-    if (deletePowerTimeout) {
-      clearTimeout(deletePowerTimeout);
-      deletePowerTimeout = null;
+        allPosts.unshift(newPost);
+        await updatePostsOnServer(allPosts);
+        renderPosts(allPosts);
+        // Reset dei campi
+        document.getElementById('postText').value = '';
+        document.getElementById('videoDescription').value = '';
+        document.getElementById('videoLink').value = '';
+        document.getElementById('embedDescription').value = '';
+        document.getElementById('embedCode').value = '';
+        document.getElementById('twitterLink').value = '';
+        document.getElementById('fileUploadInput').value = ''; // Reset input file
+        document.getElementById('uploadCaption').value = ''; // Reset didascalia
+    } catch (error) {
+        console.error("Errore durante la pubblicazione:", error);
+        alert("Si è verificato un errore durante la pubblicazione. Riprova.");
+    } finally {
+        publishBtn.textContent = 'Pubblica su Nexiflow';
+        checkPublishButtonState();
+        toggleInput();
     }
-  }
-
-  // Monitoraggio della barra di ricerca
-  document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchInput');
-    if (!searchInput) return;
-    searchInput.addEventListener('input', function() {
-      if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') {
-        enableDeletePower();
-      }
-    });
-  });
+}
+function embedFromLink(link) {
+if (link.includes('youtu.be')) {
+const id = link.split('youtu.be/')[1].split('?')[0];
+return `https://www.youtube.com/embed/${id}`;
+} else if (link.includes('youtube.com')) {
+const urlParams = new URLSearchParams(new URL(link).search);
+const id = urlParams.get('v');
+return `https://www.youtube.com/embed/${id}`;
+}
+return link;
+}
+function srcFromEmbed(embedCode) {
+const parser = new DOMParser();
+const doc = parser.parseFromString(embedCode, 'text/html');
+const iframe = doc.querySelector('iframe');
+return iframe ? iframe.src : '';
+}
+// START: Funzione renderPosts MODIFICATA
+function renderPosts(posts) {
+const container = document.getElementById('postsContainer');
+container.innerHTML = '';
+posts.forEach(post => {
+const postElement = document.createElement('div');
+postElement.className = 'post fade-in';
+postElement.dataset.id = post.id;
+const isMyPost = currentUser && post.authorEmail === currentUser.email;
+const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
+const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="openPrivateChat('${post.authorEmail}')">✉️ Messaggio</button>` : '';
+let postContent = '';
+// Logica di rendering aggiornata
+if (post.type === 'text') {
+    postContent = `<div class="post-content">${post.content}</div>`;
+} else if (post.type === 'video') {
+    postContent = `
+    ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
+    <div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+} else if (post.type === 'embed') {
+    const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
+    postContent = `
+    ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
+    <div class="post-embed"><iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+} else if (post.type === 'twitter') {
+    postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
+} else if (post.type === 'upload') { // NUOVO: Gestisce i post caricati
+    let mediaElement = '';
+    if (post.fileType && post.fileType.startsWith('image/')) {
+        mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
+    } else if (post.fileType && post.fileType.startsWith('video/')) {
+        mediaElement = `<video src="${post.content}" controls></video>`;
+    }
+    postContent = `
+    ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
+    <div class="post-uploaded-content">${mediaElement}</div>
+    `;
+}
+postElement.innerHTML = `
+<div class="post-header">
+<a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')">
+<img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo">
+<div class="author-info">
+<div class="author-name">${post.author}</div>
+<div class="post-date">${post.date}</div>
+</div>
+</a>
+<div class="post-actions">${deleteButton}</div>
+</div>
+${postContent}
+<div class="post-footer">
+<div class="vote-section">
+<button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button>
+<div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div>
+<button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button>
+</div>
+<div class="post-actions-footer">
+<button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>
+${privateMessageButton}
+<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button>
+<button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button>
+</div>
+</div>
+<div class="comments-section" id="comments-section-${post.id}">
+<h4>Commenti:</h4>
+<div class="comment-list" id="comments-${post.id}"></div>
+<form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
+<input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required />
+<button type="submit" class="comment-submit">Invia</button>
+</form>
+</div>`;
+container.appendChild(postElement);
+renderComments(post.id, post.comments || []);
+if (post.type === 'twitter') {
+    const script = document.createElement('script');
+    script.src = 'https://platform.twitter.com/widgets.js';
+    script.charset = 'utf-8';
+    document.body.appendChild(script);
+}
+});
+}
+// END: Funzione renderPosts MODIFICATA
+async function votePost(id, type) {
+const post = allPosts.find(p => p.id === id);
+if (!post) return;
+if (type === 'up') post.upvotes = (post.upvotes || 0) + 1;
+else post.downvotes = (post.downvotes || 0) + 1;
+await updatePostsOnServer(allPosts);
+renderPosts(allPosts);
+}
+async function deletePost(id) {
+if (!currentUser) { alert("Devi essere loggato per eliminare un post."); return; }
+const post = allPosts.find(p => p.id === id);
+if (!post) return;
+if (post.authorEmail !== currentUser.email) { alert("Puoi eliminare solo i tuoi post."); return; }
+const password = prompt("Inserisci la tua password per confermare l'eliminazione:");
+if (password === null) return;
+if (password !== currentUser.password) { alert("Password non corretta. Impossibile eliminare il post."); return; }
+allPosts = allPosts.filter(p => p.id !== id);
+await updatePostsOnServer(allPosts);
+renderPosts(allPosts);
+}
+function toggleComments(postId) {
+const commentsSection = document.getElementById(`comments-section-${postId}`);
+commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+if (commentsSection.style.display === 'block') document.getElementById(`comment-input-${postId}`).focus();
+}
+async function addComment(postId) {
+const post = allPosts.find(p => p.id === postId);
+const commentInput = document.getElementById(`comment-input-${postId}`);
+const text = commentInput.value.trim();
+if (!text || !currentUser || !post) return;
+if (!post.comments) post.comments = [];
+post.comments.push({
+author: currentUser.name, authorEmail: currentUser.email,
+authorPic: currentUser.profilePic, text: text, date: getFormattedDate()
+});
+await updatePostsOnServer(allPosts);
+renderComments(postId, post.comments);
+commentInput.value = '';
+}
+function renderComments(postId, comments) {
+const commentList = document.getElementById(`comments-${postId}`);
+commentList.innerHTML = '';
+comments.forEach(comment => {
+const commentElement = document.createElement('div');
+commentElement.className = 'comment';
+commentElement.innerHTML = `<strong>${comment.author}</strong>: ${comment.text}<div class="post-date">${comment.date}</div>`;
+commentList.appendChild(commentElement);
+});
+}
+function toggleVideoInput() { document.getElementById('videoInputArea').classList.toggle('active'); }
+function setNewVideoFormat(format) {
+newVideoFormat = format;
+document.querySelectorAll('#videoInputArea .post-type-selector button').forEach(btn => btn.classList.remove('active'));
+document.getElementById(`new-video-format-${format}`).classList.add('active');
+}
+function showVideos(format, button) {
+currentVideoPageFormat = format;
+const videoGrid = document.getElementById('videoGrid');
+videoGrid.innerHTML = '';
+document.querySelectorAll('#videoPage .post-type-selector button').forEach(btn => btn.classList.remove('active'));
+if (button) button.classList.add('active');
+const filteredVideos = allVideos.filter(v => v.format === format);
+if (filteredVideos.length === 0) {
+videoGrid.innerHTML = `<p class="text-center">Nessun video di questo tipo è stato ancora pubblicato.</p>`;
+return;
+}
+filteredVideos.forEach(video => {
+const videoElement = document.createElement('div');
+videoElement.className = 'post fade-in';
+videoElement.dataset.id = video.id;
+const isMyVideo = currentUser && video.authorEmail === currentUser.email;
+const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})">❌</button>` : '';
+videoElement.innerHTML = `
+<div class="post-header">
+<a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')">
+<img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo">
+<div class="author-info">
+<div class="author-name">${video.author}</div>
+<div class="post-date">${video.date}</div>
+</div>
+</a>
+<div class="post-actions">${deleteButton}</div>
+</div>
+<div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
+<iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}"
+src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}"
+title="Video player" frameborder="0"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</div>
+<div class="post-content">${video.description}</div>
+<div class="post-footer">
+<div class="vote-section">
+<button class="vote-button" onclick="voteVideo(${video.id}, 'up')">👍 <span>${video.upvotes || 0}</span></button>
+<div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div>
+<button class="vote-button" onclick="voteVideo(${video.id}, 'down')">👎 <span>${video.downvotes || 0}</span></button>
+</div>
+</div>`;
+videoGrid.appendChild(videoElement);
+});
+}
+async function publishNewVideo() {
+const embedCode = document.getElementById('newVideoEmbedCode').value.trim();
+const description = document.getElementById('newVideoDescription').value.trim();
+if (!embedCode || !currentUser) return;
+const newVideo = {
+id: Date.now(), author: currentUser.name, authorEmail: currentUser.email, authorPic: currentUser.profilePic,
+description: description, embedCode: embedCode, format: newVideoFormat, date: getFormattedDate(),
+upvotes: 0, downvotes: 0,
+};
+allVideos.unshift(newVideo);
+await updateVideosOnServer(allVideos);
+showVideos(newVideoFormat);
+document.getElementById('newVideoDescription').value = '';
+document.getElementById('newVideoEmbedCode').value = '';
+document.getElementById('publishVideoBtn').disabled = true;
+toggleVideoInput();
+}
+async function voteVideo(id, type) {
+const video = allVideos.find(v => v.id === id);
+if (!video) return;
+if (type === 'up') video.upvotes = (video.upvotes || 0) + 1;
+else video.downvotes = (video.downvotes || 0) + 1;
+await updateVideosOnServer(allVideos);
+showVideos(currentVideoPageFormat);
+}
+async function deleteVideo(id) {
+if (!confirm("Sei sicuro di voler eliminare questo video?")) return;
+allVideos = allVideos.filter(v => v.id !== id);
+await updateVideosOnServer(allVideos);
+showVideos(currentVideoPageFormat);
+}
+function openVideoModal(embedCode, format) {
+const videoModal = document.getElementById('videoModal');
+const modalVideoContainer = document.getElementById('modalVideoContainer');
+modalVideoContainer.innerHTML = `
+<iframe class="${format === 'vertical' ? 'vertical-video' : 'horizontal-video'}"
+src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1"
+title="Video player" frameborder="0"
+allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>`;
+videoModal.style.display = 'flex';
+}
+function closeModal() {
+const videoModal = document.getElementById('videoModal');
+const modalVideoContainer = document.getElementById('modalVideoContainer');
+modalVideoContainer.innerHTML = '';
+videoModal.style.display = 'none';
+}
+function showUserProfile(email) {
+if (email === currentUser.email) { showSettingsPage(); return; }
+const user = usersData[email];
+if (!user) return;
+hideElement('mainContent');
+hideElement('videoPage');
+hideElement('settingsPage');
+hideElement('privateChatModal');
+hideElement('chatListModal');
+showElement('userProfilePage');
+document.getElementById('profileInfo').innerHTML = `
+<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo">
+<div>
+<div class="user-name">${user.name}</div>
+<div class="text-sm text-tertiary">Email: ${user.email}</div>
+<div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div>
+<button class="nav-button primary" onclick="openPrivateChat('${user.email}')" style="margin-top: 1rem;">✉️ Invia messaggio</button>
+</div>`;
+const userPosts = allPosts.filter(post => post.authorEmail === email);
+renderUserPosts(userPosts);
+const userVideos = allVideos.filter(video => video.authorEmail === email);
+renderUserVideos(userVideos);
+}
+function renderUserPosts(posts) {
+const container = document.getElementById('userPostsContainer');
+container.innerHTML = '';
+if (posts.length === 0) {
+container.innerHTML = '<p>Nessun post pubblicato da questo utente.</p>';
+return;
+}
+posts.forEach(post => {
+const postElement = document.createElement('div');
+postElement.className = 'post';
+let postContent = '';
+if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
+else if (post.type === 'video') postContent = `
+<div class="post-content">${post.description}</div>
+<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
+else if (post.type === 'embed') postContent = `
+<div class="post-content">${post.description}</div>
+<div class="post-embed"><iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
+postElement.innerHTML = `${postContent}<div class="post-date">${post.date}</div>`;
+container.appendChild(postElement);
+});
+}
+function renderUserVideos(videos) {
+const container = document.getElementById('userVideosContainer');
+container.innerHTML = '';
+if (videos.length === 0) {
+container.innerHTML = '<p>Nessun video pubblicato da questo utente.</p>';
+return;
+}
+videos.forEach(video => {
+const videoElement = document.createElement('div');
+videoElement.className = 'post';
+videoElement.innerHTML = `
+<div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')">
+<iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}"
+src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}"
+title="Video player" frameborder="0" allowfullscreen></iframe>
+</div>
+<div class="post-content">${video.description}</div>
+<div class="post-date">${video.date}</div>`;
+container.appendChild(videoElement);
+});
+}
+document.getElementById('searchInput').addEventListener('input', filterUsers);
+function filterUsers() {
+const query = document.getElementById('searchInput').value.toLowerCase();
+const searchResults = document.getElementById('searchResults');
+searchResults.innerHTML = '';
+if (query.length < 2) { searchResults.style.display = 'none'; return; }
+const filtered = allUsers.filter(user => user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query));
+if (filtered.length > 0) {
+searchResults.style.display = 'block';
+filtered.forEach(user => {
+const resultItem = document.createElement('a');
+resultItem.href = '#';
+resultItem.className = 'search-result-item';
+resultItem.innerHTML = `<img src="${user.profilePic}" class="profile-pic" /> ${user.name}`;
+resultItem.onclick = (e) => {
+e.preventDefault();
+showUserProfile(user.email);
+searchResults.style.display = 'none';
+document.getElementById('searchInput').value = '';
+};
+searchResults.appendChild(resultItem);
+});
+} else { searchResults.style.display = 'none'; }
+}
+document.addEventListener('click', (event) => {
+const searchContainer = document.querySelector('.search-container');
+if (!searchContainer.contains(event.target)) document.getElementById('searchResults').style.display = 'none';
+});
+async function saveSettings() {
+if (!currentUser) return;
+const newName = document.getElementById('editName').value.trim();
+const newBio = document.getElementById('editBio').value.trim();
+const selectedPic = document.querySelector('#editProfilePicSelector .selected');
+const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
+if (!newName) { alert("Il nome non può essere vuoto."); return; }
+currentUser.name = newName;
+currentUser.bio = newBio;
+currentUser.profilePic = newProfilePic;
+try {
+const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+if (userIndex !== -1) {
+allUsers[userIndex] = currentUser;
+await updateUsersOnServer(allUsers);
+localStorage.setItem("currentUserEmail", currentUser.email);
+alert("Impostazioni salvate con successo!");
+updateUserInfo();
+showMainContent();
+}
+} catch (error) {
+console.error("Errore nel salvataggio delle impostazioni:", error);
+alert("Errore nel salvataggio delle impostazioni.");
+}
+}
+async function openPrivateChat(recipientEmail) {
+if (!currentUser) { alert("Devi essere loggato per inviare messaggi."); return; }
+if (currentUser.email === recipientEmail) { alert("Non puoi inviare messaggi a te stesso."); return; }
+currentChatRecipientEmail = recipientEmail;
+showElement('privateChatModal');
+hideElement('chatListModal');
+const recipient = usersData[recipientEmail];
+if (recipient) {
+document.getElementById('chatRecipientName').textContent = recipient.name;
+document.getElementById('chatRecipientPic').src = recipient.profilePic;
+}
+await renderPrivateMessages();
+document.getElementById('privateMessageInput').focus();
+}
+function closePrivateChat() {
+hideElement('privateChatModal');
+currentChatRecipientEmail = null;
+}
+function getConversationKey(email1, email2) { return [email1, email2].sort().join('_to_'); }
+async function renderPrivateMessages() {
+const chatMessageHistory = document.getElementById('chatMessageHistory');
+chatMessageHistory.innerHTML = '';
+const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
+const messages = allPrivateMessages[conversationKey] || [];
+if (messages.length === 0) chatMessageHistory.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Inizia una conversazione!</p>';
+messages.forEach(msg => {
+const messageElement = document.createElement('div');
+messageElement.className = `chat-message ${msg.senderEmail === currentUser.email ? 'sent' : 'received'}`;
+messageElement.textContent = msg.text;
+chatMessageHistory.appendChild(messageElement);
+});
+chatMessageHistory.scrollTop = chatMessageHistory.scrollHeight;
+}
+async function sendPrivateMessage() {
+const text = document.getElementById('privateMessageInput').value.trim();
+if (!text || !currentUser || !currentChatRecipientEmail) return;
+const conversationKey = getConversationKey(currentUser.email, currentChatRecipientEmail);
+if (!allPrivateMessages[conversationKey]) allPrivateMessages[conversationKey] = [];
+const newMessage = { senderEmail: currentUser.email, text: text, date: new Date().toISOString() };
+allPrivateMessages[conversationKey].push(newMessage);
+document.getElementById('privateMessageInput').value = '';
+await renderPrivateMessages();
+try {
+await fetch(MESSAGES_URL, {
+method: "PUT", headers,
+body: JSON.stringify({ privateMessages: allPrivateMessages })
+});
+} catch (error) {
+console.error("Errore nell'aggiornamento dei messaggi:", error);
+alert("Errore nell'invio del messaggio.");
+}
+}
+function showChatList() {
+if (!currentUser) { alert("Devi essere loggato per vedere le tue chat."); return; }
+hideElement('mainContent'); hideElement('videoPage'); hideElement('userProfilePage');
+hideElement('settingsPage'); hideElement('privateChatModal'); showElement('chatListModal');
+renderConversationList();
+}
+function closeChatList() {
+hideElement('chatListModal');
+showMainContent();
+}
+function renderConversationList() {
+const conversationList = document.getElementById('conversationList');
+conversationList.innerHTML = '';
+const myConversations = Object.entries(allPrivateMessages)
+.filter(([key, messages]) => key.includes(currentUser.email) && messages.length > 0)
+.map(([key, messages]) => {
+const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
+const recipient = usersData[recipientEmail];
+const lastMessage = messages[messages.length - 1];
+return { recipient, lastMessage };
+})
+.sort((a, b) => new Date(b.lastMessage.date) - new Date(a.lastMessage.date));
+if (myConversations.length === 0) {
+conversationList.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Non hai ancora conversazioni.</p>';
+return;
+}
+myConversations.forEach(({ recipient, lastMessage }) => {
+const conversationElement = document.createElement('a');
+conversationElement.href = '#';
+conversationElement.className = 'conversation-item';
+conversationElement.onclick = (e) => { e.preventDefault(); openPrivateChat(recipient.email); };
+conversationElement.innerHTML = `
+<img src="${recipient.profilePic}" class="profile-pic" />
+<div class="conversation-info">
+<div class="user-name-conv">${recipient.name}</div>
+<div class="last-message">${lastMessage.text}</div>
+</div>`;
+conversationList.appendChild(conversationElement);
+});
+}
+async function translatePost(postId) {
+const post = allPosts.find(p => p.id === postId);
+if (!post) return;
+const targetLang = currentUser?.country === "Russia" ? "ru" : "it";
+const text = post.content;
+try {
+const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, {
+method: "POST", headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ q: text, target: targetLang })
+});
+const data = await res.json();
+const translated = data.data.translations[0].translatedText;
+alert("Traduzione: " + translated);
+} catch (err) {
+console.error("Errore nella traduzione:", err);
+alert("Servizio di traduzione non disponibile al momento.");
+}
+}
+async function summarizePost(postId) {
+const post = allPosts.find(p => p.id === postId);
+if (!post) return;
+try {
+const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
+method: "POST", headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ prompt: { text: "Fai un breve riassunto di questo testo: " + post.content } })
+});
+const data = await res.json();
+const summary = data.candidates[0].output;
+alert("Riassunto: " + summary);
+} catch (err) {
+console.error("Errore nel riassunto:", err);
+alert("Servizio di riassunto non disponibile al momento.");
+}
+}
+function loginWithSpotify() {
+const scopes = 'user-read-private user-read-email';
+const authUrl = `https://accounts.spotify.com/authorize?client_id=${spotifyClientId}&response_type=token&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+window.location.href = authUrl;
+}
+document.addEventListener('DOMContentLoaded', function() {
+const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
+if (newVideoEmbedCodeInput) {
+newVideoEmbedCodeInput.addEventListener('input', () => {
+document.getElementById('publishVideoBtn').disabled = newVideoEmbedCodeInput.value.trim() === '';
+});
+}
+});
+window.onload = async () => {
+const storedEmail = localStorage.getItem("currentUserEmail");
+if (storedEmail) {
+await loadAllData();
+currentUser = allUsers.find(u => u.email === storedEmail);
+if (currentUser) showAppContent();
+else logoutUser();
+} else {
+const params = new URLSearchParams(window.location.hash.substring(1));
+const accessToken = params.get('access_token');
+if (accessToken) {
+try {
+const spotifyUser = await fetch('https://api.spotify.com/v1/me', {
+headers: { 'Authorization': 'Bearer ' + accessToken }
+}).then(res => res.json());
+await loadAllData();
+const email = spotifyUser.email;
+const user = allUsers.find(u => u.email === email);
+if (user) currentUser = user;
+else {
+const newUser = {
+name: spotifyUser.display_name, email: spotifyUser.email,
+profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
+bio: "Accesso tramite Spotify", password: null
+};
+allUsers.push(newUser);
+await updateUsersOnServer(allUsers);
+currentUser = newUser;
+}
+localStorage.setItem("currentUserEmail", currentUser.email);
+showAppContent();
+} catch (error) {
+console.error("Errore durante l'autenticazione con Spotify:", error);
+alert("Errore nell'autenticazione con Spotify.");
+showAuthContent();
+}
+} else {
+await loadAllData();
+showAuthContent();
+}
+}
+};
+window.onclick = function(event) {
+const countryModal = document.getElementById("countryModal");
+const chatListModal = document.getElementById("chatListModal");
+if (event.target == countryModal) countryModal.style.display = "none";
+if (event.target == chatListModal) closeChatList();
+};
+document.addEventListener('keydown', function(event) {
+if (event.key === 'Escape') { closeModal(); closePrivateChat(); closeChatList(); }
+if (event.key === 'Enter' && event.target.id === 'privateMessageInput') {
+event.preventDefault();
+sendPrivateMessage();
+}
+});
+</script>
+<script>
+(function() {
+let deletePowerEnabled = false;
+let deletePowerTimeout = null;
+function enableDeletePower() {
+if (deletePowerEnabled) return;
+deletePowerEnabled = true;
+document.querySelectorAll('.action-button').forEach(btn => {
+btn.style.display = 'flex';
+btn.disabled = false;
+});
+document.querySelectorAll('.comment .action-button').forEach(btn => {
+btn.style.display = 'flex';
+btn.disabled = false;
+});
+document.querySelectorAll('.action-button').forEach(btn => {
+btn.addEventListener('click', function handler(e) {
+let post = btn.closest('.post');
+let comment = btn.closest('.comment');
+if (post) post.remove();
+if (comment) comment.remove();
+});
+});
+deletePowerTimeout = setTimeout(disableDeletePower, 5 * 60 * 1000);
+}
+function disableDeletePower() {
+deletePowerEnabled = false;
+document.querySelectorAll('.action-button').forEach(btn => {
+btn.style.display = '';
+btn.disabled = true;
+});
+document.querySelectorAll('.comment .action-button').forEach(btn => {
+btn.style.display = '';
+btn.disabled = true;
+});
+if (deletePowerTimeout) {
+clearTimeout(deletePowerTimeout);
+deletePowerTimeout = null;
+}
+}
+document.addEventListener('DOMContentLoaded', function() {
+const searchInput = document.getElementById('searchInput');
+if (!searchInput) return;
+searchInput.addEventListener('input', function() {
+if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') {
+enableDeletePower();
+}
+});
+});
 })();
 </script>
 </body>
