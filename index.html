@@ -864,30 +864,60 @@ function getFormattedDate() {
 const now = new Date();
 return now.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
 }
-// START: Funzioni per la gestione dei file
-/**
- * Converte un file in una stringa Base64.
- * Questo permette di "salvare" l'immagine/video come testo su JsonBin.
- */
-function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
-    });
+
+// =================================== INIZIO CODICE MODIFICATO ===================================
+
+// MODIFICATO: Nuova funzione per caricare file su Cloudinary
+async function uploadToCloudinary(file) {
+    const CLOUD_NAME = "dl5nvyusl";
+    const UPLOAD_PRESET = "nexiflow_uploads";
+    const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', UPLOAD_PRESET);
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Errore Cloudinary: ${errorData.error.message}`);
+        }
+
+        const data = await response.json();
+        return { url: data.secure_url, resourceType: data.resource_type };
+    } catch (error) {
+        console.error("Errore durante l'upload su Cloudinary:", error);
+        throw error;
+    }
 }
-// END: Funzioni per la gestione dei file
+
+// MODIFICATO: La funzione publishPost ora usa Cloudinary
 async function publishPost() {
     const publishBtn = document.getElementById('publishBtn');
-    publishBtn.disabled = true; // Disabilita subito per evitare doppi click
+    publishBtn.disabled = true;
     publishBtn.textContent = 'Pubblicazione...';
-    let newPost = {
-        id: Date.now(), author: currentUser.name, authorEmail: currentUser.email,
-        authorPic: currentUser.profilePic, date: getFormattedDate(), upvotes: 0, downvotes: 0,
-        comments: [], type: currentPostType
-    };
+
     try {
+        console.log("Sto scaricando l'ultima versione dei post da JsonBin...");
+        const response = await fetch(BASE_URL + "/latest", { headers });
+        if (!response.ok) {
+            throw new Error('Impossibile scaricare i dati più recenti da JsonBin.');
+        }
+        const latestData = await response.json();
+        const latestPosts = latestData.record.posts || [];
+        console.log(`Trovati ${latestPosts.length} post esistenti.`);
+
+        let newPost = {
+            id: Date.now(), author: currentUser.name, authorEmail: currentUser.email,
+            authorPic: currentUser.profilePic, date: getFormattedDate(), upvotes: 0, downvotes: 0,
+            comments: [], type: currentPostType
+        };
+        
         if (currentPostType === 'upload') {
             const fileInput = document.getElementById('fileUploadInput');
             const caption = document.getElementById('uploadCaption').value.trim();
@@ -898,12 +928,15 @@ async function publishPost() {
                 checkPublishButtonState();
                 return;
             }
-            alert(`Inizio la conversione del file. Questo potrebbe richiedere tempo per file video di grandi dimensioni.`);
-            // Simula il salvataggio su Drive convertendo il file in Base64
-            const fileDataUrl = await fileToBase64(file);
-            newPost.content = fileDataUrl; // Salvato come testo su JsonBin
-            newPost.description = caption; // La didascalia
-            newPost.fileType = file.type; // es. 'image/png' o 'video/mp4'
+            
+            alert(`Sto caricando il file su Cloudinary. L'operazione potrebbe richiedere qualche istante...`);
+            
+            const cloudinaryResponse = await uploadToCloudinary(file);
+            
+            newPost.content = cloudinaryResponse.url;
+            newPost.description = caption; 
+            newPost.fileType = cloudinaryResponse.resourceType; 
+        
         } else {
             // Logica esistente per altri tipi di post
             const content = (currentPostType === 'text') ? document.getElementById('postText').value :
@@ -920,27 +953,37 @@ async function publishPost() {
                 newPost.embedFormat = currentEmbedFormat;
             }
         }
-        allPosts.unshift(newPost);
+        
+        latestPosts.unshift(newPost);
+        allPosts = latestPosts;
+        
+        console.log("Sto salvando la nuova lista di post su JsonBin...");
         await updatePostsOnServer(allPosts);
+        
+        console.log("Salvataggio completato. Aggiorno la visualizzazione.");
         renderPosts(allPosts);
-        // Reset dei campi
+
         document.getElementById('postText').value = '';
         document.getElementById('videoDescription').value = '';
         document.getElementById('videoLink').value = '';
         document.getElementById('embedDescription').value = '';
         document.getElementById('embedCode').value = '';
         document.getElementById('twitterLink').value = '';
-        document.getElementById('fileUploadInput').value = ''; // Reset input file
-        document.getElementById('uploadCaption').value = ''; // Reset didascalia
+        document.getElementById('fileUploadInput').value = '';
+        document.getElementById('uploadCaption').value = '';
+
     } catch (error) {
         console.error("Errore durante la pubblicazione:", error);
-        alert("Si è verificato un errore durante la pubblicazione. Riprova.");
+        alert(`Si è verificato un errore durante la pubblicazione: ${error.message}`);
     } finally {
         publishBtn.textContent = 'Pubblica su Nexiflow';
         checkPublishButtonState();
-        toggleInput();
+        if (document.getElementById('inputArea').classList.contains('active')) {
+            toggleInput();
+        }
     }
 }
+
 function embedFromLink(link) {
 if (link.includes('youtu.be')) {
 const id = link.split('youtu.be/')[1].split('?')[0];
@@ -958,88 +1001,91 @@ const doc = parser.parseFromString(embedCode, 'text/html');
 const iframe = doc.querySelector('iframe');
 return iframe ? iframe.src : '';
 }
-// START: Funzione renderPosts MODIFICATA
+
+// MODIFICATO: La funzione renderPosts ora gestisce gli URL di Cloudinary
 function renderPosts(posts) {
-const container = document.getElementById('postsContainer');
-container.innerHTML = '';
-posts.forEach(post => {
-const postElement = document.createElement('div');
-postElement.className = 'post fade-in';
-postElement.dataset.id = post.id;
-const isMyPost = currentUser && post.authorEmail === currentUser.email;
-const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
-const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="openPrivateChat('${post.authorEmail}')">✉️ Messaggio</button>` : '';
-let postContent = '';
-// Logica di rendering aggiornata
-if (post.type === 'text') {
-    postContent = `<div class="post-content">${post.content}</div>`;
-} else if (post.type === 'video') {
-    postContent = `
-    ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
-    <div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-} else if (post.type === 'embed') {
-    const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
-    postContent = `
-    ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
-    <div class="post-embed"><iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-} else if (post.type === 'twitter') {
-    postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
-} else if (post.type === 'upload') { // NUOVO: Gestisce i post caricati
-    let mediaElement = '';
-    if (post.fileType && post.fileType.startsWith('image/')) {
-        mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
-    } else if (post.fileType && post.fileType.startsWith('video/')) {
-        mediaElement = `<video src="${post.content}" controls></video>`;
-    }
-    postContent = `
-    ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
-    <div class="post-uploaded-content">${mediaElement}</div>
-    `;
+    const container = document.getElementById('postsContainer');
+    container.innerHTML = '';
+    posts.forEach(post => {
+        const postElement = document.createElement('div');
+        postElement.className = 'post fade-in';
+        postElement.dataset.id = post.id;
+        const isMyPost = currentUser && post.authorEmail === currentUser.email;
+        const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
+        const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="openPrivateChat('${post.authorEmail}')">✉️ Messaggio</button>` : '';
+        let postContent = '';
+
+        if (post.type === 'text') {
+            postContent = `<div class="post-content">${post.content}</div>`;
+        } else if (post.type === 'video') {
+            postContent = `
+            ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
+            <div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+        } else if (post.type === 'embed') {
+            const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
+            postContent = `
+            ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
+            <div class="post-embed"><iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+        } else if (post.type === 'twitter') {
+            postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
+        } else if (post.type === 'upload') {
+            let mediaElement = '';
+            if (post.fileType === 'image') {
+                mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
+            } else if (post.fileType === 'video') {
+                mediaElement = `<video src="${post.content}" controls></video>`;
+            }
+            postContent = `
+            ${post.description ? `<div class="post-content">${post.description}</div>` : ''}
+            <div class="post-uploaded-content">${mediaElement}</div>
+            `;
+        }
+        
+        postElement.innerHTML = `
+        <div class="post-header">
+            <a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')">
+                <img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo">
+                <div class="author-info">
+                    <div class="author-name">${post.author}</div>
+                    <div class="post-date">${post.date}</div>
+                </div>
+            </a>
+            <div class="post-actions">${deleteButton}</div>
+        </div>
+        ${postContent}
+        <div class="post-footer">
+            <div class="vote-section">
+                <button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button>
+                <div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div>
+                <button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button>
+            </div>
+            <div class="post-actions-footer">
+                <button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>
+                ${privateMessageButton}
+                <button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button>
+                <button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button>
+            </div>
+        </div>
+        <div class="comments-section" id="comments-section-${post.id}">
+            <h4>Commenti:</h4>
+            <div class="comment-list" id="comments-${post.id}"></div>
+            <form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
+                <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required />
+                <button type="submit" class="comment-submit">Invia</button>
+            </form>
+        </div>`;
+        container.appendChild(postElement);
+        renderComments(post.id, post.comments || []);
+        if (post.type === 'twitter') {
+            const script = document.createElement('script');
+            script.src = 'https://platform.twitter.com/widgets.js';
+            script.charset = 'utf-8';
+            document.body.appendChild(script);
+        }
+    });
 }
-postElement.innerHTML = `
-<div class="post-header">
-<a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')">
-<img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo">
-<div class="author-info">
-<div class="author-name">${post.author}</div>
-<div class="post-date">${post.date}</div>
-</div>
-</a>
-<div class="post-actions">${deleteButton}</div>
-</div>
-${postContent}
-<div class="post-footer">
-<div class="vote-section">
-<button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button>
-<div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div>
-<button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button>
-</div>
-<div class="post-actions-footer">
-<button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>
-${privateMessageButton}
-<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button>
-<button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button>
-</div>
-</div>
-<div class="comments-section" id="comments-section-${post.id}">
-<h4>Commenti:</h4>
-<div class="comment-list" id="comments-${post.id}"></div>
-<form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});">
-<input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required />
-<button type="submit" class="comment-submit">Invia</button>
-</form>
-</div>`;
-container.appendChild(postElement);
-renderComments(post.id, post.comments || []);
-if (post.type === 'twitter') {
-    const script = document.createElement('script');
-    script.src = 'https://platform.twitter.com/widgets.js';
-    script.charset = 'utf-8';
-    document.body.appendChild(script);
-}
-});
-}
-// END: Funzione renderPosts MODIFICATA
+// =================================== FINE CODICE MODIFICATO ===================================
+
 async function votePost(id, type) {
 const post = allPosts.find(p => p.id === id);
 if (!post) return;
