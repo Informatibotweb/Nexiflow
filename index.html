@@ -749,12 +749,8 @@ email: decodedToken.email,
 profilePic: decodedToken.picture,
 bio: "Accesso tramite Google",
 country: "",
-blockedUsers: []
-};
-allUsers.push(newUser); // Aggiunge solo se non trovato
-currentUser = newUser;
-localStorage.setItem("currentUserEmail", currentUser.email);
-showElement("countryModal"); // Chiede il paese, poi salva l'array aggiornato
+blockedUsers: [],
+additionalBio: "." // <-- RIGA AGGIUNTA
 }
 }
 function saveCountry() {
@@ -863,7 +859,7 @@ if (allUsers.find(u => u.email === email)) {
 alert("Esiste già un utente con questa email.");
 return; // Interrompe l'esecuzione se l'utente è un duplicato
 }
-const newUser = { name, email, password, profilePic, bio: "", blockedUsers: [] }; // Aggiunto blockedUsers
+const newUser = { name, email, password, profilePic, bio: "", blockedUsers: [], additionalBio: "." }; // Aggiunto blockedUsers
 try {
 allUsers.push(newUser); // Aggiunge solo se non trovato
 await updateUsersOnServer(allUsers);
@@ -1792,7 +1788,8 @@ currentUser = user;
 const newUser = {
 name: spotifyUser.display_name, email: spotifyUser.email,
 profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
-bio: "Accesso tramite Spotify", password: null, blockedUsers: []
+bio: "Accesso tramite Spotify", password: null, blockedUsers: [],
+additionalBio: "." // <-- RIGA AGGIUNTA
 };
 allUsers.push(newUser); // Aggiunge solo se non trovato
 await updateUsersOnServer(allUsers);
