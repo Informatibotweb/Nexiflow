@@ -164,7 +164,7 @@ color: var(--text-secondary); font-size: 0.875rem; cursor: pointer; transition: 
 .post-actions-footer { display: flex; gap: var(--spacing-sm); }
 .footer-button {
 padding: var(--spacing-xs) var(--spacing-sm); border: 1px solid var(--border-light);
-border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-secondary);
+border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-tertiary);
 font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
 }
 .footer-button:hover { background: var(--primary); color: white; border-color: var(--primary); }
@@ -592,13 +592,15 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div class="auth-form">
 <label>Nome:</label>
 <input type="text" id="editName" class="auth-input" />
-<label>Immagine Profilo:</label>
+<label>Immagine Profilo (opzioni rapide):</label>
 <div class="profile-pic-selector" id="editProfilePicSelector">
 <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
 <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
 <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
 <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
 </div>
+<label>...oppure carica un'immagine personalizzata:</label>
+<input type="file" id="customProfilePicInput" class="form-input" accept="image/*">
 <label>Bio:</label>
 <textarea id="editBio" class="auth-input" rows="4"></textarea>
 <button onclick="saveSettings()" class="auth-button">Salva Modifiche</button>
@@ -632,6 +634,8 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
         <h3>Crea un nuovo gruppo</h3>
         <div class="auth-form">
             <input type="text" id="groupNameInput" class="auth-input" placeholder="Nome del gruppo" />
+            <label>Immagine del gruppo (opzionale):</label>
+            <input type="file" id="groupPicInput" class="form-input" accept="image/*">
             <label>Seleziona i membri:</label>
             <div id="groupUserSelection" class="user-selection-list"></div>
             <button onclick="createGroup()" class="auth-button">Crea Gruppo</button>
@@ -644,6 +648,8 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
         <h3>Crea un nuovo canale</h3>
         <div class="auth-form">
             <input type="text" id="channelNameInput" class="auth-input" placeholder="Nome del canale" />
+            <label>Immagine del canale (opzionale):</label>
+            <input type="file" id="channelPicInput" class="form-input" accept="image/*">
             <label>Seleziona i membri:</label>
             <div id="channelUserSelection" class="user-selection-list"></div>
             <button onclick="createChannel()" class="auth-button">Crea Canale</button>
@@ -727,7 +733,8 @@ let currentPostType = 'text';
 let currentEmbedFormat = 'horizontal';
 let currentVideoPageFormat = 'vertical';
 let newVideoFormat = 'horizontal';
-let currentOpenChat = { id: null, type: null }; // Esempio: { id: '...', type: 'private' }
+let currentOpenChat = { id: null, type: null };
+let pollingInterval = null;
 
 function showElement(elementId) { document.getElementById(elementId).classList.remove('hidden'); }
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
@@ -776,6 +783,59 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 }).join(''));
 return JSON.parse(jsonPayload);
 }
+
+// =================== DATA POLLING & INTELLIGENT RENDERING ===================
+
+function startPolling() {
+    if (pollingInterval) clearInterval(pollingInterval); // Evita intervalli multipli
+    pollingInterval = setInterval(async () => {
+        if (!currentUser) return; // Non fare nulla se l'utente non è loggato
+        await refreshData();
+    }, 2000); // Aggiorna ogni 2 secondi
+}
+
+function stopPolling() {
+    if (pollingInterval) clearInterval(pollingInterval);
+    pollingInterval = null;
+}
+
+async function refreshData() {
+    try {
+        const [postsRes, messagesRes] = await Promise.all([
+            fetch(BASE_URL + "/latest", { headers }),
+            fetch(MESSAGES_URL + "/latest", { headers })
+        ]);
+
+        if (!postsRes.ok || !messagesRes.ok) return;
+
+        const newPostsData = await postsRes.json();
+        const newMessagesData = await messagesRes.json();
+
+        // Aggiorna i post in modo intelligente
+        const newPosts = newPostsData.record.posts || [];
+        if (newPosts.length > allPosts.length) {
+            const addedPosts = newPosts.slice(0, newPosts.length - allPosts.length);
+            allPosts = newPosts; // Aggiorna l'array locale
+            renderNewPosts(addedPosts); // Renderizza solo i nuovi post
+        }
+
+        // Aggiorna i messaggi
+        const newMessagesRecord = newMessagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
+        // Un semplice controllo per vedere se ci sono cambiamenti, si può rendere più granulare
+        if (JSON.stringify(allMessagesData) !== JSON.stringify(newMessagesRecord)) {
+            allMessagesData = newMessagesRecord;
+            if (document.getElementById('chatPage').style.display !== 'none') {
+                renderConversationList(); // Aggiorna la lista
+                if (currentOpenChat.id) {
+                    renderMessages(true); // Aggiorna i messaggi nella chat aperta
+                }
+            }
+        }
+    } catch (err) {
+        console.error("Errore durante l'aggiornamento dei dati:", err);
+    }
+}
+
 async function loadAllData() {
 try {
 const [postsRes, videosRes, usersRes, messagesRes] = await Promise.all([
@@ -847,6 +907,9 @@ selector.querySelectorAll('.profile-pic-option').forEach(img => {
 img.classList.remove('selected');
 });
 element.classList.add('selected');
+// Deseleziona il file input se si sceglie un'opzione rapida
+const customPicInput = document.getElementById('customProfilePicInput');
+if (customPicInput) customPicInput.value = '';
 }
 async function registerUser() {
 const name = document.getElementById('registerName').value.trim();
@@ -894,6 +957,7 @@ alert("Utente non trovato. Controlla l'email o registrati.");
 function logoutUser() {
 currentUser = null;
 localStorage.removeItem("currentUserEmail");
+stopPolling(); // Interrompi l'aggiornamento automatico al logout
 showAuthContent();
 }
 function showAuthContent() {
@@ -906,6 +970,7 @@ hideElement('authContent');
 showElement('appContent');
 updateUserInfo();
 showMainContent();
+startPolling(); // Avvia l'aggiornamento automatico al login
 }
 function updateUserInfo() {
 if (currentUser) {
@@ -937,8 +1002,12 @@ hideElement('chatPage');
 showElement('settingsPage');
 document.getElementById('editName').value = currentUser.name;
 document.getElementById('editBio').value = currentUser.bio || '';
-const currentPic = document.querySelector(`#editProfilePicSelector img[data-value='${currentUser.profilePic}']`);
-if (currentPic) { selectProfilePic(currentPic, 'settings'); }
+// Pulisci l'input file ogni volta che apri le impostazioni
+document.getElementById('customProfilePicInput').value = ''; 
+const picSelector = document.getElementById('editProfilePicSelector');
+picSelector.querySelectorAll('.profile-pic-option').forEach(img => img.classList.remove('selected'));
+const currentPic = picSelector.querySelector(`img[data-value='${currentUser.profilePic}']`);
+if (currentPic) { currentPic.classList.add('selected'); }
 }
 
 // =================================== INIZIO CODICE CHAT ===================================
@@ -951,14 +1020,12 @@ function showChatPage() {
     hideElement('settingsPage');
     showElement('chatPage');
     renderConversationList();
-    // Mostra la schermata di benvenuto e nascondi la finestra di chat
     showElement('chat-welcome-screen');
     document.getElementById('chat-window').style.display = 'none';
 }
 
 function renderConversationList() {
     const container = document.getElementById('conversation-list');
-    container.innerHTML = '';
     const myConversations = [];
 
     // 1. Conversazioni private
@@ -966,17 +1033,13 @@ function renderConversationList() {
         if (key.includes(currentUser.email)) {
             const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
             const recipient = usersData[recipientEmail];
-            if (!recipient) return; // Utente non trovato, forse eliminato
-
+            if (!recipient) return;
             const messages = allMessagesData.privateMessages[key];
             const lastMessage = messages[messages.length - 1];
             if (lastMessage) {
                 myConversations.push({
-                    id: key,
-                    type: 'private',
-                    name: recipient.name,
-                    pic: recipient.profilePic,
-                    lastMessage: lastMessage.text,
+                    id: key, type: 'private', name: recipient.name,
+                    pic: recipient.profilePic, lastMessage: lastMessage.text,
                     date: new Date(lastMessage.date)
                 });
             }
@@ -989,10 +1052,8 @@ function renderConversationList() {
         if (group.members.includes(currentUser.email)) {
             const lastMessage = group.messages[group.messages.length - 1];
             myConversations.push({
-                id: key,
-                type: 'group',
-                name: group.name,
-                pic: 'profilo_gruppo.png', // Immagine generica per gruppi
+                id: key, type: 'group', name: group.name,
+                pic: group.pic || 'profilo_gruppo.png',
                 lastMessage: lastMessage ? `${usersData[lastMessage.senderEmail]?.name.split(' ')[0]}: ${lastMessage.text}` : 'Nessun messaggio',
                 date: lastMessage ? new Date(lastMessage.date) : new Date(group.createdAt)
             });
@@ -1005,94 +1066,108 @@ function renderConversationList() {
         if (channel.members.includes(currentUser.email)) {
             const lastMessage = channel.messages[channel.messages.length - 1];
             myConversations.push({
-                id: key,
-                type: 'channel',
-                name: `📢 ${channel.name}`,
-                pic: 'profilo_canale.png', // Immagine generica per canali
+                id: key, type: 'channel', name: `📢 ${channel.name}`,
+                pic: channel.pic || 'profilo_canale.png',
                 lastMessage: lastMessage ? lastMessage.text : 'Nessun messaggio',
                 date: lastMessage ? new Date(lastMessage.date) : new Date(channel.createdAt)
             });
         }
     });
 
-    // Ordina per data del messaggio più recente
     myConversations.sort((a, b) => b.date - a.date);
+    
+    // Logica di rendering intelligente per la lista
+    if (container.children.length === myConversations.length) {
+        // Se il numero non è cambiato, aggiorna solo il contenuto per evitare flicker
+        myConversations.forEach((conv, index) => {
+            const existingItem = container.children[index];
+            const isActive = currentOpenChat.id === conv.id;
+            if (existingItem.dataset.id !== conv.id || !existingItem.classList.contains(isActive ? 'active' : 'inactive')) {
+                 // Se l'ordine o lo stato attivo sono cambiati, ricarica tutto
+                 container.innerHTML = '';
+                 myConversations.forEach(c => container.appendChild(createConversationElement(c)));
+                 return; // Esci dal loop
+            }
+        });
+    } else {
+        // Altrimenti, ridisegna la lista
+        container.innerHTML = '';
+        myConversations.forEach(conv => container.appendChild(createConversationElement(conv)));
+    }
 
     if (myConversations.length === 0) {
         container.innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-tertiary);">Nessuna conversazione.</p>';
-        return;
     }
+}
 
-    myConversations.forEach(conv => {
-        const convElement = document.createElement('div');
-        convElement.className = 'conversation-item';
-        if (currentOpenChat.id === conv.id) convElement.classList.add('active');
-        convElement.onclick = () => openConversation(conv.id, conv.type);
-        convElement.innerHTML = `
-            <img src="${conv.pic}" class="profile-pic" />
-            <div class="conversation-info">
-                <div class="user-name-conv">${conv.name}</div>
-                <div class="last-message">${conv.lastMessage}</div>
-            </div>`;
-        container.appendChild(convElement);
-    });
+function createConversationElement(conv) {
+    const convElement = document.createElement('div');
+    convElement.className = 'conversation-item';
+    convElement.dataset.id = conv.id;
+    if (currentOpenChat.id === conv.id) convElement.classList.add('active');
+    else convElement.classList.add('inactive');
+    convElement.onclick = () => openConversation(conv.id, conv.type);
+    convElement.innerHTML = `
+        <img src="${conv.pic}" class="profile-pic" />
+        <div class="conversation-info">
+            <div class="user-name-conv">${conv.name}</div>
+            <div class="last-message">${conv.lastMessage}</div>
+        </div>`;
+    return convElement;
 }
 
 function openConversation(id, type) {
     currentOpenChat = { id, type };
     hideElement('chat-welcome-screen');
-    document.getElementById('chat-window').style.display = 'flex'; // Mostra la finestra di chat
+    document.getElementById('chat-window').style.display = 'flex';
 
     renderConversationList(); // Per aggiornare lo stato "active"
-    renderMessages();
+    renderMessages(false); // Renderizza i messaggi senza scroll forzato all'inizio
 
     const messageInput = document.getElementById('chatMessageInput');
     const sendButton = document.querySelector('.send-chat-btn');
     const optionsContainer = document.getElementById('chatOptionsContainer');
+    const recipientPic = document.getElementById('chatRecipientPic');
+    const recipientName = document.getElementById('chatRecipientName');
 
     if (type === 'private') {
         const recipientEmail = id.split('_to_').find(email => email !== currentUser.email);
         const recipient = usersData[recipientEmail];
-        document.getElementById('chatRecipientName').textContent = recipient.name;
-        document.getElementById('chatRecipientPic').src = recipient.profilePic;
+        recipientName.textContent = recipient.name;
+        recipientPic.src = recipient.profilePic;
         optionsContainer.classList.remove('hidden');
-        messageInput.disabled = false;
-        sendButton.disabled = false;
+        messageInput.disabled = false; sendButton.disabled = false;
     } else if (type === 'group') {
         const group = allMessagesData.groupChats[id];
-        document.getElementById('chatRecipientName').textContent = group.name;
-        document.getElementById('chatRecipientPic').src = 'profilo_gruppo.png';
+        recipientName.textContent = group.name;
+        recipientPic.src = group.pic || 'profilo_gruppo.png';
         optionsContainer.classList.add('hidden');
-        messageInput.disabled = false;
-        sendButton.disabled = false;
+        messageInput.disabled = false; sendButton.disabled = false;
     } else if (type === 'channel') {
         const channel = allMessagesData.channels[id];
-        document.getElementById('chatRecipientName').textContent = `📢 ${channel.name}`;
-        document.getElementById('chatRecipientPic').src = 'profilo_canale.png';
+        recipientName.textContent = `📢 ${channel.name}`;
+        recipientPic.src = channel.pic || 'profilo_canale.png';
         optionsContainer.classList.add('hidden');
-        // Solo gli admin possono scrivere nei canali
         const canWrite = channel.admins.includes(currentUser.email);
-        messageInput.disabled = !canWrite;
-        sendButton.disabled = !canWrite;
+        messageInput.disabled = !canWrite; sendButton.disabled = !canWrite;
         messageInput.placeholder = canWrite ? "Scrivi un messaggio..." : "Solo gli amministratori possono inviare messaggi.";
     }
     
     document.getElementById('chatMessageInput').focus();
 }
 
-function renderMessages() {
+function renderMessages(isUpdate) {
     const chatBody = document.getElementById('chatMessageHistory');
-    chatBody.innerHTML = '';
+    const shouldScroll = !isUpdate || (chatBody.scrollTop + chatBody.clientHeight >= chatBody.scrollHeight - 50);
+
     let messages = [];
+    if (currentOpenChat.type === 'private') messages = allMessagesData.privateMessages[currentOpenChat.id] || [];
+    else if (currentOpenChat.type === 'group') messages = allMessagesData.groupChats[currentOpenChat.id]?.messages || [];
+    else if (currentOpenChat.type === 'channel') messages = allMessagesData.channels[currentOpenChat.id]?.messages || [];
 
-    if (currentOpenChat.type === 'private') {
-        messages = allMessagesData.privateMessages[currentOpenChat.id] || [];
-    } else if (currentOpenChat.type === 'group') {
-        messages = allMessagesData.groupChats[currentOpenChat.id]?.messages || [];
-    } else if (currentOpenChat.type === 'channel') {
-        messages = allMessagesData.channels[currentOpenChat.id]?.messages || [];
-    }
+    if (chatBody.children.length === messages.length && isUpdate) return; // Nessun nuovo messaggio
 
+    chatBody.innerHTML = ''; // Ridisegna per semplicità, ma si potrebbe ottimizzare
     if (messages.length === 0) {
         chatBody.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Inizia la conversazione!</p>';
         return;
@@ -1100,23 +1175,16 @@ function renderMessages() {
 
     messages.forEach(msg => {
         const sender = usersData[msg.senderEmail];
-        if (!sender) return; // Salta messaggi di utenti non trovati
-
+        if (!sender) return;
         const messageElement = document.createElement('div');
         const isSent = msg.senderEmail === currentUser.email;
         messageElement.className = `chat-message ${isSent ? 'sent' : 'received'}`;
-        
-        let senderNameHTML = '';
-        // Mostra il nome del mittente nelle chat di gruppo se non sono io
-        if (currentOpenChat.type === 'group' && !isSent) {
-            senderNameHTML = `<div class="sender-name">${sender.name}</div>`;
-        }
-        
+        let senderNameHTML = (currentOpenChat.type === 'group' && !isSent) ? `<div class="sender-name">${sender.name}</div>` : '';
         messageElement.innerHTML = `${senderNameHTML}<div>${msg.text}</div>`;
         chatBody.appendChild(messageElement);
     });
 
-    chatBody.scrollTop = chatBody.scrollHeight;
+    if (shouldScroll) chatBody.scrollTop = chatBody.scrollHeight;
 }
 
 async function sendMessage() {
@@ -1125,15 +1193,12 @@ async function sendMessage() {
     if (!text || !currentOpenChat.id) return;
 
     const newMessage = {
-        senderEmail: currentUser.email,
-        text: text,
+        senderEmail: currentUser.email, text,
         date: new Date().toISOString()
     };
 
     if (currentOpenChat.type === 'private') {
-        if (!allMessagesData.privateMessages[currentOpenChat.id]) {
-            allMessagesData.privateMessages[currentOpenChat.id] = [];
-        }
+        if (!allMessagesData.privateMessages[currentOpenChat.id]) allMessagesData.privateMessages[currentOpenChat.id] = [];
         allMessagesData.privateMessages[currentOpenChat.id].push(newMessage);
     } else if (currentOpenChat.type === 'group') {
         allMessagesData.groupChats[currentOpenChat.id].messages.push(newMessage);
@@ -1142,9 +1207,9 @@ async function sendMessage() {
     }
 
     input.value = '';
-    renderMessages(); // Aggiorna subito la UI
+    renderMessages(true); // Aggiorna UI
     await updateMessagesOnServer();
-    renderConversationList(); // Aggiorna la lista per riordinare
+    renderConversationList(); // Aggiorna la lista
 }
 
 
@@ -1156,8 +1221,8 @@ function populateUserSelection(containerId) {
         const item = document.createElement('div');
         item.className = 'user-selection-item';
         item.innerHTML = `
-            <input type="checkbox" id="user-select-${user.email}" value="${user.email}">
-            <label for="user-select-${user.email}">
+            <input type="checkbox" id="user-select-${user.email}-${containerId}" value="${user.email}">
+            <label for="user-select-${user.email}-${containerId}">
                 <img src="${user.profilePic}" class="profile-pic" style="width: 32px; height: 32px; vertical-align: middle; margin-right: 8px;">
                 ${user.name}
             </label>
@@ -1178,18 +1243,27 @@ async function createGroup() {
     if (!name) { alert("Inserisci un nome per il gruppo."); return; }
 
     const selectedUsers = [currentUser.email];
-    document.querySelectorAll('#groupUserSelection input:checked').forEach(input => {
-        selectedUsers.push(input.value);
-    });
+    document.querySelectorAll('#groupUserSelection input:checked').forEach(input => selectedUsers.push(input.value));
 
     if (selectedUsers.length < 2) { alert("Un gruppo deve avere almeno 2 membri."); return; }
+    
+    const picFile = document.getElementById('groupPicInput').files[0];
+    let picUrl = 'profilo_gruppo.png';
+    if (picFile) {
+        alert("Caricamento immagine in corso...");
+        try {
+            const uploadResult = await uploadToCloudinary(picFile);
+            picUrl = uploadResult.url;
+        } catch (error) {
+            alert("Errore nel caricamento dell'immagine.");
+            return;
+        }
+    }
 
     const groupId = `group_${Date.now()}`;
     allMessagesData.groupChats[groupId] = {
-        name: name,
-        members: selectedUsers,
-        admins: [currentUser.email],
-        messages: [],
+        name, pic: picUrl, members: selectedUsers,
+        admins: [currentUser.email], messages: [],
         createdAt: new Date().toISOString()
     };
 
@@ -1211,16 +1285,25 @@ async function createChannel() {
     if (!name) { alert("Inserisci un nome per il canale."); return; }
 
     const selectedUsers = [currentUser.email];
-    document.querySelectorAll('#channelUserSelection input:checked').forEach(input => {
-        selectedUsers.push(input.value);
-    });
+    document.querySelectorAll('#channelUserSelection input:checked').forEach(input => selectedUsers.push(input.value));
+    
+    const picFile = document.getElementById('channelPicInput').files[0];
+    let picUrl = 'profilo_canale.png';
+    if (picFile) {
+        alert("Caricamento immagine in corso...");
+        try {
+            const uploadResult = await uploadToCloudinary(picFile);
+            picUrl = uploadResult.url;
+        } catch (error) {
+            alert("Errore nel caricamento dell'immagine.");
+            return;
+        }
+    }
     
     const channelId = `channel_${Date.now()}`;
     allMessagesData.channels[channelId] = {
-        name: name,
-        members: selectedUsers,
-        admins: [currentUser.email],
-        messages: [],
+        name, pic: picUrl, members: selectedUsers,
+        admins: [currentUser.email], messages: [],
         createdAt: new Date().toISOString()
     };
     
@@ -1384,7 +1467,7 @@ async function publishPost() {
                 checkPublishButtonState();
                 return;
             }
-            alert(`Sto caricando il file su Cloudinary. L'operazione potrebbe richiedere qualche istante...`);
+            alert(`Sto caricando il file. L'operazione potrebbe richiedere qualche istante...`);
             const cloudinaryResponse = await uploadToCloudinary(file);
             newPost.content = cloudinaryResponse.url;
             newPost.description = caption; 
@@ -1444,45 +1527,57 @@ const doc = parser.parseFromString(embedCode, 'text/html');
 const iframe = doc.querySelector('iframe');
 return iframe ? iframe.src : '';
 }
+
+function createPostElement(post) {
+    const postElement = document.createElement('div');
+    postElement.className = 'post';
+    postElement.dataset.id = post.id;
+    const isMyPost = currentUser && post.authorEmail === currentUser.email;
+    const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
+    const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')">✉️ Messaggio</button>` : '';
+    let postContent = '';
+    if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
+    else if (post.type === 'video') postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'embed') postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'twitter') postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
+    else if (post.type === 'upload') {
+        let mediaElement = '';
+        if (post.fileType === 'image') mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
+        else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
+        postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
+    }
+    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+    renderComments(post.id, post.comments || [], postElement);
+    if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
+    return postElement;
+}
+
 function renderPosts(posts) {
     const container = document.getElementById('postsContainer');
     container.innerHTML = '';
     posts.forEach(post => {
-        const postElement = document.createElement('div');
-        postElement.className = 'post fade-in';
-        postElement.dataset.id = post.id;
-        const isMyPost = currentUser && post.authorEmail === currentUser.email;
-        const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
-        
-        const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')">✉️ Messaggio</button>` : '';
-
-        let postContent = '';
-        if (post.type === 'text') {
-            postContent = `<div class="post-content">${post.content}</div>`;
-        } else if (post.type === 'video') {
-            postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-        } else if (post.type === 'embed') {
-            const embedClass = post.embedFormat === 'vertical' ? 'vertical-video' : '';
-            postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe class="${embedClass}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-        } else if (post.type === 'twitter') {
-            postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
-        } else if (post.type === 'upload') {
-            let mediaElement = '';
-            if (post.fileType === 'image') mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
-            else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
-            postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
-        }
-        postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
-        container.appendChild(postElement);
-        renderComments(post.id, post.comments || []);
-        if (post.type === 'twitter') {
-            const script = document.createElement('script');
-            script.src = 'https://platform.twitter.com/widgets.js';
-            script.charset = 'utf-8';
-            document.body.appendChild(script);
-        }
+        container.appendChild(createPostElement(post));
     });
 }
+
+function renderNewPosts(newPosts) {
+    const container = document.getElementById('postsContainer');
+    const scrollPosition = window.scrollY;
+    const isScrolledToTop = scrollPosition < 100;
+
+    newPosts.reverse().forEach(post => {
+        const postElement = createPostElement(post);
+        postElement.style.animation = 'slideDown 0.5s ease-out';
+        container.insertBefore(postElement, container.firstChild);
+    });
+
+    if (!isScrolledToTop) {
+        // Mantiene la posizione di scroll se l'utente non è in cima
+        const firstNewPostHeight = container.firstChild.offsetHeight;
+        window.scrollTo(0, scrollPosition + firstNewPostHeight * newPosts.length);
+    }
+}
+
 async function startPrivateChatFromPost(recipientEmail) {
     if (!currentUser) { alert("Devi essere loggato per inviare messaggi."); return; }
     if (currentUser.email === recipientEmail) { alert("Non puoi inviare messaggi a te stesso."); return; }
@@ -1501,7 +1596,13 @@ if (!post) return;
 if (type === 'up') post.upvotes = (post.upvotes || 0) + 1;
 else post.downvotes = (post.downvotes || 0) + 1;
 await updatePostsOnServer(allPosts);
-renderPosts(allPosts);
+// Aggiornamento live dell'interfaccia senza ridisegnare tutto
+const postElement = document.querySelector(`.post[data-id='${id}']`);
+if(postElement) {
+    postElement.querySelector('.vote-button span').textContent = post.upvotes;
+    postElement.querySelector('.vote-count').textContent = post.upvotes - post.downvotes;
+    postElement.querySelectorAll('.vote-button')[1].querySelector('span').textContent = post.downvotes;
+}
 }
 async function deletePost(id) {
 if (!currentUser) { alert("Devi essere loggato per eliminare un post."); return; }
@@ -1513,7 +1614,7 @@ if (password === null) return;
 if (password !== currentUser.password) { alert("Password non corretta. Impossibile eliminare il post."); return; }
 allPosts = allPosts.filter(p => p.id !== id);
 await updatePostsOnServer(allPosts);
-renderPosts(allPosts);
+document.querySelector(`.post[data-id='${id}']`).remove();
 }
 function toggleComments(postId) {
 const commentsSection = document.getElementById(`comments-section-${postId}`);
@@ -1534,8 +1635,9 @@ await updatePostsOnServer(allPosts);
 renderComments(postId, post.comments);
 commentInput.value = '';
 }
-function renderComments(postId, comments) {
-const commentList = document.getElementById(`comments-${postId}`);
+function renderComments(postId, comments, containerElement = document) {
+const commentList = containerElement.querySelector(`#comments-${postId}`);
+if (!commentList) return;
 commentList.innerHTML = '';
 comments.forEach(comment => {
 const commentElement = document.createElement('div');
@@ -1605,7 +1707,7 @@ showVideos(currentVideoPageFormat);
 function openVideoModal(embedCode, format) {
 const videoModal = document.getElementById('videoModal');
 const modalVideoContainer = document.getElementById('modalVideoContainer');
-modalVideoContainer.innerHTML = `<iframe class="${format === 'vertical' ? 'vertical-video' : 'horizontal-video'}" src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+modalVideoContainer.innerHTML = `<iframe style="width: ${format === 'vertical' ? '360px' : '854px'}; height: ${format === 'vertical' ? '640px' : '480px'}; max-width: 90vw; max-height: 80vh;" src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 videoModal.style.display = 'flex';
 }
 function closeModal() {
@@ -1694,29 +1796,60 @@ if (chatOptionsContainer && !chatOptionsContainer.contains(event.target)) {
 }
 });
 async function saveSettings() {
-if (!currentUser) return;
-const newName = document.getElementById('editName').value.trim();
-const newBio = document.getElementById('editBio').value.trim();
-const selectedPic = document.querySelector('#editProfilePicSelector .selected');
-const newProfilePic = selectedPic ? selectedPic.dataset.value : currentUser.profilePic;
-if (!newName) { alert("Il nome non può essere vuoto."); return; }
-currentUser.name = newName;
-currentUser.bio = newBio;
-currentUser.profilePic = newProfilePic;
-try {
-const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
-if (userIndex !== -1) {
-allUsers[userIndex] = currentUser;
-await updateUsersOnServer(allUsers);
-localStorage.setItem("currentUserEmail", currentUser.email);
-alert("Impostazioni salvate con successo!");
-updateUserInfo();
-showMainContent();
-}
-} catch (error) {
-console.error("Errore nel salvataggio delle impostazioni:", error);
-alert("Errore nel salvataggio delle impostazioni.");
-}
+    if (!currentUser) return;
+    const saveButton = document.querySelector('#settingsPage .auth-button');
+    saveButton.disabled = true;
+    saveButton.textContent = 'Salvataggio...';
+
+    const newName = document.getElementById('editName').value.trim();
+    const newBio = document.getElementById('editBio').value.trim();
+    const customPicFile = document.getElementById('customProfilePicInput').files[0];
+    const selectedPicElement = document.querySelector('#editProfilePicSelector .selected');
+    let newProfilePic = currentUser.profilePic;
+
+    if (!newName) {
+        alert("Il nome non può essere vuoto.");
+        saveButton.disabled = false;
+        saveButton.textContent = 'Salva Modifiche';
+        return;
+    }
+
+    if (customPicFile) {
+        alert("Caricamento nuova immagine profilo...");
+        try {
+            const uploadResult = await uploadToCloudinary(customPicFile);
+            newProfilePic = uploadResult.url;
+        } catch (error) {
+            alert("Errore nel caricamento dell'immagine.");
+            saveButton.disabled = false;
+            saveButton.textContent = 'Salva Modifiche';
+            return;
+        }
+    } else if (selectedPicElement) {
+        newProfilePic = selectedPicElement.dataset.value;
+    }
+
+    currentUser.name = newName;
+    currentUser.bio = newBio;
+    currentUser.profilePic = newProfilePic;
+
+    try {
+        const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1) {
+            allUsers[userIndex] = currentUser;
+            await updateUsersOnServer(allUsers);
+            localStorage.setItem("currentUserEmail", currentUser.email);
+            alert("Impostazioni salvate con successo!");
+            updateUserInfo();
+            showMainContent();
+        }
+    } catch (error) {
+        console.error("Errore nel salvataggio delle impostazioni:", error);
+        alert("Errore nel salvataggio delle impostazioni.");
+    } finally {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Salva Modifiche';
+    }
 }
 async function translatePost(postId) {
 const post = allPosts.find(p => p.id === postId);
@@ -1764,6 +1897,14 @@ newVideoEmbedCodeInput.addEventListener('input', () => {
 document.getElementById('publishVideoBtn').disabled = newVideoEmbedCodeInput.value.trim() === '';
 });
 }
+document.getElementById('customProfilePicInput').addEventListener('change', function() {
+    if (this.files.length > 0) {
+        // Se un file viene caricato, deseleziona le opzioni rapide
+        document.querySelectorAll('#editProfilePicSelector .profile-pic-option').forEach(img => {
+            img.classList.remove('selected');
+        });
+    }
+});
 });
 window.onload = async () => {
 const storedEmail = localStorage.getItem("currentUserEmail");
