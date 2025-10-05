@@ -537,9 +537,9 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
         <div class="chat-sidebar-header">
             <h3>Le tue chat</h3>
             <div class="new-chat-buttons">
-                <button onclick="showAddContactModal()" title="Nuova Chat">👤 Contatto</button>
-                <button onclick="showCreateGroupModal()" title="Crea Gruppo">👥 Gruppo</button>
-                <button onclick="showCreateChannelModal()" title="Crea Canale">📢 Canale</button>
+                <button onclick="showAddContactModal()" title="Nuova Chat">➕👤</button>
+                <button onclick="showCreateGroupModal()" title="Crea Gruppo">➕👥</button>
+                <button onclick="showCreateChannelModal()" title="Crea Canale">📢</button>
             </div>
         </div>
         <div id="conversation-list"></div>
@@ -547,7 +547,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
     <div class="chat-main">
         <div id="chat-welcome-screen">
             <img src="logo1.png" alt="Nexiflow Logo">
-            <h2>Benvenuto nella Chat di Nexiflow™ "LinkLoop™ by Nexiquar™ Piattaforma Chat"</h2>
+            <h2>Benvenuto nella Chat di Nexiflow</h2>
             <p>Seleziona una conversazione per iniziare a chattare.</p>
         </div>
         <div id="chat-window">
@@ -749,9 +749,13 @@ email: decodedToken.email,
 profilePic: decodedToken.picture,
 bio: "Accesso tramite Google",
 country: "",
-blockedUsers: [],
-additionalBio: "." // <-- RIGA AGGIUNTA
+blockedUsers: []
 };
+allUsers.push(newUser); // Aggiunge solo se non trovato
+currentUser = newUser;
+localStorage.setItem("currentUserEmail", currentUser.email);
+showElement("countryModal"); // Chiede il paese, poi salva l'array aggiornato
+}
 }
 function saveCountry() {
 const country = document.getElementById("countrySelect").value;
@@ -859,7 +863,7 @@ if (allUsers.find(u => u.email === email)) {
 alert("Esiste già un utente con questa email.");
 return; // Interrompe l'esecuzione se l'utente è un duplicato
 }
-const newUser = { name, email, password, profilePic, bio: "", blockedUsers: [], additionalBio: "." }; // Aggiunto blockedUsers
+const newUser = { name, email, password, profilePic, bio: "", blockedUsers: [] }; // Aggiunto blockedUsers
 try {
 allUsers.push(newUser); // Aggiunge solo se non trovato
 await updateUsersOnServer(allUsers);
@@ -1788,8 +1792,7 @@ currentUser = user;
 const newUser = {
 name: spotifyUser.display_name, email: spotifyUser.email,
 profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
-bio: "Accesso tramite Spotify", password: null, blockedUsers: [],
-additionalBio: "." // <-- RIGA AGGIUNTA
+bio: "Accesso tramite Spotify", password: null, blockedUsers: []
 };
 allUsers.push(newUser); // Aggiunge solo se non trovato
 await updateUsersOnServer(allUsers);
