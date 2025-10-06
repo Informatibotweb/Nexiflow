@@ -453,6 +453,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div id="searchResults"></div>
 </div>
 <div class="header-nav">
+<button class="nav-button" onclick="showStatusPage()">📖 Stati</button>
 <button class="nav-button" onclick="showChatPage()">💬 Chat</button>
 <button class="nav-button" onclick="showVideoPage()">🎬 Video</button>
 <button class="nav-button primary" onclick="showMainContent(); toggleInput()">➕ Nuovo Post</button>
@@ -571,6 +572,18 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
         </div>
     </div>
 </div>
+
+<div id="statusPage" class="main-content hidden">
+    <div class="post-header">
+        <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
+        <h3>Stati recenti</h3>
+        <label for="statusUploadInput" class="nav-button primary">➕ Aggiungi Stato</label>
+        <input type="file" id="statusUploadInput" accept="video/*" class="hidden">
+    </div>
+    <div id="status-list" style="display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 0;">
+        </div>
+</div>
+
 <div id="userProfilePage" class="main-content hidden">
 <button class="nav-button" onclick="showMainContent()">← Torna alla bacheca</button>
 <div id="profileInfo" class="user-info"></div>
@@ -618,6 +631,11 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div class="modal-content">
 <div id="modalVideoContainer"></div>
 </div>
+</div>
+
+<div id="statusModal" class="modal-overlay" style="background: rgba(0,0,0,0.9);">
+    <div id="status-viewer" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+        </div>
 </div>
 
 <div id="addContactModal" class="modal-overlay">
@@ -714,11 +732,15 @@ const POST_BIN_ID = "68960092f7e7a370d1f76798";
 const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
 const USER_BIN_ID = "68e15e1e43b1c97be95a5d2b";
 const MESSAGES_BIN_ID = "68e15fc5ae596e708f0615c4";
+// NUOVO: Bin ID per gli Stati (da sostituire)
+const STATUS_BIN_ID = "68e3c0a343b1c97be95c57d0"; 
 
 const BASE_URL = `https://api.jsonbin.io/v3/b/${POST_BIN_ID}`;
 const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
 const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
 const MESSAGES_URL = `https://api.jsonbin.io/v3/b/${MESSAGES_BIN_ID}`;
+// NUOVO: URL per gli Stati
+const STATUS_URL = `https://api.jsonbin.io/v3/b/${STATUS_BIN_ID}`;
 const headers = { "Content-Type": "application/json", "X-Master-Key": API_KEY };
 
 const spotifyClientId = 'f77ae12dd0e7405192d95390c8b1b418';
@@ -728,6 +750,7 @@ let usersData = {};
 let allPosts = [];
 let allVideos = [];
 let allUsers = [];
+let allStatuses = []; // NUOVO: Array per gli stati
 let allMessagesData = { privateMessages: {}, groupChats: {}, channels: {} }; // Struttura dati completa
 let currentPostType = 'text';
 let currentEmbedFormat = 'horizontal';
@@ -837,34 +860,39 @@ async function refreshData() {
 }
 
 async function loadAllData() {
-try {
-const [postsRes, videosRes, usersRes, messagesRes] = await Promise.all([
-fetch(BASE_URL + "/latest", { headers }),
-fetch(VIDEO_URL + "/latest", { headers }),
-fetch(USER_URL + "/latest", { headers }),
-fetch(MESSAGES_URL + "/latest", { headers })
-]);
-const postsData = await postsRes.json();
-const videosData = await videosRes.json();
-const usersDataRaw = await usersRes.json();
-const messagesData = await messagesRes.json();
-allPosts = postsData.record.posts || [];
-allVideos = videosData.record.videos || [];
-allUsers = usersDataRaw.record.users || [];
-allMessagesData = messagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
-// Assicurati che le strutture base esistano
-allMessagesData.privateMessages = allMessagesData.privateMessages || {};
-allMessagesData.groupChats = allMessagesData.groupChats || {};
-allMessagesData.channels = allMessagesData.channels || {};
+    try {
+        const [postsRes, videosRes, usersRes, messagesRes, statusRes] = await Promise.all([
+            fetch(BASE_URL + "/latest", { headers }),
+            fetch(VIDEO_URL + "/latest", { headers }),
+            fetch(USER_URL + "/latest", { headers }),
+            fetch(MESSAGES_URL + "/latest", { headers }),
+            fetch(STATUS_URL + "/latest", { headers }) // MODIFICATO: Aggiunta chiamata per gli stati
+        ]);
+        const postsData = await postsRes.json();
+        const videosData = await videosRes.json();
+        const usersDataRaw = await usersRes.json();
+        const messagesData = await messagesRes.json();
+        const statusData = await statusRes.json(); // NUOVO
 
-usersData = allUsers.reduce((map, user) => {
-map[user.email] = user;
-return map;
-}, {});
-renderPosts(allPosts);
-} catch (err) {
-console.error("Errore nel caricamento dei dati:", err);
-}
+        allPosts = postsData.record.posts || [];
+        allVideos = videosData.record.videos || [];
+        allUsers = usersDataRaw.record.users || [];
+        allMessagesData = messagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
+        allStatuses = statusData.record.statuses || []; // NUOVO: Carica gli stati
+        
+        // Assicurati che le strutture base esistano
+        allMessagesData.privateMessages = allMessagesData.privateMessages || {};
+        allMessagesData.groupChats = allMessagesData.groupChats || {};
+        allMessagesData.channels = allMessagesData.channels || {};
+
+        usersData = allUsers.reduce((map, user) => {
+            map[user.email] = user;
+            return map;
+        }, {});
+        renderPosts(allPosts);
+    } catch (err) {
+        console.error("Errore nel caricamento dei dati:", err);
+    }
 }
 async function updateUsersOnServer(users) {
 try { await fetch(USER_URL, { method: "PUT", headers, body: JSON.stringify({ users }) }); }
@@ -887,6 +915,14 @@ async function updateMessagesOnServer() {
         });
     } catch (error) {
         console.error("Errore nell'aggiornamento dei messaggi:", error);
+    }
+}
+// NUOVO: Funzione per aggiornare gli stati sul server
+async function updateStatusesOnServer(statuses) {
+    try {
+        await fetch(STATUS_URL, { method: "PUT", headers, body: JSON.stringify({ statuses }) });
+    } catch (error) {
+        console.error("Errore nell'aggiornamento degli stati:", error);
     }
 }
 function showLoginPage() {
@@ -983,6 +1019,7 @@ hideElement('videoPage');
 hideElement('userProfilePage');
 hideElement('settingsPage');
 hideElement('chatPage');
+hideElement('statusPage'); // NUOVO
 showElement('mainContent');
 }
 function showVideoPage() {
@@ -990,6 +1027,7 @@ hideElement('mainContent');
 hideElement('userProfilePage');
 hideElement('settingsPage');
 hideElement('chatPage');
+hideElement('statusPage'); // NUOVO
 showElement('videoPage');
 showVideos(currentVideoPageFormat);
 }
@@ -999,6 +1037,7 @@ hideElement('mainContent');
 hideElement('videoPage');
 hideElement('userProfilePage');
 hideElement('chatPage');
+hideElement('statusPage'); // NUOVO
 showElement('settingsPage');
 document.getElementById('editName').value = currentUser.name;
 document.getElementById('editBio').value = currentUser.bio || '';
@@ -1018,6 +1057,7 @@ function showChatPage() {
     hideElement('videoPage');
     hideElement('userProfilePage');
     hideElement('settingsPage');
+    hideElement('statusPage'); // NUOVO
     showElement('chatPage');
     renderConversationList();
     showElement('chat-welcome-screen');
@@ -1375,6 +1415,113 @@ function getConversationKey(email1, email2) { return [email1, email2].sort().joi
 
 // =================================== FINE CODICE CHAT ===================================
 
+
+// =================================== NUOVO: CODICE PER GLI STATI ===================================
+
+// Funzione per mostrare la pagina degli stati
+function showStatusPage() {
+    hideElement('mainContent');
+    hideElement('videoPage');
+    hideElement('userProfilePage');
+    hideElement('settingsPage');
+    hideElement('chatPage');
+    showElement('statusPage');
+    renderStatuses();
+}
+
+// Funzione per visualizzare gli stati attivi
+function renderStatuses() {
+    const container = document.getElementById('status-list');
+    container.innerHTML = '';
+
+    // Filtra gli stati più vecchi di 24 ore
+    const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+    const activeStatuses = allStatuses.filter(status => new Date(status.createdAt).getTime() > twentyFourHoursAgo);
+
+    if (activeStatuses.length === 0) {
+        container.innerHTML = '<p>Nessuno stato pubblicato nelle ultime 24 ore.</p>';
+        return;
+    }
+
+    // Raggruppa gli stati per utente, mostrando solo il più recente
+    const latestStatusByUser = activeStatuses.reduce((acc, status) => {
+        if (!acc[status.authorEmail] || new Date(status.createdAt) > new Date(acc[status.authorEmail].createdAt)) {
+            acc[status.authorEmail] = status;
+        }
+        return acc;
+    }, {});
+
+    Object.values(latestStatusByUser).forEach(status => {
+        const user = usersData[status.authorEmail];
+        if (!user) return;
+
+        const statusElement = document.createElement('div');
+        statusElement.style.textAlign = 'center';
+        statusElement.style.cursor = 'pointer';
+        statusElement.onclick = () => openStatusModal(status.videoUrl);
+        statusElement.innerHTML = `
+            <img src="${user.profilePic}" class="profile-pic" style="border: 3px solid var(--primary);">
+            <p class="text-xs font-semibold">${user.name.split(' ')[0]}</p>
+        `;
+        container.appendChild(statusElement);
+    });
+}
+
+// Funzioni per la modale degli stati
+function openStatusModal(videoUrl) {
+    const modal = document.getElementById('statusModal');
+    const viewer = document.getElementById('status-viewer');
+    viewer.innerHTML = `
+        <span class="close-modal" onclick="closeStatusModal()" style="top: 15px; right: 15px; z-index: 10; font-size: 2.5rem;">×</span>
+        <video src="${videoUrl}" autoplay controls style="max-width: 90vw; max-height: 90vh; border-radius: 12px;"></video>
+    `;
+    modal.classList.add('active');
+    viewer.querySelector('video').play().catch(e => console.log("La riproduzione automatica è stata bloccata dal browser."));
+}
+
+function closeStatusModal() {
+    const modal = document.getElementById('statusModal');
+    const video = modal.querySelector('video');
+    if (video) {
+        video.pause();
+        video.src = ""; // Forza lo stop del download
+    }
+    document.getElementById('status-viewer').innerHTML = ''; // Rimuove l'elemento video
+    modal.classList.remove('active');
+}
+
+// Logica per caricare un nuovo stato
+document.getElementById('statusUploadInput').addEventListener('change', async function(event) {
+    const file = event.target.files[0];
+    if (!file || !currentUser) return;
+
+    alert("Caricamento del tuo stato in corso...");
+    try {
+        const { url: videoUrl } = await uploadToCloudinary(file);
+
+        const newStatus = {
+            id: Date.now(),
+            authorEmail: currentUser.email,
+            videoUrl: videoUrl,
+            createdAt: new Date().toISOString()
+        };
+
+        allStatuses.unshift(newStatus);
+        await updateStatusesOnServer(allStatuses);
+
+        alert("Stato pubblicato con successo!");
+        renderStatuses();
+
+    } catch (error) {
+        alert("Si è verificato un errore durante il caricamento.");
+        console.error("Errore pubblicazione stato:", error);
+    } finally {
+        event.target.value = '';
+    }
+});
+// =================================== FINE CODICE STATI ===================================
+
+
 function toggleTheme() {
 document.body.classList.toggle('dark-mode');
 const isDark = document.body.classList.contains('dark-mode');
@@ -1443,54 +1590,59 @@ async function uploadToCloudinary(file) {
         throw error;
     }
 }
+// MODIFICATA: Funzione di pubblicazione "Ottimistica"
 async function publishPost() {
     const publishBtn = document.getElementById('publishBtn');
+    if (publishBtn.disabled) return; // Prevenzione extra per doppi click
+
+    // 1. Disabilita subito il pulsante
     publishBtn.disabled = true;
     publishBtn.textContent = 'Pubblicazione...';
+
+    // 2. Crea l'oggetto del nuovo post
+    let newPost = {
+        id: Date.now(),
+        author: currentUser.name,
+        authorEmail: currentUser.email,
+        authorPic: currentUser.profilePic,
+        date: getFormattedDate(),
+        upvotes: 0,
+        downvotes: 0,
+        comments: [],
+        type: currentPostType
+    };
+
     try {
-        const response = await fetch(BASE_URL + "/latest", { headers });
-        if (!response.ok) throw new Error('Impossibile scaricare i dati più recenti da JsonBin.');
-        const latestData = await response.json();
-        const latestPosts = latestData.record.posts || [];
-        let newPost = {
-            id: Date.now(), author: currentUser.name, authorEmail: currentUser.email,
-            authorPic: currentUser.profilePic, date: getFormattedDate(), upvotes: 0, downvotes: 0,
-            comments: [], type: currentPostType
-        };
+        // Logica specifica per ogni tipo di post (gestione upload, ecc.)
         if (currentPostType === 'upload') {
             const fileInput = document.getElementById('fileUploadInput');
-            const caption = document.getElementById('uploadCaption').value.trim();
             const file = fileInput.files[0];
-            if (!file) {
-                alert("Nessun file selezionato!");
-                publishBtn.textContent = 'Pubblica su Nexiflow';
-                checkPublishButtonState();
-                return;
-            }
+            if (!file) throw new Error("Nessun file selezionato!");
+            
             alert(`Sto caricando il file. L'operazione potrebbe richiedere qualche istante...`);
-            const cloudinaryResponse = await uploadToCloudinary(file);
-            newPost.content = cloudinaryResponse.url;
-            newPost.description = caption; 
-            newPost.fileType = cloudinaryResponse.resourceType; 
+            const { url, resourceType } = await uploadToCloudinary(file);
+            newPost.content = url;
+            newPost.fileType = resourceType;
+            newPost.description = document.getElementById('uploadCaption').value.trim();
         } else {
             const content = (currentPostType === 'text') ? document.getElementById('postText').value :
                             (currentPostType === 'video') ? document.getElementById('videoLink').value :
                             (currentPostType === 'embed') ? document.getElementById('embedCode').value :
                             document.getElementById('twitterLink').value;
-            const description = (currentPostType === 'text') ? '' :
-                                (currentPostType === 'video') ? document.getElementById('videoDescription').value :
-                                document.getElementById('embedDescription').value;
-            if (!content.trim()) return;
+            if (!content.trim()) throw new Error("Il contenuto non può essere vuoto.");
+            
             newPost.content = content;
-            newPost.description = description;
-            if (currentPostType === 'embed') {
-                newPost.embedFormat = currentEmbedFormat;
-            }
+            newPost.description = (currentPostType === 'text') ? '' :
+                                  (currentPostType === 'video') ? document.getElementById('videoDescription').value :
+                                  document.getElementById('embedDescription').value;
+            if (currentPostType === 'embed') newPost.embedFormat = currentEmbedFormat;
         }
-        latestPosts.unshift(newPost);
-        allPosts = latestPosts;
-        await updatePostsOnServer(allPosts);
-        renderPosts(allPosts);
+
+        // 3. AGGIORNAMENTO OTTIMISTICO: Mostra il post nell'UI immediatamente
+        allPosts.unshift(newPost); // Aggiungi ai dati locali
+        renderNewPosts([newPost]); // Funzione già esistente, perfetta per questo!
+
+        // 4. Pulisci i campi e chiudi l'area di input
         document.getElementById('postText').value = '';
         document.getElementById('videoDescription').value = '';
         document.getElementById('videoLink').value = '';
@@ -1499,15 +1651,24 @@ async function publishPost() {
         document.getElementById('twitterLink').value = '';
         document.getElementById('fileUploadInput').value = '';
         document.getElementById('uploadCaption').value = '';
-    } catch (error) {
-        console.error("Errore durante la pubblicazione:", error);
-        alert(`Si è verificato un errore durante la pubblicazione: ${error.message}`);
-    } finally {
-        publishBtn.textContent = 'Pubblica su Nexiflow';
-        checkPublishButtonState();
         if (document.getElementById('inputArea').classList.contains('active')) {
             toggleInput();
         }
+        
+        // 5. Salva i dati sul server in background
+        await updatePostsOnServer(allPosts);
+
+    } catch (error) {
+        console.error("Errore durante la pubblicazione:", error);
+        alert(`Si è verificato un errore durante la pubblicazione: ${error.message}`);
+        // Se c'è un errore, rimuovi il post che è stato aggiunto ottimisticamente
+        allPosts.shift(); // Rimuove il primo elemento (quello appena aggiunto)
+        renderPosts(allPosts); // Ridisegna i post per riflettere la rimozione
+    } finally {
+        // 6. Riabilita il pulsante in ogni caso (successo o fallimento)
+        publishBtn.textContent = 'Pubblica su Nexiflow';
+        publishBtn.disabled = false;
+        checkPublishButtonState(); // Controlla lo stato per la prossima pubblicazione
     }
 }
 function embedFromLink(link) {
@@ -1546,10 +1707,60 @@ function createPostElement(post) {
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
         postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+    // MODIFICATO: Aggiunto pulsante "Incorpora"
+    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})">🔗 Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
+}
+
+// NUOVO: Funzione per generare e copiare il codice di incorporamento
+function copyEmbedCode(postId) {
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    // 1. Genera l'HTML per l'embed
+    let contentHtml = '';
+    if (post.type === 'text') {
+        contentHtml = `<p style="font-size: 16px; line-height: 1.5; margin: 0; white-space: pre-wrap; word-wrap: break-word;">${post.content}</p>`;
+    } else if (post.type === 'upload') {
+        if (post.fileType === 'image') {
+            contentHtml = `<img src="${post.content}" style="max-width: 100%; border-radius: 8px;" alt="Immagine del post">`;
+        } else if (post.fileType === 'video') {
+            contentHtml = `<video src="${post.content}" controls style="max-width: 100%; border-radius: 8px;"></video>`;
+        }
+    } else if (post.type === 'embed' || post.type === 'video') {
+         contentHtml = `<p style="margin-bottom: 8px; white-space: pre-wrap; word-wrap: break-word;">${post.description || ''}</p>
+                        <iframe src="${post.type === 'video' ? embedFromLink(post.content) : srcFromEmbed(post.content)}" 
+                                style="width: 100%; height: 250px; border: none; border-radius: 8px;" 
+                                allowfullscreen></iframe>`;
+    }
+
+    const embedHtml = `
+        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; font-family: 'Inter', sans-serif; max-width: 500px; background: #ffffff;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <img src="${post.authorPic}" style="width: 32px; height: 32px; border-radius: 50%;">
+                <div>
+                    <strong style="font-size: 14px; color: #0f172a;">${post.author}</strong>
+                    <p style="font-size: 12px; color: #94a3b8; margin: 0;">${post.date}</p>
+                </div>
+            </div>
+            ${contentHtml}
+            <div style="margin-top: 12px; font-size: 12px; color: #475569;">
+                Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color: #00D4FF; text-decoration: none;">Nexiflow™</a>
+            </div>
+        </div>
+    `;
+
+    // 2. Crea il tag iframe e lo copia
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+
+    navigator.clipboard.writeText(iframeCode).then(() => {
+        alert('Codice di incorporamento copiato negli appunti!');
+    }).catch(err => {
+        alert('Errore: impossibile copiare il codice.');
+        console.error('Errore nel copiare iframe:', err);
+    });
 }
 
 function renderPosts(posts) {
@@ -1724,6 +1935,7 @@ hideElement('mainContent');
 hideElement('videoPage');
 hideElement('settingsPage');
 hideElement('chatPage');
+hideElement('statusPage'); // NUOVO
 showElement('userProfilePage');
 document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary">Email: ${user.email}</div><div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div><button class="nav-button primary" onclick="startPrivateChatFromPost('${user.email}')" style="margin-top: 1rem;">✉️ Invia messaggio</button></div>`;
 const userPosts = allPosts.filter(post => post.authorEmail === email);
@@ -1955,11 +2167,15 @@ showAuthContent();
 window.onclick = function(event) {
 if (event.target.classList.contains('modal-overlay')) {
     event.target.classList.remove('active');
+    if (event.target.id === 'statusModal') {
+        closeStatusModal(); // Assicura che il video si fermi quando si clicca fuori
+    }
 }
 };
 document.addEventListener('keydown', function(event) {
 if (event.key === 'Escape') { 
-    closeModal(); 
+    closeModal();
+    closeStatusModal(); // Chiude anche la modale degli stati
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 }
 if (event.key === 'Enter' && document.activeElement.id === 'chatMessageInput') {
