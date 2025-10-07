@@ -779,7 +779,9 @@ email: decodedToken.email,
 profilePic: decodedToken.picture,
 bio: "Accesso tramite Google",
 country: "",
-blockedUsers: []
+blockedUsers: [],
+followers: [], 
+following: []
 };
 allUsers.push(newUser); // Aggiunge solo se non trovato
 currentUser = newUser;
@@ -962,7 +964,11 @@ if (allUsers.find(u => u.email === email)) {
 alert("Esiste già un utente con questa email.");
 return; // Interrompe l'esecuzione se l'utente è un duplicato
 }
-const newUser = { name, email, password, profilePic, bio: "", blockedUsers: [] }; // Aggiunto blockedUsers
+const newUser = { 
+    name, email, password, profilePic, 
+    bio: "", country: "", blockedUsers: [],
+    followers: [], following: []
+};
 try {
 allUsers.push(newUser); // Aggiunge solo se non trovato
 await updateUsersOnServer(allUsers);
@@ -1416,7 +1422,14 @@ function getConversationKey(email1, email2) { return [email1, email2].sort().joi
 // =================================== FINE CODICE CHAT ===================================
 
 
-// =================================== NUOVO: CODICE PER GLI STATI ===================================
+// =================================== INIZIO CODICE STATI (AGGIORNATO) ===================================
+
+let statusViewerData = {
+    currentIndex: 0,
+    userStatuses: [],
+    progressBars: [],
+    timeoutId: null
+};
 
 // Funzione per mostrare la pagina degli stati
 function showStatusPage() {
@@ -1426,39 +1439,43 @@ function showStatusPage() {
     hideElement('settingsPage');
     hideElement('chatPage');
     showElement('statusPage');
-    renderStatuses();
+    renderStatusBubbles();
 }
 
-// Funzione per visualizzare gli stati attivi
-function renderStatuses() {
+// Funzione per visualizzare le "bolle" degli stati
+function renderStatusBubbles() {
     const container = document.getElementById('status-list');
     container.innerHTML = '';
 
-    // Filtra gli stati più vecchi di 24 ore
     const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
     const activeStatuses = allStatuses.filter(status => new Date(status.createdAt).getTime() > twentyFourHoursAgo);
 
     if (activeStatuses.length === 0) {
-        container.innerHTML = '<p>Nessuno stato pubblicato nelle ultime 24 ore.</p>';
+        container.innerHTML = '<p style="padding: 1rem;">Nessuno stato pubblicato nelle ultime 24 ore.</p>';
         return;
     }
 
-    // Raggruppa gli stati per utente, mostrando solo il più recente
-    const latestStatusByUser = activeStatuses.reduce((acc, status) => {
-        if (!acc[status.authorEmail] || new Date(status.createdAt) > new Date(acc[status.authorEmail].createdAt)) {
-            acc[status.authorEmail] = status;
+    // Raggruppa tutti gli stati attivi per autore
+    const statusesByUser = activeStatuses.reduce((acc, status) => {
+        if (!acc[status.authorEmail]) {
+            acc[status.authorEmail] = [];
         }
+        acc[status.authorEmail].push(status);
+        // Ordina gli stati di ogni utente dal più vecchio al più recente
+        acc[status.authorEmail].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
         return acc;
     }, {});
 
-    Object.values(latestStatusByUser).forEach(status => {
-        const user = usersData[status.authorEmail];
+    Object.keys(statusesByUser).forEach(authorEmail => {
+        const user = usersData[authorEmail];
         if (!user) return;
+        const userStatuses = statusesByUser[authorEmail];
 
         const statusElement = document.createElement('div');
         statusElement.style.textAlign = 'center';
         statusElement.style.cursor = 'pointer';
-        statusElement.onclick = () => openStatusModal(status.videoUrl);
+        // Passa l'email dell'autore per trovare tutti i suoi stati
+        statusElement.onclick = () => openStatusViewer(authorEmail);
         statusElement.innerHTML = `
             <img src="${user.profilePic}" class="profile-pic" style="border: 3px solid var(--primary);">
             <p class="text-xs font-semibold">${user.name.split(' ')[0]}</p>
@@ -1467,30 +1484,131 @@ function renderStatuses() {
     });
 }
 
-// Funzioni per la modale degli stati
-function openStatusModal(videoUrl) {
+// Funzione principale per aprire il visualizzatore modale degli stati
+function openStatusViewer(authorEmail) {
+    const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+    const userStatuses = allStatuses
+        .filter(s => s.authorEmail === authorEmail && new Date(s.createdAt).getTime() > twentyFourHoursAgo)
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+    if (userStatuses.length === 0) return;
+
+    statusViewerData.userStatuses = userStatuses;
+    statusViewerData.currentIndex = 0;
+
     const modal = document.getElementById('statusModal');
     const viewer = document.getElementById('status-viewer');
+    const user = usersData[authorEmail];
+
+    // Crea le barre di avanzamento
+    const progressBarsHTML = userStatuses.map((_, index) => `<div class="status-progress-bar-container"><div class="status-progress-bar" id="progress-bar-${index}"></div></div>`).join('');
+
     viewer.innerHTML = `
-        <span class="close-modal" onclick="closeStatusModal()" style="top: 15px; right: 15px; z-index: 10; font-size: 2.5rem;">×</span>
-        <video src="${videoUrl}" autoplay controls style="max-width: 90vw; max-height: 90vh; border-radius: 12px;"></video>
+        <div class="status-header">
+            <div class="status-progress-container">${progressBarsHTML}</div>
+            <div class="status-user-info">
+                <img src="${user.profilePic}" class="profile-pic" />
+                <span>${user.name}</span>
+            </div>
+            <span class="close-modal" onclick="closeStatusModal()">×</span>
+        </div>
+        <div class="status-content"></div>
+        <div class="status-nav-prev" onclick="changeStatus('prev')">‹</div>
+        <div class="status-nav-next" onclick="changeStatus('next')">›</div>
     `;
     modal.classList.add('active');
-    viewer.querySelector('video').play().catch(e => console.log("La riproduzione automatica è stata bloccata dal browser."));
+    
+    // Aggiungi un po' di stile per il visualizzatore
+    const style = document.createElement('style');
+    style.id = 'status-viewer-styles';
+    style.innerHTML = `
+        .status-header { position: absolute; top: 0; left: 0; right: 0; padding: 15px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
+        .status-progress-container { display: flex; gap: 4px; width: 100%; }
+        .status-progress-bar-container { flex: 1; background: rgba(255,255,255,0.3); border-radius: 2px; height: 3px; }
+        .status-progress-bar { height: 100%; background: white; width: 0%; border-radius: 2px; transition: width 5s linear; }
+        .status-user-info { display: flex; align-items: center; gap: 10px; color: white; font-weight: 500; }
+        .status-user-info .profile-pic { width: 32px; height: 32px; }
+        .status-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+        .status-content video, .status-content img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; }
+        .status-nav-prev, .status-nav-next { position: absolute; top: 50%; transform: translateY(-50%); font-size: 3rem; color: white; cursor: pointer; user-select: none; z-index: 11; padding: 0 20px; }
+        .status-nav-prev { left: 0; }
+        .status-nav-next { right: 0; }
+        .close-modal { position: absolute; top: 15px; right: 15px; z-index: 12; font-size: 2.5rem !important; cursor: pointer; }
+    `;
+    document.head.appendChild(style);
+
+    showCurrentStatus();
 }
+
+function showCurrentStatus() {
+    const status = statusViewerData.userStatuses[statusViewerData.currentIndex];
+    const contentContainer = document.querySelector('#status-viewer .status-content');
+
+    // Ferma il timeout precedente
+    if (statusViewerData.timeoutId) clearTimeout(statusViewerData.timeoutId);
+    
+    // Resetta le barre di avanzamento
+    document.querySelectorAll('.status-progress-bar').forEach((bar, index) => {
+        bar.style.transition = 'none';
+        bar.style.width = index < statusViewerData.currentIndex ? '100%' : '0%';
+    });
+    
+    contentContainer.innerHTML = `<video src="${status.videoUrl}" autoplay muted playsinline></video>`;
+    const video = contentContainer.querySelector('video');
+
+    video.oncanplay = () => {
+        const duration = video.duration * 1000; // in ms
+        const progressBar = document.getElementById(`progress-bar-${statusViewerData.currentIndex}`);
+        
+        // Forza un reflow per riattivare la transizione
+        progressBar.offsetHeight; 
+        progressBar.style.transition = `width ${duration / 1000}s linear`;
+        progressBar.style.width = '100%';
+
+        statusViewerData.timeoutId = setTimeout(() => {
+            changeStatus('next');
+        }, duration);
+    };
+    
+    video.onerror = () => {
+         // Se il video non carica, vai al prossimo dopo 3 secondi
+         setTimeout(() => changeStatus('next'), 3000);
+    };
+}
+
+
+function changeStatus(direction) {
+    if (direction === 'next') {
+        if (statusViewerData.currentIndex < statusViewerData.userStatuses.length - 1) {
+            statusViewerData.currentIndex++;
+            showCurrentStatus();
+        } else {
+            closeStatusModal();
+        }
+    } else if (direction === 'prev') {
+        if (statusViewerData.currentIndex > 0) {
+            statusViewerData.currentIndex--;
+            showCurrentStatus();
+        }
+    }
+}
+
 
 function closeStatusModal() {
     const modal = document.getElementById('statusModal');
-    const video = modal.querySelector('video');
-    if (video) {
-        video.pause();
-        video.src = ""; // Forza lo stop del download
-    }
-    document.getElementById('status-viewer').innerHTML = ''; // Rimuove l'elemento video
+    if (statusViewerData.timeoutId) clearTimeout(statusViewerData.timeoutId);
+    
+    const viewer = document.getElementById('status-viewer');
+    viewer.innerHTML = '';
+    
+    // Rimuovi gli stili aggiunti
+    const style = document.getElementById('status-viewer-styles');
+    if (style) style.remove();
+
     modal.classList.remove('active');
 }
 
-// Logica per caricare un nuovo stato
+// Logica per caricare un nuovo stato (invariata)
 document.getElementById('statusUploadInput').addEventListener('change', async function(event) {
     const file = event.target.files[0];
     if (!file || !currentUser) return;
@@ -1498,20 +1616,16 @@ document.getElementById('statusUploadInput').addEventListener('change', async fu
     alert("Caricamento del tuo stato in corso...");
     try {
         const { url: videoUrl } = await uploadToCloudinary(file);
-
         const newStatus = {
             id: Date.now(),
             authorEmail: currentUser.email,
             videoUrl: videoUrl,
             createdAt: new Date().toISOString()
         };
-
         allStatuses.unshift(newStatus);
         await updateStatusesOnServer(allStatuses);
-
         alert("Stato pubblicato con successo!");
-        renderStatuses();
-
+        renderStatusBubbles();
     } catch (error) {
         alert("Si è verificato un errore durante il caricamento.");
         console.error("Errore pubblicazione stato:", error);
@@ -1519,7 +1633,46 @@ document.getElementById('statusUploadInput').addEventListener('change', async fu
         event.target.value = '';
     }
 });
-// =================================== FINE CODICE STATI ===================================
+// =================================== FINE CODICE STATI (AGGIORNATO) ===================================
+
+
+// =================================== NUOVO: CODICE PER I FOLLOWER ===================================
+
+async function toggleFollow(targetUserEmail) {
+    if (!currentUser || !targetUserEmail || currentUser.email === targetUserEmail) return;
+
+    // Assicurati che gli array esistano per entrambi gli utenti (compatibilità con vecchi account)
+    currentUser.following = currentUser.following || [];
+    const targetUser = allUsers.find(u => u.email === targetUserEmail);
+    if (!targetUser) return;
+    targetUser.followers = targetUser.followers || [];
+
+    const isFollowing = currentUser.following.includes(targetUserEmail);
+
+    if (isFollowing) {
+        // Smetti di seguire (Unfollow)
+        currentUser.following = currentUser.following.filter(email => email !== targetUserEmail);
+        targetUser.followers = targetUser.followers.filter(email => email !== currentUser.email);
+    } else {
+        // Inizia a seguire (Follow)
+        currentUser.following.push(targetUserEmail);
+        targetUser.followers.push(currentUser.email);
+    }
+
+    // Aggiorna l'array 'allUsers' con i dati modificati
+    const currentUserIndex = allUsers.findIndex(u => u.email === currentUser.email);
+    const targetUserIndex = allUsers.findIndex(u => u.email === targetUserEmail);
+    if (currentUserIndex > -1) allUsers[currentUserIndex] = currentUser;
+    if (targetUserIndex > -1) allUsers[targetUserIndex] = targetUser;
+    
+    // Salva le modifiche sul server
+    await updateUsersOnServer(allUsers);
+    
+    // Aggiorna la pagina del profilo visualizzata
+    showUserProfile(targetUserEmail);
+}
+// =================================== FINE CODICE FOLLOWER ===================================
+
 
 
 function toggleTheme() {
@@ -1753,7 +1906,7 @@ function copyEmbedCode(postId) {
     `;
 
     // 2. Crea il tag iframe e lo copia
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
 
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato negli appunti!');
@@ -1928,20 +2081,47 @@ modalVideoContainer.innerHTML = '';
 videoModal.style.display = 'none';
 }
 function showUserProfile(email) {
-if (email === currentUser.email) { showSettingsPage(); return; }
-const user = usersData[email];
-if (!user) return;
-hideElement('mainContent');
-hideElement('videoPage');
-hideElement('settingsPage');
-hideElement('chatPage');
-hideElement('statusPage'); // NUOVO
-showElement('userProfilePage');
-document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary">Email: ${user.email}</div><div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div><button class="nav-button primary" onclick="startPrivateChatFromPost('${user.email}')" style="margin-top: 1rem;">✉️ Invia messaggio</button></div>`;
-const userPosts = allPosts.filter(post => post.authorEmail === email);
-renderUserPosts(userPosts);
-const userVideos = allVideos.filter(video => video.authorEmail === email);
-renderUserVideos(userVideos);
+    if (email === currentUser.email) {
+        showSettingsPage();
+        return;
+    }
+    const user = allUsers.find(u => u.email === email); // Cerca l'utente nell'array aggiornato
+    if (!user) return;
+
+    hideElement('mainContent');
+    hideElement('videoPage');
+    hideElement('settingsPage');
+    hideElement('chatPage');
+    hideElement('statusPage');
+    showElement('userProfilePage');
+    
+    // Assicura che gli array esistano per la visualizzazione
+    const followersCount = user.followers ? user.followers.length : 0;
+    const followingCount = user.following ? user.following.length : 0;
+    currentUser.following = currentUser.following || []; // Assicura che esista anche per l'utente corrente
+
+    const isFollowing = currentUser.following.includes(user.email);
+    const followButtonText = isFollowing ? 'Smetti di seguire' : 'Segui';
+    const followButtonClass = isFollowing ? '' : 'primary'; // Stile diverso se già seguito
+
+    document.getElementById('profileInfo').innerHTML = `
+        <img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo">
+        <div>
+            <div class="user-name">${user.name}</div>
+            <div class="text-sm text-tertiary" style="margin-bottom: 0.5rem;">
+                <span><b>${followersCount}</b> follower</span> &bull; <span><b>${followingCount}</b> seguiti</span>
+            </div>
+            <div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+                <button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button>
+                <button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')">✉️ Messaggio</button>
+            </div>
+        </div>`;
+
+    const userPosts = allPosts.filter(post => post.authorEmail === email);
+    renderUserPosts(userPosts);
+    const userVideos = allVideos.filter(video => video.authorEmail === email);
+    renderUserVideos(userVideos);
 }
 function renderUserPosts(posts) {
 const container = document.getElementById('userPostsContainer');
@@ -2145,7 +2325,9 @@ currentUser = user;
 const newUser = {
 name: spotifyUser.display_name, email: spotifyUser.email,
 profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
-bio: "Accesso tramite Spotify", password: null, blockedUsers: []
+bio: "Accesso tramite Spotify", password: null, blockedUsers: [],
+followers: [], 
+following: []
 };
 allUsers.push(newUser); // Aggiunge solo se non trovato
 await updateUsersOnServer(allUsers);
