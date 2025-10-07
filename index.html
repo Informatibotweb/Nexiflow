@@ -52,6 +52,18 @@ padding: var(--spacing-md) 0; position: sticky; top: 0; z-index: 100; backdrop-f
 display: flex; align-items: center; gap: var(--spacing-xs); padding: var(--spacing-xs) var(--spacing-md);
 border: none; border-radius: var(--radius-full); background: transparent; color: var(--text-secondary);
 font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+position: relative; /* Aggiunto per posizionare il pallino */
+}
+/* Stile per il pallino di notifica */
+.notification-dot {
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background-color: var(--danger);
+    border-radius: 50%;
+    border: 1px solid var(--bg-primary);
 }
 .nav-button:hover { background: var(--bg-tertiary); color: var(--text-primary); }
 .nav-button.primary { background: var(--primary); color: white; }
@@ -453,7 +465,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div id="searchResults"></div>
 </div>
 <div class="header-nav">
-<button class="nav-button" onclick="showStatusPage()">📖 Stati</button>
+<button class="nav-button" onclick="showStatusPage()">📖 Stati<span id="status-notification-dot" class="notification-dot hidden"></span></button>
 <button class="nav-button" onclick="showChatPage()">💬 Chat</button>
 <button class="nav-button" onclick="showVideoPage()">🎬 Video</button>
 <button class="nav-button primary" onclick="showMainContent(); toggleInput()">➕ Nuovo Post</button>
@@ -732,14 +744,12 @@ const POST_BIN_ID = "68960092f7e7a370d1f76798";
 const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
 const USER_BIN_ID = "68e15e1e43b1c97be95a5d2b";
 const MESSAGES_BIN_ID = "68e15fc5ae596e708f0615c4";
-// NUOVO: Bin ID per gli Stati (da sostituire)
 const STATUS_BIN_ID = "68e3c0a343b1c97be95c57d0"; 
 
 const BASE_URL = `https://api.jsonbin.io/v3/b/${POST_BIN_ID}`;
 const VIDEO_URL = `https://api.jsonbin.io/v3/b/${VIDEO_BIN_ID}`;
 const USER_URL = `https://api.jsonbin.io/v3/b/${USER_BIN_ID}`;
 const MESSAGES_URL = `https://api.jsonbin.io/v3/b/${MESSAGES_BIN_ID}`;
-// NUOVO: URL per gli Stati
 const STATUS_URL = `https://api.jsonbin.io/v3/b/${STATUS_BIN_ID}`;
 const headers = { "Content-Type": "application/json", "X-Master-Key": API_KEY };
 
@@ -750,8 +760,8 @@ let usersData = {};
 let allPosts = [];
 let allVideos = [];
 let allUsers = [];
-let allStatuses = []; // NUOVO: Array per gli stati
-let allMessagesData = { privateMessages: {}, groupChats: {}, channels: {} }; // Struttura dati completa
+let allStatuses = [];
+let allMessagesData = { privateMessages: {}, groupChats: {}, channels: {} };
 let currentPostType = 'text';
 let currentEmbedFormat = 'horizontal';
 let currentVideoPageFormat = 'vertical';
@@ -762,44 +772,36 @@ let pollingInterval = null;
 function showElement(elementId) { document.getElementById(elementId).classList.remove('hidden'); }
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
+
 function handleCredentialResponse(response) {
 const decodedToken = parseJwt(response.credential);
-// ---> CONTROLLO UTENTE GOOGLE: Verifica se l'utente esiste già
 let user = allUsers.find(u => u.email === decodedToken.email);
 if (user) {
-// Se esiste, effettua l'accesso
 currentUser = user;
 localStorage.setItem("currentUserEmail", currentUser.email);
 showAppContent();
 } else {
-// Se non esiste, crea un nuovo utente e lo aggiunge
 const newUser = {
-name: decodedToken.name,
-email: decodedToken.email,
-profilePic: decodedToken.picture,
-bio: "Accesso tramite Google",
-country: "",
-blockedUsers: [],
-followers: [], 
-following: []
+name: decodedToken.name, email: decodedToken.email,
+profilePic: decodedToken.picture, bio: "Accesso tramite Google",
+country: "", blockedUsers: [], followers: [], following: []
 };
-allUsers.push(newUser); // Aggiunge solo se non trovato
+allUsers.push(newUser);
 currentUser = newUser;
 localStorage.setItem("currentUserEmail", currentUser.email);
-showElement("countryModal"); // Chiede il paese, poi salva l'array aggiornato
+showElement("countryModal");
 }
 }
+
 function saveCountry() {
 const country = document.getElementById("countrySelect").value;
-if (!country) {
-alert("Seleziona un Paese!");
-return;
-}
+if (!country) { alert("Seleziona un Paese!"); return; }
 currentUser.country = country;
-updateUsersOnServer(allUsers); // Salva l'array di utenti (nuovo o esistente)
+updateUsersOnServer(allUsers);
 hideElement("countryModal");
 showAppContent();
 }
+
 function parseJwt(token) {
 var base64Url = token.split('.')[1];
 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -812,11 +814,11 @@ return JSON.parse(jsonPayload);
 // =================== DATA POLLING & INTELLIGENT RENDERING ===================
 
 function startPolling() {
-    if (pollingInterval) clearInterval(pollingInterval); // Evita intervalli multipli
+    if (pollingInterval) clearInterval(pollingInterval);
     pollingInterval = setInterval(async () => {
-        if (!currentUser) return; // Non fare nulla se l'utente non è loggato
+        if (!currentUser) return;
         await refreshData();
-    }, 2000); // Aggiorna ogni 2 secondi
+    }, 2000);
 }
 
 function stopPolling() {
@@ -826,36 +828,46 @@ function stopPolling() {
 
 async function refreshData() {
     try {
-        const [postsRes, messagesRes] = await Promise.all([
+        const [postsRes, messagesRes, statusRes] = await Promise.all([
             fetch(BASE_URL + "/latest", { headers }),
-            fetch(MESSAGES_URL + "/latest", { headers })
+            fetch(MESSAGES_URL + "/latest", { headers }),
+            fetch(STATUS_URL + "/latest", { headers })
         ]);
 
-        if (!postsRes.ok || !messagesRes.ok) return;
+        if (!postsRes.ok || !messagesRes.ok || !statusRes.ok) return;
 
         const newPostsData = await postsRes.json();
         const newMessagesData = await messagesRes.json();
+        const newStatusData = await statusRes.json();
 
-        // Aggiorna i post in modo intelligente
+        // Aggiorna post
         const newPosts = newPostsData.record.posts || [];
         if (newPosts.length > allPosts.length) {
             const addedPosts = newPosts.slice(0, newPosts.length - allPosts.length);
-            allPosts = newPosts; // Aggiorna l'array locale
-            renderNewPosts(addedPosts); // Renderizza solo i nuovi post
+            allPosts = newPosts;
+            renderNewPosts(addedPosts);
         }
 
-        // Aggiorna i messaggi
+        // Aggiorna messaggi
         const newMessagesRecord = newMessagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
-        // Un semplice controllo per vedere se ci sono cambiamenti, si può rendere più granulare
         if (JSON.stringify(allMessagesData) !== JSON.stringify(newMessagesRecord)) {
             allMessagesData = newMessagesRecord;
             if (document.getElementById('chatPage').style.display !== 'none') {
-                renderConversationList(); // Aggiorna la lista
-                if (currentOpenChat.id) {
-                    renderMessages(true); // Aggiorna i messaggi nella chat aperta
-                }
+                renderConversationList();
+                if (currentOpenChat.id) renderMessages(true);
             }
         }
+
+        // Aggiorna stati e notifica
+        const newStatuses = newStatusData.record.statuses || [];
+        if (JSON.stringify(allStatuses) !== JSON.stringify(newStatuses)) {
+            allStatuses = newStatuses;
+            if (document.getElementById('statusPage').style.display !== 'none') {
+                 renderStatusBubbles();
+            }
+            checkForNewStatuses();
+        }
+
     } catch (err) {
         console.error("Errore durante l'aggiornamento dei dati:", err);
     }
@@ -868,21 +880,20 @@ async function loadAllData() {
             fetch(VIDEO_URL + "/latest", { headers }),
             fetch(USER_URL + "/latest", { headers }),
             fetch(MESSAGES_URL + "/latest", { headers }),
-            fetch(STATUS_URL + "/latest", { headers }) // MODIFICATO: Aggiunta chiamata per gli stati
+            fetch(STATUS_URL + "/latest", { headers })
         ]);
         const postsData = await postsRes.json();
         const videosData = await videosRes.json();
         const usersDataRaw = await usersRes.json();
         const messagesData = await messagesRes.json();
-        const statusData = await statusRes.json(); // NUOVO
+        const statusData = await statusRes.json();
 
         allPosts = postsData.record.posts || [];
         allVideos = videosData.record.videos || [];
         allUsers = usersDataRaw.record.users || [];
         allMessagesData = messagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
-        allStatuses = statusData.record.statuses || []; // NUOVO: Carica gli stati
+        allStatuses = statusData.record.statuses || [];
         
-        // Assicurati che le strutture base esistano
         allMessagesData.privateMessages = allMessagesData.privateMessages || {};
         allMessagesData.groupChats = allMessagesData.groupChats || {};
         allMessagesData.channels = allMessagesData.channels || {};
@@ -891,7 +902,10 @@ async function loadAllData() {
             map[user.email] = user;
             return map;
         }, {});
+
         renderPosts(allPosts);
+        checkForNewStatuses(); // Controlla le notifiche per gli stati
+
     } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
     }
@@ -919,7 +933,6 @@ async function updateMessagesOnServer() {
         console.error("Errore nell'aggiornamento dei messaggi:", error);
     }
 }
-// NUOVO: Funzione per aggiornare gli stati sul server
 async function updateStatusesOnServer(statuses) {
     try {
         await fetch(STATUS_URL, { method: "PUT", headers, body: JSON.stringify({ statuses }) });
@@ -945,40 +958,59 @@ selector.querySelectorAll('.profile-pic-option').forEach(img => {
 img.classList.remove('selected');
 });
 element.classList.add('selected');
-// Deseleziona il file input se si sceglie un'opzione rapida
 const customPicInput = document.getElementById('customProfilePicInput');
 if (customPicInput) customPicInput.value = '';
 }
+
+// NUOVA FUNZIONE DI REGISTRAZIONE CON RECUPERO ACCOUNT
 async function registerUser() {
-const name = document.getElementById('registerName').value.trim();
-const email = document.getElementById('registerEmail').value.trim();
-const password = document.getElementById('registerPassword').value.trim();
-const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
-const profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
-if (!name || !email || !password) {
-alert("Compila tutti i campi!");
-return;
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+    const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+    let profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
+
+    if (!name || !email || !password) {
+        alert("Compila tutti i campi!");
+        return;
+    }
+    if (allUsers.find(u => u.email === email)) {
+        alert("Esiste già un utente con questa email.");
+        return;
+    }
+
+    // LOGICA DI RECUPERO ACCOUNT
+    const oldPost = allPosts.find(p => p.authorEmail === email);
+    let recoveredData = {};
+    if (oldPost) {
+        if (confirm("Abbiamo trovato dei post precedenti associati a questa email. Vuoi provare a recuperare i dati del tuo vecchio profilo (nome, immagine)?")) {
+            recoveredData.name = oldPost.author;
+            recoveredData.profilePic = oldPost.authorPic;
+            alert(`Dati recuperati! Il tuo nome utente sarà "${recoveredData.name}". Potrai cambiarlo nelle impostazioni.`);
+        }
+    }
+
+    const newUser = {
+        name: recoveredData.name || name,
+        email,
+        password,
+        profilePic: recoveredData.profilePic || profilePic,
+        bio: "", country: "", blockedUsers: [],
+        followers: [], following: []
+    };
+
+    try {
+        allUsers.push(newUser);
+        await updateUsersOnServer(allUsers);
+        alert("Registrazione completata! Ora puoi accedere.");
+        showLoginPage();
+    } catch(err) {
+        alert("Errore durante la registrazione.");
+        console.error(err);
+    }
 }
-// ---> CONTROLLO REGISTRAZIONE TRADIZIONALE: Verifica se l'utente esiste già
-if (allUsers.find(u => u.email === email)) {
-alert("Esiste già un utente con questa email.");
-return; // Interrompe l'esecuzione se l'utente è un duplicato
-}
-const newUser = { 
-    name, email, password, profilePic, 
-    bio: "", country: "", blockedUsers: [],
-    followers: [], following: []
-};
-try {
-allUsers.push(newUser); // Aggiunge solo se non trovato
-await updateUsersOnServer(allUsers);
-alert("Registrazione completata! Ora puoi accedere.");
-showLoginPage();
-} catch(err) {
-alert("Errore durante la registrazione.");
-console.error(err);
-}
-}
+
+
 async function loginUser() {
 const email = document.getElementById('loginEmail').value.trim();
 const password = document.getElementById('loginPassword').value.trim();
@@ -999,7 +1031,7 @@ alert("Utente non trovato. Controlla l'email o registrati.");
 function logoutUser() {
 currentUser = null;
 localStorage.removeItem("currentUserEmail");
-stopPolling(); // Interrompi l'aggiornamento automatico al logout
+stopPolling();
 showAuthContent();
 }
 function showAuthContent() {
@@ -1012,7 +1044,7 @@ hideElement('authContent');
 showElement('appContent');
 updateUserInfo();
 showMainContent();
-startPolling(); // Avvia l'aggiornamento automatico al login
+startPolling();
 }
 function updateUserInfo() {
 if (currentUser) {
@@ -1021,33 +1053,23 @@ document.getElementById("userProfilePic").src = currentUser.profilePic;
 }
 }
 function showMainContent() {
-hideElement('videoPage');
-hideElement('userProfilePage');
-hideElement('settingsPage');
-hideElement('chatPage');
-hideElement('statusPage'); // NUOVO
-showElement('mainContent');
+hideElement('videoPage'); hideElement('userProfilePage');
+hideElement('settingsPage'); hideElement('chatPage');
+hideElement('statusPage'); showElement('mainContent');
 }
 function showVideoPage() {
-hideElement('mainContent');
-hideElement('userProfilePage');
-hideElement('settingsPage');
-hideElement('chatPage');
-hideElement('statusPage'); // NUOVO
-showElement('videoPage');
+hideElement('mainContent'); hideElement('userProfilePage');
+hideElement('settingsPage'); hideElement('chatPage');
+hideElement('statusPage'); showElement('videoPage');
 showVideos(currentVideoPageFormat);
 }
 function showSettingsPage() {
 if (!currentUser) return;
-hideElement('mainContent');
-hideElement('videoPage');
-hideElement('userProfilePage');
-hideElement('chatPage');
-hideElement('statusPage'); // NUOVO
-showElement('settingsPage');
+hideElement('mainContent'); hideElement('videoPage');
+hideElement('userProfilePage'); hideElement('chatPage');
+hideElement('statusPage'); showElement('settingsPage');
 document.getElementById('editName').value = currentUser.name;
 document.getElementById('editBio').value = currentUser.bio || '';
-// Pulisci l'input file ogni volta che apri le impostazioni
 document.getElementById('customProfilePicInput').value = ''; 
 const picSelector = document.getElementById('editProfilePicSelector');
 picSelector.querySelectorAll('.profile-pic-option').forEach(img => img.classList.remove('selected'));
@@ -1055,173 +1077,100 @@ const currentPic = picSelector.querySelector(`img[data-value='${currentUser.prof
 if (currentPic) { currentPic.classList.add('selected'); }
 }
 
-// =================================== INIZIO CODICE CHAT ===================================
-
+// =================================== CODICE CHAT (INVARIATO) ===================================
 function showChatPage() {
     if (!currentUser) { alert("Devi essere loggato per usare la chat."); return; }
-    hideElement('mainContent');
-    hideElement('videoPage');
-    hideElement('userProfilePage');
-    hideElement('settingsPage');
-    hideElement('statusPage'); // NUOVO
-    showElement('chatPage');
+    hideElement('mainContent'); hideElement('videoPage'); hideElement('userProfilePage');
+    hideElement('settingsPage'); hideElement('statusPage'); showElement('chatPage');
     renderConversationList();
     showElement('chat-welcome-screen');
     document.getElementById('chat-window').style.display = 'none';
 }
-
 function renderConversationList() {
     const container = document.getElementById('conversation-list');
     const myConversations = [];
-
-    // 1. Conversazioni private
     Object.keys(allMessagesData.privateMessages).forEach(key => {
         if (key.includes(currentUser.email)) {
             const recipientEmail = key.split('_to_').find(email => email !== currentUser.email);
             const recipient = usersData[recipientEmail];
             if (!recipient) return;
-            const messages = allMessagesData.privateMessages[key];
-            const lastMessage = messages[messages.length - 1];
-            if (lastMessage) {
-                myConversations.push({
-                    id: key, type: 'private', name: recipient.name,
-                    pic: recipient.profilePic, lastMessage: lastMessage.text,
-                    date: new Date(lastMessage.date)
-                });
-            }
+            const messages = allMessagesData.privateMessages[key]; const lastMessage = messages[messages.length - 1];
+            if (lastMessage) myConversations.push({ id: key, type: 'private', name: recipient.name, pic: recipient.profilePic, lastMessage: lastMessage.text, date: new Date(lastMessage.date) });
         }
     });
-
-    // 2. Chat di gruppo
     Object.keys(allMessagesData.groupChats).forEach(key => {
         const group = allMessagesData.groupChats[key];
         if (group.members.includes(currentUser.email)) {
             const lastMessage = group.messages[group.messages.length - 1];
-            myConversations.push({
-                id: key, type: 'group', name: group.name,
-                pic: group.pic || 'profilo_gruppo.png',
-                lastMessage: lastMessage ? `${usersData[lastMessage.senderEmail]?.name.split(' ')[0]}: ${lastMessage.text}` : 'Nessun messaggio',
-                date: lastMessage ? new Date(lastMessage.date) : new Date(group.createdAt)
-            });
+            myConversations.push({ id: key, type: 'group', name: group.name, pic: group.pic || 'profilo_gruppo.png', lastMessage: lastMessage ? `${usersData[lastMessage.senderEmail]?.name.split(' ')[0]}: ${lastMessage.text}` : 'Nessun messaggio', date: lastMessage ? new Date(lastMessage.date) : new Date(group.createdAt) });
         }
     });
-
-    // 3. Canali
     Object.keys(allMessagesData.channels).forEach(key => {
         const channel = allMessagesData.channels[key];
         if (channel.members.includes(currentUser.email)) {
             const lastMessage = channel.messages[channel.messages.length - 1];
-            myConversations.push({
-                id: key, type: 'channel', name: `📢 ${channel.name}`,
-                pic: channel.pic || 'profilo_canale.png',
-                lastMessage: lastMessage ? lastMessage.text : 'Nessun messaggio',
-                date: lastMessage ? new Date(lastMessage.date) : new Date(channel.createdAt)
-            });
+            myConversations.push({ id: key, type: 'channel', name: `📢 ${channel.name}`, pic: channel.pic || 'profilo_canale.png', lastMessage: lastMessage ? lastMessage.text : 'Nessun messaggio', date: lastMessage ? new Date(lastMessage.date) : new Date(channel.createdAt) });
         }
     });
-
     myConversations.sort((a, b) => b.date - a.date);
-    
-    // Logica di rendering intelligente per la lista
-    if (container.children.length === myConversations.length) {
-        // Se il numero non è cambiato, aggiorna solo il contenuto per evitare flicker
-        myConversations.forEach((conv, index) => {
-            const existingItem = container.children[index];
-            const isActive = currentOpenChat.id === conv.id;
-            if (existingItem.dataset.id !== conv.id || !existingItem.classList.contains(isActive ? 'active' : 'inactive')) {
-                 // Se l'ordine o lo stato attivo sono cambiati, ricarica tutto
-                 container.innerHTML = '';
-                 myConversations.forEach(c => container.appendChild(createConversationElement(c)));
-                 return; // Esci dal loop
-            }
-        });
-    } else {
-        // Altrimenti, ridisegna la lista
-        container.innerHTML = '';
-        myConversations.forEach(conv => container.appendChild(createConversationElement(conv)));
-    }
-
-    if (myConversations.length === 0) {
-        container.innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-tertiary);">Nessuna conversazione.</p>';
-    }
+    container.innerHTML = myConversations.map(conv => createConversationElement(conv)).join('');
+    if (myConversations.length === 0) container.innerHTML = '<p style="padding: 1rem; text-align: center; color: var(--text-tertiary);">Nessuna conversazione.</p>';
 }
-
 function createConversationElement(conv) {
-    const convElement = document.createElement('div');
-    convElement.className = 'conversation-item';
-    convElement.dataset.id = conv.id;
-    if (currentOpenChat.id === conv.id) convElement.classList.add('active');
-    else convElement.classList.add('inactive');
-    convElement.onclick = () => openConversation(conv.id, conv.type);
-    convElement.innerHTML = `
+    const isActive = currentOpenChat.id === conv.id ? 'active' : '';
+    return `<div class="conversation-item ${isActive}" onclick="openConversation('${conv.id}', '${conv.type}')">
         <img src="${conv.pic}" class="profile-pic" />
         <div class="conversation-info">
             <div class="user-name-conv">${conv.name}</div>
             <div class="last-message">${conv.lastMessage}</div>
-        </div>`;
-    return convElement;
+        </div>
+    </div>`;
 }
-
 function openConversation(id, type) {
     currentOpenChat = { id, type };
     hideElement('chat-welcome-screen');
     document.getElementById('chat-window').style.display = 'flex';
-
-    renderConversationList(); // Per aggiornare lo stato "active"
-    renderMessages(false); // Renderizza i messaggi senza scroll forzato all'inizio
-
+    renderConversationList();
+    renderMessages(false);
     const messageInput = document.getElementById('chatMessageInput');
     const sendButton = document.querySelector('.send-chat-btn');
     const optionsContainer = document.getElementById('chatOptionsContainer');
     const recipientPic = document.getElementById('chatRecipientPic');
     const recipientName = document.getElementById('chatRecipientName');
-
     if (type === 'private') {
         const recipientEmail = id.split('_to_').find(email => email !== currentUser.email);
         const recipient = usersData[recipientEmail];
-        recipientName.textContent = recipient.name;
-        recipientPic.src = recipient.profilePic;
-        optionsContainer.classList.remove('hidden');
-        messageInput.disabled = false; sendButton.disabled = false;
+        recipientName.textContent = recipient.name; recipientPic.src = recipient.profilePic;
+        optionsContainer.classList.remove('hidden'); messageInput.disabled = false; sendButton.disabled = false;
     } else if (type === 'group') {
         const group = allMessagesData.groupChats[id];
-        recipientName.textContent = group.name;
-        recipientPic.src = group.pic || 'profilo_gruppo.png';
-        optionsContainer.classList.add('hidden');
-        messageInput.disabled = false; sendButton.disabled = false;
+        recipientName.textContent = group.name; recipientPic.src = group.pic || 'profilo_gruppo.png';
+        optionsContainer.classList.add('hidden'); messageInput.disabled = false; sendButton.disabled = false;
     } else if (type === 'channel') {
         const channel = allMessagesData.channels[id];
-        recipientName.textContent = `📢 ${channel.name}`;
-        recipientPic.src = channel.pic || 'profilo_canale.png';
+        recipientName.textContent = `📢 ${channel.name}`; recipientPic.src = channel.pic || 'profilo_canale.png';
         optionsContainer.classList.add('hidden');
         const canWrite = channel.admins.includes(currentUser.email);
         messageInput.disabled = !canWrite; sendButton.disabled = !canWrite;
         messageInput.placeholder = canWrite ? "Scrivi un messaggio..." : "Solo gli amministratori possono inviare messaggi.";
     }
-    
     document.getElementById('chatMessageInput').focus();
 }
-
 function renderMessages(isUpdate) {
     const chatBody = document.getElementById('chatMessageHistory');
     const shouldScroll = !isUpdate || (chatBody.scrollTop + chatBody.clientHeight >= chatBody.scrollHeight - 50);
-
     let messages = [];
     if (currentOpenChat.type === 'private') messages = allMessagesData.privateMessages[currentOpenChat.id] || [];
     else if (currentOpenChat.type === 'group') messages = allMessagesData.groupChats[currentOpenChat.id]?.messages || [];
     else if (currentOpenChat.type === 'channel') messages = allMessagesData.channels[currentOpenChat.id]?.messages || [];
-
-    if (chatBody.children.length === messages.length && isUpdate) return; // Nessun nuovo messaggio
-
-    chatBody.innerHTML = ''; // Ridisegna per semplicità, ma si potrebbe ottimizzare
+    if (chatBody.children.length === messages.length && isUpdate) return;
+    chatBody.innerHTML = '';
     if (messages.length === 0) {
         chatBody.innerHTML = '<p style="text-align: center; color: var(--text-tertiary);">Inizia la conversazione!</p>';
         return;
     }
-
     messages.forEach(msg => {
-        const sender = usersData[msg.senderEmail];
-        if (!sender) return;
+        const sender = usersData[msg.senderEmail]; if (!sender) return;
         const messageElement = document.createElement('div');
         const isSent = msg.senderEmail === currentUser.email;
         messageElement.className = `chat-message ${isSent ? 'sent' : 'received'}`;
@@ -1229,446 +1178,245 @@ function renderMessages(isUpdate) {
         messageElement.innerHTML = `${senderNameHTML}<div>${msg.text}</div>`;
         chatBody.appendChild(messageElement);
     });
-
     if (shouldScroll) chatBody.scrollTop = chatBody.scrollHeight;
 }
-
 async function sendMessage() {
     const input = document.getElementById('chatMessageInput');
     const text = input.value.trim();
     if (!text || !currentOpenChat.id) return;
-
-    const newMessage = {
-        senderEmail: currentUser.email, text,
-        date: new Date().toISOString()
-    };
-
+    const newMessage = { senderEmail: currentUser.email, text, date: new Date().toISOString() };
     if (currentOpenChat.type === 'private') {
         if (!allMessagesData.privateMessages[currentOpenChat.id]) allMessagesData.privateMessages[currentOpenChat.id] = [];
         allMessagesData.privateMessages[currentOpenChat.id].push(newMessage);
-    } else if (currentOpenChat.type === 'group') {
-        allMessagesData.groupChats[currentOpenChat.id].messages.push(newMessage);
-    } else if (currentOpenChat.type === 'channel') {
-        allMessagesData.channels[currentOpenChat.id].messages.push(newMessage);
-    }
-
+    } else if (currentOpenChat.type === 'group') allMessagesData.groupChats[currentOpenChat.id].messages.push(newMessage);
+    else if (currentOpenChat.type === 'channel') allMessagesData.channels[currentOpenChat.id].messages.push(newMessage);
     input.value = '';
-    renderMessages(true); // Aggiorna UI
+    renderMessages(true);
     await updateMessagesOnServer();
-    renderConversationList(); // Aggiorna la lista
+    renderConversationList();
 }
-
-
 function populateUserSelection(containerId) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = '';
+    const container = document.getElementById(containerId); container.innerHTML = '';
     allUsers.forEach(user => {
         if (user.email === currentUser.email) return;
-        const item = document.createElement('div');
-        item.className = 'user-selection-item';
-        item.innerHTML = `
-            <input type="checkbox" id="user-select-${user.email}-${containerId}" value="${user.email}">
-            <label for="user-select-${user.email}-${containerId}">
-                <img src="${user.profilePic}" class="profile-pic" style="width: 32px; height: 32px; vertical-align: middle; margin-right: 8px;">
-                ${user.name}
-            </label>
-        `;
+        const item = document.createElement('div'); item.className = 'user-selection-item';
+        item.innerHTML = `<input type="checkbox" id="user-select-${user.email}-${containerId}" value="${user.email}"><label for="user-select-${user.email}-${containerId}"><img src="${user.profilePic}" class="profile-pic" style="width: 32px; height: 32px; vertical-align: middle; margin-right: 8px;">${user.name}</label>`;
         container.appendChild(item);
     });
 }
-
-function showCreateGroupModal() {
-    populateUserSelection('groupUserSelection');
-    document.getElementById('createGroupModal').classList.add('active');
-}
-function hideCreateGroupModal() {
-    document.getElementById('createGroupModal').classList.remove('active');
-}
+function showCreateGroupModal() { populateUserSelection('groupUserSelection'); document.getElementById('createGroupModal').classList.add('active'); }
+function hideCreateGroupModal() { document.getElementById('createGroupModal').classList.remove('active'); }
 async function createGroup() {
-    const name = document.getElementById('groupNameInput').value.trim();
-    if (!name) { alert("Inserisci un nome per il gruppo."); return; }
-
+    const name = document.getElementById('groupNameInput').value.trim(); if (!name) { alert("Inserisci un nome per il gruppo."); return; }
     const selectedUsers = [currentUser.email];
     document.querySelectorAll('#groupUserSelection input:checked').forEach(input => selectedUsers.push(input.value));
-
     if (selectedUsers.length < 2) { alert("Un gruppo deve avere almeno 2 membri."); return; }
-    
-    const picFile = document.getElementById('groupPicInput').files[0];
-    let picUrl = 'profilo_gruppo.png';
-    if (picFile) {
-        alert("Caricamento immagine in corso...");
-        try {
-            const uploadResult = await uploadToCloudinary(picFile);
-            picUrl = uploadResult.url;
-        } catch (error) {
-            alert("Errore nel caricamento dell'immagine.");
-            return;
-        }
-    }
-
+    const picFile = document.getElementById('groupPicInput').files[0]; let picUrl = 'profilo_gruppo.png';
+    if (picFile) { try { const uploadResult = await uploadToCloudinary(picFile); picUrl = uploadResult.url; } catch (error) { alert("Errore nel caricamento dell'immagine."); return; } }
     const groupId = `group_${Date.now()}`;
-    allMessagesData.groupChats[groupId] = {
-        name, pic: picUrl, members: selectedUsers,
-        admins: [currentUser.email], messages: [],
-        createdAt: new Date().toISOString()
-    };
-
-    await updateMessagesOnServer();
-    hideCreateGroupModal();
-    renderConversationList();
-    alert(`Gruppo "${name}" creato con successo!`);
+    allMessagesData.groupChats[groupId] = { name, pic: picUrl, members: selectedUsers, admins: [currentUser.email], messages: [], createdAt: new Date().toISOString() };
+    await updateMessagesOnServer(); hideCreateGroupModal(); renderConversationList(); alert(`Gruppo "${name}" creato con successo!`);
 }
-
-function showCreateChannelModal() {
-    populateUserSelection('channelUserSelection');
-    document.getElementById('createChannelModal').classList.add('active');
-}
-function hideCreateChannelModal() {
-    document.getElementById('createChannelModal').classList.remove('active');
-}
+function showCreateChannelModal() { populateUserSelection('channelUserSelection'); document.getElementById('createChannelModal').classList.add('active'); }
+function hideCreateChannelModal() { document.getElementById('createChannelModal').classList.remove('active'); }
 async function createChannel() {
-    const name = document.getElementById('channelNameInput').value.trim();
-    if (!name) { alert("Inserisci un nome per il canale."); return; }
-
+    const name = document.getElementById('channelNameInput').value.trim(); if (!name) { alert("Inserisci un nome per il canale."); return; }
     const selectedUsers = [currentUser.email];
     document.querySelectorAll('#channelUserSelection input:checked').forEach(input => selectedUsers.push(input.value));
-    
-    const picFile = document.getElementById('channelPicInput').files[0];
-    let picUrl = 'profilo_canale.png';
-    if (picFile) {
-        alert("Caricamento immagine in corso...");
-        try {
-            const uploadResult = await uploadToCloudinary(picFile);
-            picUrl = uploadResult.url;
-        } catch (error) {
-            alert("Errore nel caricamento dell'immagine.");
-            return;
-        }
-    }
-    
+    const picFile = document.getElementById('channelPicInput').files[0]; let picUrl = 'profilo_canale.png';
+    if (picFile) { try { const uploadResult = await uploadToCloudinary(picFile); picUrl = uploadResult.url; } catch (error) { alert("Errore nel caricamento dell'immagine."); return; } }
     const channelId = `channel_${Date.now()}`;
-    allMessagesData.channels[channelId] = {
-        name, pic: picUrl, members: selectedUsers,
-        admins: [currentUser.email], messages: [],
-        createdAt: new Date().toISOString()
-    };
-    
-    await updateMessagesOnServer();
-    hideCreateChannelModal();
-    renderConversationList();
-    alert(`Canale "${name}" creato con successo!`);
+    allMessagesData.channels[channelId] = { name, pic: picUrl, members: selectedUsers, admins: [currentUser.email], messages: [], createdAt: new Date().toISOString() };
+    await updateMessagesOnServer(); hideCreateChannelModal(); renderConversationList(); alert(`Canale "${name}" creato con successo!`);
 }
-
-function showAddContactModal() {
-    populateAddContactList();
-    document.getElementById('addContactModal').classList.add('active');
-}
-function hideAddContactModal() {
-    document.getElementById('addContactModal').classList.remove('active');
-}
+function showAddContactModal() { populateAddContactList(); document.getElementById('addContactModal').classList.add('active'); }
+function hideAddContactModal() { document.getElementById('addContactModal').classList.remove('active'); }
 function populateAddContactList() {
-    const container = document.getElementById('addContactUserList');
-    container.innerHTML = '';
+    const container = document.getElementById('addContactUserList'); container.innerHTML = '';
     allUsers.forEach(user => {
         if (user.email === currentUser.email) return;
-        const item = document.createElement('div');
-        item.className = 'conversation-item';
-        item.style.cursor = 'pointer';
-        item.onclick = () => startNewPrivateChat(user.email);
-        item.innerHTML = `
-            <img src="${user.profilePic}" class="profile-pic" />
-            <div class="conversation-info">
-                <div class="user-name-conv">${user.name}</div>
-                <div class="last-message">${user.email}</div>
-            </div>
-        `;
+        const item = document.createElement('div'); item.className = 'conversation-item'; item.style.cursor = 'pointer'; item.onclick = () => startNewPrivateChat(user.email);
+        item.innerHTML = `<img src="${user.profilePic}" class="profile-pic" /><div class="conversation-info"><div class="user-name-conv">${user.name}</div><div class="last-message">${user.email}</div></div>`;
         container.appendChild(item);
     });
 }
-function startNewPrivateChat(recipientEmail) {
-    hideAddContactModal();
-    startPrivateChatFromPost(recipientEmail);
-}
-
-function toggleChatOptions() {
-    const menu = document.getElementById('chat-options-menu');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
+function startNewPrivateChat(recipientEmail) { hideAddContactModal(); startPrivateChatFromPost(recipientEmail); }
+function toggleChatOptions() { const menu = document.getElementById('chat-options-menu'); menu.style.display = menu.style.display === 'block' ? 'none' : 'block'; }
 async function blockAndReportUser() {
     if (currentOpenChat.type !== 'private') return;
     const recipientEmail = currentOpenChat.id.split('_to_').find(email => email !== currentUser.email);
     const recipientName = usersData[recipientEmail].name;
-    
     if (!confirm(`Sei sicuro di voler bloccare ${recipientName} e segnalare la conversazione? L'utente non potrà più inviarti messaggi.`)) return;
-
     if (!currentUser.blockedUsers) currentUser.blockedUsers = [];
-    if (!currentUser.blockedUsers.includes(recipientEmail)) {
-        currentUser.blockedUsers.push(recipientEmail);
-        await updateUsersOnServer(allUsers);
-    }
-    
+    if (!currentUser.blockedUsers.includes(recipientEmail)) { currentUser.blockedUsers.push(recipientEmail); await updateUsersOnServer(allUsers); }
     const messages = allMessagesData.privateMessages[currentOpenChat.id] || [];
     const last30Messages = messages.slice(-30);
-    const reportBody = `Segnalazione utente:\n- Utente Segnalato: ${recipientName} (${recipientEmail})\n- Utente che Segnala: ${currentUser.name} (${currentUser.email})\n\nUltimi 30 messaggi:\n\n` +
-    last30Messages.map(msg => `[${new Date(msg.date).toLocaleString('it-IT')}] ${usersData[msg.senderEmail].name}: ${msg.text}`).join('\n');
+    const reportBody = `Segnalazione utente:\n- Utente Segnalato: ${recipientName} (${recipientEmail})\n- Utente che Segnala: ${currentUser.name} (${currentUser.email})\n\nUltimi 30 messaggi:\n\n` + last30Messages.map(msg => `[${new Date(msg.date).toLocaleString('it-IT')}] ${usersData[msg.senderEmail].name}: ${msg.text}`).join('\n');
     const subject = `Segnalazione Utente Nexiflow: ${recipientName}`;
-    
     window.location.href = `mailto:nexiquar@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(reportBody)}`;
-    alert(`${recipientName} è stato bloccato. La conversazione verrà segnalata.`);
-    showChatPage();
+    alert(`${recipientName} è stato bloccato. La conversazione verrà segnalata.`); showChatPage();
 }
 function getConversationKey(email1, email2) { return [email1, email2].sort().join('_to_'); }
-
 // =================================== FINE CODICE CHAT ===================================
 
 
-// =================================== INIZIO CODICE STATI (AGGIORNATO) ===================================
+// =================================== CODICE STATI CON NOTIFICA ===================================
+let statusViewerData = { currentIndex: 0, userStatuses: [], timeoutId: null };
+function getSeenStatuses() { return JSON.parse(localStorage.getItem('seenStatuses')) || []; }
+function setSeenStatuses(seenIds) { localStorage.setItem('seenStatuses', JSON.stringify(seenIds)); }
 
-let statusViewerData = {
-    currentIndex: 0,
-    userStatuses: [],
-    progressBars: [],
-    timeoutId: null
-};
-
-// Funzione per mostrare la pagina degli stati
+function checkForNewStatuses() {
+    const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
+    const activeStatuses = allStatuses.filter(s => new Date(s.createdAt).getTime() > twentyFourHoursAgo);
+    const seenStatuses = getSeenStatuses();
+    const hasUnseen = activeStatuses.some(s => !seenStatuses.includes(s.id));
+    const notificationDot = document.getElementById('status-notification-dot');
+    if (hasUnseen) {
+        notificationDot.classList.remove('hidden');
+    } else {
+        notificationDot.classList.add('hidden');
+    }
+}
 function showStatusPage() {
-    hideElement('mainContent');
-    hideElement('videoPage');
-    hideElement('userProfilePage');
-    hideElement('settingsPage');
-    hideElement('chatPage');
-    showElement('statusPage');
+    hideElement('mainContent'); hideElement('videoPage'); hideElement('userProfilePage');
+    hideElement('settingsPage'); hideElement('chatPage'); showElement('statusPage');
     renderStatusBubbles();
 }
-
-// Funzione per visualizzare le "bolle" degli stati
 function renderStatusBubbles() {
-    const container = document.getElementById('status-list');
-    container.innerHTML = '';
-
+    const container = document.getElementById('status-list'); container.innerHTML = '';
     const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
     const activeStatuses = allStatuses.filter(status => new Date(status.createdAt).getTime() > twentyFourHoursAgo);
-
     if (activeStatuses.length === 0) {
         container.innerHTML = '<p style="padding: 1rem;">Nessuno stato pubblicato nelle ultime 24 ore.</p>';
         return;
     }
-
-    // Raggruppa tutti gli stati attivi per autore
     const statusesByUser = activeStatuses.reduce((acc, status) => {
-        if (!acc[status.authorEmail]) {
-            acc[status.authorEmail] = [];
-        }
+        if (!acc[status.authorEmail]) acc[status.authorEmail] = [];
         acc[status.authorEmail].push(status);
-        // Ordina gli stati di ogni utente dal più vecchio al più recente
         acc[status.authorEmail].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
         return acc;
     }, {});
-
     Object.keys(statusesByUser).forEach(authorEmail => {
-        const user = usersData[authorEmail];
-        if (!user) return;
-        const userStatuses = statusesByUser[authorEmail];
-
+        const user = usersData[authorEmail]; if (!user) return;
         const statusElement = document.createElement('div');
-        statusElement.style.textAlign = 'center';
-        statusElement.style.cursor = 'pointer';
-        // Passa l'email dell'autore per trovare tutti i suoi stati
+        statusElement.style.textAlign = 'center'; statusElement.style.cursor = 'pointer';
         statusElement.onclick = () => openStatusViewer(authorEmail);
-        statusElement.innerHTML = `
-            <img src="${user.profilePic}" class="profile-pic" style="border: 3px solid var(--primary);">
-            <p class="text-xs font-semibold">${user.name.split(' ')[0]}</p>
-        `;
+        statusElement.innerHTML = `<img src="${user.profilePic}" class="profile-pic" style="border: 3px solid var(--primary);"><p class="text-xs font-semibold">${user.name.split(' ')[0]}</p>`;
         container.appendChild(statusElement);
     });
 }
-
-// Funzione principale per aprire il visualizzatore modale degli stati
 function openStatusViewer(authorEmail) {
     const twentyFourHoursAgo = Date.now() - (24 * 60 * 60 * 1000);
     const userStatuses = allStatuses
         .filter(s => s.authorEmail === authorEmail && new Date(s.createdAt).getTime() > twentyFourHoursAgo)
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-
     if (userStatuses.length === 0) return;
+    
+    // AGGIUNGI STATI AI VISTI
+    let seenStatuses = getSeenStatuses();
+    userStatuses.forEach(s => { if (!seenStatuses.includes(s.id)) seenStatuses.push(s.id); });
+    setSeenStatuses(seenStatuses);
+    checkForNewStatuses(); // Aggiorna il pallino
 
-    statusViewerData.userStatuses = userStatuses;
-    statusViewerData.currentIndex = 0;
-
+    statusViewerData.userStatuses = userStatuses; statusViewerData.currentIndex = 0;
     const modal = document.getElementById('statusModal');
     const viewer = document.getElementById('status-viewer');
     const user = usersData[authorEmail];
-
-    // Crea le barre di avanzamento
     const progressBarsHTML = userStatuses.map((_, index) => `<div class="status-progress-bar-container"><div class="status-progress-bar" id="progress-bar-${index}"></div></div>`).join('');
-
-    viewer.innerHTML = `
-        <div class="status-header">
-            <div class="status-progress-container">${progressBarsHTML}</div>
-            <div class="status-user-info">
-                <img src="${user.profilePic}" class="profile-pic" />
-                <span>${user.name}</span>
-            </div>
-            <span class="close-modal" onclick="closeStatusModal()">×</span>
-        </div>
-        <div class="status-content"></div>
-        <div class="status-nav-prev" onclick="changeStatus('prev')">‹</div>
-        <div class="status-nav-next" onclick="changeStatus('next')">›</div>
-    `;
+    viewer.innerHTML = `<div class="status-header"><div class="status-progress-container">${progressBarsHTML}</div><div class="status-user-info"><img src="${user.profilePic}" class="profile-pic" /><span>${user.name}</span></div><span class="close-modal" onclick="closeStatusModal()">×</span></div><div class="status-content"></div><div class="status-nav-prev" onclick="changeStatus('prev')">‹</div><div class="status-nav-next" onclick="changeStatus('next')">›</div>`;
     modal.classList.add('active');
-    
-    // Aggiungi un po' di stile per il visualizzatore
-    const style = document.createElement('style');
-    style.id = 'status-viewer-styles';
-    style.innerHTML = `
-        .status-header { position: absolute; top: 0; left: 0; right: 0; padding: 15px; z-index: 10; display: flex; flex-direction: column; gap: 10px; }
-        .status-progress-container { display: flex; gap: 4px; width: 100%; }
-        .status-progress-bar-container { flex: 1; background: rgba(255,255,255,0.3); border-radius: 2px; height: 3px; }
-        .status-progress-bar { height: 100%; background: white; width: 0%; border-radius: 2px; transition: width 5s linear; }
-        .status-user-info { display: flex; align-items: center; gap: 10px; color: white; font-weight: 500; }
-        .status-user-info .profile-pic { width: 32px; height: 32px; }
-        .status-content { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-        .status-content video, .status-content img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; }
-        .status-nav-prev, .status-nav-next { position: absolute; top: 50%; transform: translateY(-50%); font-size: 3rem; color: white; cursor: pointer; user-select: none; z-index: 11; padding: 0 20px; }
-        .status-nav-prev { left: 0; }
-        .status-nav-next { right: 0; }
-        .close-modal { position: absolute; top: 15px; right: 15px; z-index: 12; font-size: 2.5rem !important; cursor: pointer; }
-    `;
+    const style = document.createElement('style'); style.id = 'status-viewer-styles';
+    style.innerHTML = `.status-header{position:absolute;top:0;left:0;right:0;padding:15px;z-index:10;display:flex;flex-direction:column;gap:10px}.status-progress-container{display:flex;gap:4px;width:100%}.status-progress-bar-container{flex:1;background:rgba(255,255,255,0.3);border-radius:2px;height:3px}.status-progress-bar{height:100%;background:white;width:0%;border-radius:2px;transition:width 5s linear}.status-user-info{display:flex;align-items:center;gap:10px;color:white;font-weight:500}.status-user-info .profile-pic{width:32px;height:32px}.status-content{width:100%;height:100%;display:flex;align-items:center;justify-content:center}.status-content video,.status-content img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px}.status-nav-prev,.status-nav-next{position:absolute;top:50%;transform:translateY(-50%);font-size:3rem;color:white;cursor:pointer;user-select:none;z-index:11;padding:0 20px}.status-nav-prev{left:0}.status-nav-next{right:0}.close-modal{position:absolute;top:15px;right:15px;z-index:12;font-size:2.5rem !important;cursor:pointer}`;
     document.head.appendChild(style);
-
     showCurrentStatus();
 }
-
 function showCurrentStatus() {
     const status = statusViewerData.userStatuses[statusViewerData.currentIndex];
     const contentContainer = document.querySelector('#status-viewer .status-content');
-
-    // Ferma il timeout precedente
     if (statusViewerData.timeoutId) clearTimeout(statusViewerData.timeoutId);
-    
-    // Resetta le barre di avanzamento
     document.querySelectorAll('.status-progress-bar').forEach((bar, index) => {
-        bar.style.transition = 'none';
-        bar.style.width = index < statusViewerData.currentIndex ? '100%' : '0%';
+        bar.style.transition = 'none'; bar.style.width = index < statusViewerData.currentIndex ? '100%' : '0%';
     });
-    
     contentContainer.innerHTML = `<video src="${status.videoUrl}" autoplay muted playsinline></video>`;
     const video = contentContainer.querySelector('video');
-
     video.oncanplay = () => {
-        const duration = video.duration * 1000; // in ms
+        const duration = video.duration * 1000;
         const progressBar = document.getElementById(`progress-bar-${statusViewerData.currentIndex}`);
-        
-        // Forza un reflow per riattivare la transizione
-        progressBar.offsetHeight; 
-        progressBar.style.transition = `width ${duration / 1000}s linear`;
+        progressBar.offsetHeight; progressBar.style.transition = `width ${duration / 1000}s linear`;
         progressBar.style.width = '100%';
-
-        statusViewerData.timeoutId = setTimeout(() => {
-            changeStatus('next');
-        }, duration);
+        statusViewerData.timeoutId = setTimeout(() => changeStatus('next'), duration);
     };
-    
-    video.onerror = () => {
-         // Se il video non carica, vai al prossimo dopo 3 secondi
-         setTimeout(() => changeStatus('next'), 3000);
-    };
+    video.onerror = () => { setTimeout(() => changeStatus('next'), 3000); };
 }
-
-
 function changeStatus(direction) {
     if (direction === 'next') {
         if (statusViewerData.currentIndex < statusViewerData.userStatuses.length - 1) {
-            statusViewerData.currentIndex++;
-            showCurrentStatus();
-        } else {
-            closeStatusModal();
-        }
+            statusViewerData.currentIndex++; showCurrentStatus();
+        } else closeStatusModal();
     } else if (direction === 'prev') {
         if (statusViewerData.currentIndex > 0) {
-            statusViewerData.currentIndex--;
-            showCurrentStatus();
+            statusViewerData.currentIndex--; showCurrentStatus();
         }
     }
 }
-
-
 function closeStatusModal() {
     const modal = document.getElementById('statusModal');
     if (statusViewerData.timeoutId) clearTimeout(statusViewerData.timeoutId);
-    
-    const viewer = document.getElementById('status-viewer');
-    viewer.innerHTML = '';
-    
-    // Rimuovi gli stili aggiunti
-    const style = document.getElementById('status-viewer-styles');
-    if (style) style.remove();
-
+    document.getElementById('status-viewer').innerHTML = '';
+    const style = document.getElementById('status-viewer-styles'); if (style) style.remove();
     modal.classList.remove('active');
 }
-
-// Logica per caricare un nuovo stato (invariata)
 document.getElementById('statusUploadInput').addEventListener('change', async function(event) {
-    const file = event.target.files[0];
-    if (!file || !currentUser) return;
-
+    const file = event.target.files[0]; if (!file || !currentUser) return;
     alert("Caricamento del tuo stato in corso...");
     try {
         const { url: videoUrl } = await uploadToCloudinary(file);
-        const newStatus = {
-            id: Date.now(),
-            authorEmail: currentUser.email,
-            videoUrl: videoUrl,
-            createdAt: new Date().toISOString()
-        };
-        allStatuses.unshift(newStatus);
-        await updateStatusesOnServer(allStatuses);
-        alert("Stato pubblicato con successo!");
-        renderStatusBubbles();
+        const newStatus = { id: Date.now(), authorEmail: currentUser.email, videoUrl: videoUrl, createdAt: new Date().toISOString() };
+        allStatuses.unshift(newStatus); await updateStatusesOnServer(allStatuses);
+        alert("Stato pubblicato con successo!"); renderStatusBubbles(); checkForNewStatuses();
     } catch (error) {
-        alert("Si è verificato un errore durante il caricamento.");
-        console.error("Errore pubblicazione stato:", error);
-    } finally {
-        event.target.value = '';
-    }
+        alert("Si è verificato un errore durante il caricamento."); console.error("Errore pubblicazione stato:", error);
+    } finally { event.target.value = ''; }
 });
-// =================================== FINE CODICE STATI (AGGIORNATO) ===================================
+// =================================== FINE CODICE STATI ===================================
 
 
-// =================================== NUOVO: CODICE PER I FOLLOWER ===================================
-
+// ========================= CODICE FOLLOWER (CORRETTO E SICURO) ============================
 async function toggleFollow(targetUserEmail) {
     if (!currentUser || !targetUserEmail || currentUser.email === targetUserEmail) return;
 
-    // Assicurati che gli array esistano per entrambi gli utenti (compatibilità con vecchi account)
-    currentUser.following = currentUser.following || [];
-    const targetUser = allUsers.find(u => u.email === targetUserEmail);
-    if (!targetUser) return;
-    targetUser.followers = targetUser.followers || [];
+    // Lavora sempre sulla copia master dei dati per evitare inconsistenze
+    const userFollowing = allUsers.find(u => u.email === currentUser.email);
+    const userToFollow = allUsers.find(u => u.email === targetUserEmail);
 
-    const isFollowing = currentUser.following.includes(targetUserEmail);
-
-    if (isFollowing) {
-        // Smetti di seguire (Unfollow)
-        currentUser.following = currentUser.following.filter(email => email !== targetUserEmail);
-        targetUser.followers = targetUser.followers.filter(email => email !== currentUser.email);
-    } else {
-        // Inizia a seguire (Follow)
-        currentUser.following.push(targetUserEmail);
-        targetUser.followers.push(currentUser.email);
+    if (!userFollowing || !userToFollow) {
+        console.error("Azione Follow fallita: utente non trovato nei dati locali.");
+        return;
     }
 
-    // Aggiorna l'array 'allUsers' con i dati modificati
-    const currentUserIndex = allUsers.findIndex(u => u.email === currentUser.email);
-    const targetUserIndex = allUsers.findIndex(u => u.email === targetUserEmail);
-    if (currentUserIndex > -1) allUsers[currentUserIndex] = currentUser;
-    if (targetUserIndex > -1) allUsers[targetUserIndex] = targetUser;
+    // Assicura che gli array esistano (per compatibilità con vecchi account)
+    userFollowing.following = userFollowing.following || [];
+    userToFollow.followers = userToFollow.followers || [];
+
+    const isFollowing = userFollowing.following.includes(targetUserEmail);
+
+    if (isFollowing) {
+        // Unfollow: Rimuovi l'email da entrambi gli array
+        userFollowing.following = userFollowing.following.filter(email => email !== targetUserEmail);
+        userToFollow.followers = userToFollow.followers.filter(email => email !== userFollowing.email);
+    } else {
+        // Follow: Aggiungi l'email a entrambi gli array
+        userFollowing.following.push(targetUserEmail);
+        userToFollow.followers.push(userFollowing.email);
+    }
     
-    // Salva le modifiche sul server
+    // Aggiorna l'oggetto currentUser globale per riflettere le modifiche immediatamente nell'UI
+    currentUser = userFollowing;
+
+    // Salva l'intero array aggiornato sul server
     await updateUsersOnServer(allUsers);
     
-    // Aggiorna la pagina del profilo visualizzata
+    // Ricarica la pagina del profilo per mostrare il nuovo stato
     showUserProfile(targetUserEmail);
 }
 // =================================== FINE CODICE FOLLOWER ===================================
@@ -1686,11 +1434,8 @@ function setPostType(type, button) {
 currentPostType = type;
 document.querySelectorAll('#inputArea .post-type-selector button').forEach(btn => btn.classList.remove('active'));
 button.classList.add('active');
-hideElement('post-text-fields');
-hideElement('post-video-fields');
-hideElement('post-embed-fields');
-hideElement('post-twitter-fields');
-hideElement('post-upload-fields');
+hideElement('post-text-fields'); hideElement('post-video-fields');
+hideElement('post-embed-fields'); hideElement('post-twitter-fields'); hideElement('post-upload-fields');
 if (type === 'text') { showElement('post-text-fields'); document.getElementById('postText').focus(); }
 else if (type === 'video') { showElement('post-video-fields'); document.getElementById('videoLink').focus(); }
 else if (type === 'embed') { showElement('post-embed-fields'); document.getElementById('embedCode').focus(); }
@@ -1714,138 +1459,64 @@ document.getElementById('publishBtn').disabled = !isReady;
 }
 document.addEventListener('DOMContentLoaded', function() {
 const inputs = ['postText', 'videoLink', 'embedCode', 'twitterLink', 'fileUploadInput'];
-inputs.forEach(id => {
-const element = document.getElementById(id);
-if (element) element.addEventListener('input', checkPublishButtonState);
-});
+inputs.forEach(id => { const element = document.getElementById(id); if (element) element.addEventListener('input', checkPublishButtonState); });
 });
 function getFormattedDate() {
 const now = new Date();
 return now.toLocaleString('it-IT', { dateStyle: 'medium', timeStyle: 'short' });
 }
 async function uploadToCloudinary(file) {
-    const CLOUD_NAME = "dl5nvyusl";
-    const UPLOAD_PRESET = "nexiflow_uploads";
+    const CLOUD_NAME = "dl5nvyusl"; const UPLOAD_PRESET = "nexiflow_uploads";
     const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`;
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', UPLOAD_PRESET);
+    formData.append('file', file); formData.append('upload_preset', UPLOAD_PRESET);
     try {
         const response = await fetch(url, { method: 'POST', body: formData });
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Errore Cloudinary: ${errorData.error.message}`);
-        }
+        if (!response.ok) { const errorData = await response.json(); throw new Error(`Errore Cloudinary: ${errorData.error.message}`); }
         const data = await response.json();
         return { url: data.secure_url, resourceType: data.resource_type };
-    } catch (error) {
-        console.error("Errore durante l'upload su Cloudinary:", error);
-        throw error;
-    }
+    } catch (error) { console.error("Errore durante l'upload su Cloudinary:", error); throw error; }
 }
-// MODIFICATA: Funzione di pubblicazione "Ottimistica"
 async function publishPost() {
-    const publishBtn = document.getElementById('publishBtn');
-    if (publishBtn.disabled) return; // Prevenzione extra per doppi click
-
-    // 1. Disabilita subito il pulsante
-    publishBtn.disabled = true;
-    publishBtn.textContent = 'Pubblicazione...';
-
-    // 2. Crea l'oggetto del nuovo post
-    let newPost = {
-        id: Date.now(),
-        author: currentUser.name,
-        authorEmail: currentUser.email,
-        authorPic: currentUser.profilePic,
-        date: getFormattedDate(),
-        upvotes: 0,
-        downvotes: 0,
-        comments: [],
-        type: currentPostType
-    };
-
+    const publishBtn = document.getElementById('publishBtn'); if (publishBtn.disabled) return;
+    publishBtn.disabled = true; publishBtn.textContent = 'Pubblicazione...';
+    let newPost = { id: Date.now(), author: currentUser.name, authorEmail: currentUser.email, authorPic: currentUser.profilePic, date: getFormattedDate(), upvotes: 0, downvotes: 0, comments: [], type: currentPostType };
     try {
-        // Logica specifica per ogni tipo di post (gestione upload, ecc.)
         if (currentPostType === 'upload') {
-            const fileInput = document.getElementById('fileUploadInput');
-            const file = fileInput.files[0];
-            if (!file) throw new Error("Nessun file selezionato!");
-            
+            const fileInput = document.getElementById('fileUploadInput'); const file = fileInput.files[0]; if (!file) throw new Error("Nessun file selezionato!");
             alert(`Sto caricando il file. L'operazione potrebbe richiedere qualche istante...`);
             const { url, resourceType } = await uploadToCloudinary(file);
-            newPost.content = url;
-            newPost.fileType = resourceType;
+            newPost.content = url; newPost.fileType = resourceType;
             newPost.description = document.getElementById('uploadCaption').value.trim();
         } else {
-            const content = (currentPostType === 'text') ? document.getElementById('postText').value :
-                            (currentPostType === 'video') ? document.getElementById('videoLink').value :
-                            (currentPostType === 'embed') ? document.getElementById('embedCode').value :
-                            document.getElementById('twitterLink').value;
+            const content = (currentPostType === 'text') ? document.getElementById('postText').value : (currentPostType === 'video') ? document.getElementById('videoLink').value : (currentPostType === 'embed') ? document.getElementById('embedCode').value : document.getElementById('twitterLink').value;
             if (!content.trim()) throw new Error("Il contenuto non può essere vuoto.");
-            
             newPost.content = content;
-            newPost.description = (currentPostType === 'text') ? '' :
-                                  (currentPostType === 'video') ? document.getElementById('videoDescription').value :
-                                  document.getElementById('embedDescription').value;
+            newPost.description = (currentPostType === 'text') ? '' : (currentPostType === 'video') ? document.getElementById('videoDescription').value : document.getElementById('embedDescription').value;
             if (currentPostType === 'embed') newPost.embedFormat = currentEmbedFormat;
         }
-
-        // 3. AGGIORNAMENTO OTTIMISTICO: Mostra il post nell'UI immediatamente
-        allPosts.unshift(newPost); // Aggiungi ai dati locali
-        renderNewPosts([newPost]); // Funzione già esistente, perfetta per questo!
-
-        // 4. Pulisci i campi e chiudi l'area di input
-        document.getElementById('postText').value = '';
-        document.getElementById('videoDescription').value = '';
-        document.getElementById('videoLink').value = '';
-        document.getElementById('embedDescription').value = '';
-        document.getElementById('embedCode').value = '';
-        document.getElementById('twitterLink').value = '';
-        document.getElementById('fileUploadInput').value = '';
-        document.getElementById('uploadCaption').value = '';
-        if (document.getElementById('inputArea').classList.contains('active')) {
-            toggleInput();
-        }
-        
-        // 5. Salva i dati sul server in background
+        allPosts.unshift(newPost);
+        renderNewPosts([newPost]);
+        document.getElementById('postText').value = ''; document.getElementById('videoDescription').value = ''; document.getElementById('videoLink').value = ''; document.getElementById('embedDescription').value = ''; document.getElementById('embedCode').value = ''; document.getElementById('twitterLink').value = ''; document.getElementById('fileUploadInput').value = ''; document.getElementById('uploadCaption').value = '';
+        if (document.getElementById('inputArea').classList.contains('active')) toggleInput();
         await updatePostsOnServer(allPosts);
-
     } catch (error) {
-        console.error("Errore durante la pubblicazione:", error);
-        alert(`Si è verificato un errore durante la pubblicazione: ${error.message}`);
-        // Se c'è un errore, rimuovi il post che è stato aggiunto ottimisticamente
-        allPosts.shift(); // Rimuove il primo elemento (quello appena aggiunto)
-        renderPosts(allPosts); // Ridisegna i post per riflettere la rimozione
+        console.error("Errore durante la pubblicazione:", error); alert(`Si è verificato un errore durante la pubblicazione: ${error.message}`);
+        allPosts.shift(); renderPosts(allPosts);
     } finally {
-        // 6. Riabilita il pulsante in ogni caso (successo o fallimento)
-        publishBtn.textContent = 'Pubblica su Nexiflow';
-        publishBtn.disabled = false;
-        checkPublishButtonState(); // Controlla lo stato per la prossima pubblicazione
+        publishBtn.textContent = 'Pubblica su Nexiflow'; publishBtn.disabled = false; checkPublishButtonState();
     }
 }
 function embedFromLink(link) {
-if (link.includes('youtu.be')) {
-const id = link.split('youtu.be/')[1].split('?')[0];
-return `https://www.youtube.com/embed/${id}`;
-} else if (link.includes('youtube.com')) {
-const urlParams = new URLSearchParams(new URL(link).search);
-const id = urlParams.get('v');
-return `https://www.youtube.com/embed/${id}`;
-}
+if (link.includes('youtu.be')) { const id = link.split('youtu.be/')[1].split('?')[0]; return `https://www.youtube.com/embed/${id}`; }
+else if (link.includes('youtube.com')) { const urlParams = new URLSearchParams(new URL(link).search); const id = urlParams.get('v'); return `https://www.youtube.com/embed/${id}`; }
 return link;
 }
 function srcFromEmbed(embedCode) {
-const parser = new DOMParser();
-const doc = parser.parseFromString(embedCode, 'text/html');
-const iframe = doc.querySelector('iframe');
-return iframe ? iframe.src : '';
+const parser = new DOMParser(); const doc = parser.parseFromString(embedCode, 'text/html'); const iframe = doc.querySelector('iframe'); return iframe ? iframe.src : '';
 }
-
 function createPostElement(post) {
-    const postElement = document.createElement('div');
-    postElement.className = 'post';
-    postElement.dataset.id = post.id;
+    const postElement = document.createElement('div'); postElement.className = 'post'; postElement.dataset.id = post.id;
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
     const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post">❌</button>` : '';
     const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')">✉️ Messaggio</button>` : '';
@@ -1860,107 +1531,45 @@ function createPostElement(post) {
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
         postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    // MODIFICATO: Aggiunto pulsante "Incorpora"
     postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">👍 <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">👎 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})">💬 Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})">🌐 Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})">📝 Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})">🔗 Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
 }
-
-// NUOVO: Funzione per generare e copiare il codice di incorporamento
 function copyEmbedCode(postId) {
-    const post = allPosts.find(p => p.id === postId);
-    if (!post) return;
-
-    // 1. Genera l'HTML per l'embed
-    let contentHtml = '';
-    if (post.type === 'text') {
-        contentHtml = `<p style="font-size: 16px; line-height: 1.5; margin: 0; white-space: pre-wrap; word-wrap: break-word;">${post.content}</p>`;
-    } else if (post.type === 'upload') {
-        if (post.fileType === 'image') {
-            contentHtml = `<img src="${post.content}" style="max-width: 100%; border-radius: 8px;" alt="Immagine del post">`;
-        } else if (post.fileType === 'video') {
-            contentHtml = `<video src="${post.content}" controls style="max-width: 100%; border-radius: 8px;"></video>`;
-        }
-    } else if (post.type === 'embed' || post.type === 'video') {
-         contentHtml = `<p style="margin-bottom: 8px; white-space: pre-wrap; word-wrap: break-word;">${post.description || ''}</p>
-                        <iframe src="${post.type === 'video' ? embedFromLink(post.content) : srcFromEmbed(post.content)}" 
-                                style="width: 100%; height: 250px; border: none; border-radius: 8px;" 
-                                allowfullscreen></iframe>`;
-    }
-
-    const embedHtml = `
-        <div style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; font-family: 'Inter', sans-serif; max-width: 500px; background: #ffffff;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-                <img src="${post.authorPic}" style="width: 32px; height: 32px; border-radius: 50%;">
-                <div>
-                    <strong style="font-size: 14px; color: #0f172a;">${post.author}</strong>
-                    <p style="font-size: 12px; color: #94a3b8; margin: 0;">${post.date}</p>
-                </div>
-            </div>
-            ${contentHtml}
-            <div style="margin-top: 12px; font-size: 12px; color: #475569;">
-                Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color: #00D4FF; text-decoration: none;">Nexiflow™</a>
-            </div>
-        </div>
-    `;
-
-    // 2. Crea il tag iframe e lo copia
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
-
-    navigator.clipboard.writeText(iframeCode).then(() => {
-        alert('Codice di incorporamento copiato negli appunti!');
-    }).catch(err => {
-        alert('Errore: impossibile copiare il codice.');
-        console.error('Errore nel copiare iframe:', err);
-    });
+    const post = allPosts.find(p => p.id === postId); if (!post) return; let contentHtml = '';
+    if (post.type === 'text') contentHtml = `<p style="font-size: 16px; line-height: 1.5; margin: 0; white-space: pre-wrap; word-wrap: break-word;">${post.content}</p>`;
+    else if (post.type === 'upload') {
+        if (post.fileType === 'image') contentHtml = `<img src="${post.content}" style="max-width: 100%; border-radius: 8px;" alt="Immagine del post">`;
+        else if (post.fileType === 'video') contentHtml = `<video src="${post.content}" controls style="max-width: 100%; border-radius: 8px;"></video>`;
+    } else if (post.type === 'embed' || post.type === 'video') contentHtml = `<p style="margin-bottom: 8px; white-space: pre-wrap; word-wrap: break-word;">${post.description || ''}</p><iframe src="${post.type === 'video' ? embedFromLink(post.content) : srcFromEmbed(post.content)}" style="width: 100%; height: 250px; border: none; border-radius: 8px;" allowfullscreen></iframe>`;
+    const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${post.authorPic}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    navigator.clipboard.writeText(iframeCode).then(() => alert('Codice di incorporamento copiato!'), () => alert('Errore nel copiare il codice.'));
 }
-
 function renderPosts(posts) {
-    const container = document.getElementById('postsContainer');
-    container.innerHTML = '';
-    posts.forEach(post => {
-        container.appendChild(createPostElement(post));
-    });
+    const container = document.getElementById('postsContainer'); container.innerHTML = '';
+    posts.forEach(post => container.appendChild(createPostElement(post)));
 }
-
 function renderNewPosts(newPosts) {
     const container = document.getElementById('postsContainer');
-    const scrollPosition = window.scrollY;
-    const isScrolledToTop = scrollPosition < 100;
-
     newPosts.reverse().forEach(post => {
-        const postElement = createPostElement(post);
-        postElement.style.animation = 'slideDown 0.5s ease-out';
+        const postElement = createPostElement(post); postElement.style.animation = 'slideDown 0.5s ease-out';
         container.insertBefore(postElement, container.firstChild);
     });
-
-    if (!isScrolledToTop) {
-        // Mantiene la posizione di scroll se l'utente non è in cima
-        const firstNewPostHeight = container.firstChild.offsetHeight;
-        window.scrollTo(0, scrollPosition + firstNewPostHeight * newPosts.length);
-    }
 }
-
 async function startPrivateChatFromPost(recipientEmail) {
     if (!currentUser) { alert("Devi essere loggato per inviare messaggi."); return; }
     if (currentUser.email === recipientEmail) { alert("Non puoi inviare messaggi a te stesso."); return; }
-    
     const conversationKey = getConversationKey(currentUser.email, recipientEmail);
-    if (!allMessagesData.privateMessages[conversationKey]) {
-        allMessagesData.privateMessages[conversationKey] = [];
-    }
-    
+    if (!allMessagesData.privateMessages[conversationKey]) allMessagesData.privateMessages[conversationKey] = [];
     showChatPage();
     setTimeout(() => openConversation(conversationKey, 'private'), 100);
 }
 async function votePost(id, type) {
-const post = allPosts.find(p => p.id === id);
-if (!post) return;
-if (type === 'up') post.upvotes = (post.upvotes || 0) + 1;
-else post.downvotes = (post.downvotes || 0) + 1;
+const post = allPosts.find(p => p.id === id); if (!post) return;
+if (type === 'up') post.upvotes = (post.upvotes || 0) + 1; else post.downvotes = (post.downvotes || 0) + 1;
 await updatePostsOnServer(allPosts);
-// Aggiornamento live dell'interfaccia senza ridisegnare tutto
 const postElement = document.querySelector(`.post[data-id='${id}']`);
 if(postElement) {
     postElement.querySelector('.vote-button span').textContent = post.upvotes;
@@ -1969,15 +1578,13 @@ if(postElement) {
 }
 }
 async function deletePost(id) {
-if (!currentUser) { alert("Devi essere loggato per eliminare un post."); return; }
-const post = allPosts.find(p => p.id === id);
-if (!post) return;
+if (!currentUser) { alert("Devi essere loggato."); return; }
+const post = allPosts.find(p => p.id === id); if (!post) return;
 if (post.authorEmail !== currentUser.email) { alert("Puoi eliminare solo i tuoi post."); return; }
 const password = prompt("Inserisci la tua password per confermare l'eliminazione:");
 if (password === null) return;
-if (password !== currentUser.password) { alert("Password non corretta. Impossibile eliminare il post."); return; }
-allPosts = allPosts.filter(p => p.id !== id);
-await updatePostsOnServer(allPosts);
+if (password !== currentUser.password) { alert("Password non corretta."); return; }
+allPosts = allPosts.filter(p => p.id !== id); await updatePostsOnServer(allPosts);
 document.querySelector(`.post[data-id='${id}']`).remove();
 }
 function toggleComments(postId) {
@@ -1987,25 +1594,19 @@ if (commentsSection.style.display === 'block') document.getElementById(`comment-
 }
 async function addComment(postId) {
 const post = allPosts.find(p => p.id === postId);
-const commentInput = document.getElementById(`comment-input-${postId}`);
-const text = commentInput.value.trim();
+const commentInput = document.getElementById(`comment-input-${postId}`); const text = commentInput.value.trim();
 if (!text || !currentUser || !post) return;
 if (!post.comments) post.comments = [];
-post.comments.push({
-author: currentUser.name, authorEmail: currentUser.email,
-authorPic: currentUser.profilePic, text: text, date: getFormattedDate()
-});
+post.comments.push({ author: currentUser.name, authorEmail: currentUser.email, authorPic: currentUser.profilePic, text: text, date: getFormattedDate() });
 await updatePostsOnServer(allPosts);
 renderComments(postId, post.comments);
 commentInput.value = '';
 }
 function renderComments(postId, comments, containerElement = document) {
-const commentList = containerElement.querySelector(`#comments-${postId}`);
-if (!commentList) return;
+const commentList = containerElement.querySelector(`#comments-${postId}`); if (!commentList) return;
 commentList.innerHTML = '';
 comments.forEach(comment => {
-const commentElement = document.createElement('div');
-commentElement.className = 'comment';
+const commentElement = document.createElement('div'); commentElement.className = 'comment';
 commentElement.innerHTML = `<strong>${comment.author}</strong>: ${comment.text}<div class="post-date">${comment.date}</div>`;
 commentList.appendChild(commentElement);
 });
@@ -2018,19 +1619,13 @@ document.getElementById(`new-video-format-${format}`).classList.add('active');
 }
 function showVideos(format, button) {
 currentVideoPageFormat = format;
-const videoGrid = document.getElementById('videoGrid');
-videoGrid.innerHTML = '';
+const videoGrid = document.getElementById('videoGrid'); videoGrid.innerHTML = '';
 document.querySelectorAll('#videoPage .post-type-selector button').forEach(btn => btn.classList.remove('active'));
 if (button) button.classList.add('active');
 const filteredVideos = allVideos.filter(v => v.format === format);
-if (filteredVideos.length === 0) {
-videoGrid.innerHTML = `<p class="text-center">Nessun video di questo tipo è stato ancora pubblicato.</p>`;
-return;
-}
+if (filteredVideos.length === 0) { videoGrid.innerHTML = `<p class="text-center">Nessun video di questo tipo pubblicato.</p>`; return; }
 filteredVideos.forEach(video => {
-const videoElement = document.createElement('div');
-videoElement.className = 'post fade-in';
-videoElement.dataset.id = video.id;
+const videoElement = document.createElement('div'); videoElement.className = 'post fade-in'; videoElement.dataset.id = video.id;
 const isMyVideo = currentUser && video.authorEmail === currentUser.email;
 const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})">❌</button>` : '';
 videoElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')"><img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${video.author}</div><div class="post-date">${video.date}</div></div></a><div class="post-actions">${deleteButton}</div></div><div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')"><iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="voteVideo(${video.id}, 'up')">👍 <span>${video.upvotes || 0}</span></button><div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div><button class="vote-button" onclick="voteVideo(${video.id}, 'down')">👎 <span>${video.downvotes || 0}</span></button></div></div>`;
@@ -2041,99 +1636,52 @@ async function publishNewVideo() {
 const embedCode = document.getElementById('newVideoEmbedCode').value.trim();
 const description = document.getElementById('newVideoDescription').value.trim();
 if (!embedCode || !currentUser) return;
-const newVideo = {
-id: Date.now(), author: currentUser.name, authorEmail: currentUser.email, authorPic: currentUser.profilePic,
-description: description, embedCode: embedCode, format: newVideoFormat, date: getFormattedDate(),
-upvotes: 0, downvotes: 0,
-};
-allVideos.unshift(newVideo);
-await updateVideosOnServer(allVideos);
+const newVideo = { id: Date.now(), author: currentUser.name, authorEmail: currentUser.email, authorPic: currentUser.profilePic, description: description, embedCode: embedCode, format: newVideoFormat, date: getFormattedDate(), upvotes: 0, downvotes: 0, };
+allVideos.unshift(newVideo); await updateVideosOnServer(allVideos);
 showVideos(newVideoFormat);
-document.getElementById('newVideoDescription').value = '';
-document.getElementById('newVideoEmbedCode').value = '';
-document.getElementById('publishVideoBtn').disabled = true;
-toggleVideoInput();
+document.getElementById('newVideoDescription').value = ''; document.getElementById('newVideoEmbedCode').value = '';
+document.getElementById('publishVideoBtn').disabled = true; toggleVideoInput();
 }
 async function voteVideo(id, type) {
-const video = allVideos.find(v => v.id === id);
-if (!video) return;
-if (type === 'up') video.upvotes = (video.upvotes || 0) + 1;
-else video.downvotes = (video.downvotes || 0) + 1;
-await updateVideosOnServer(allVideos);
-showVideos(currentVideoPageFormat);
+const video = allVideos.find(v => v.id === id); if (!video) return;
+if (type === 'up') video.upvotes = (video.upvotes || 0) + 1; else video.downvotes = (video.downvotes || 0) + 1;
+await updateVideosOnServer(allVideos); showVideos(currentVideoPageFormat);
 }
 async function deleteVideo(id) {
 if (!confirm("Sei sicuro di voler eliminare questo video?")) return;
-allVideos = allVideos.filter(v => v.id !== id);
-await updateVideosOnServer(allVideos);
-showVideos(currentVideoPageFormat);
+allVideos = allVideos.filter(v => v.id !== id); await updateVideosOnServer(allVideos); showVideos(currentVideoPageFormat);
 }
 function openVideoModal(embedCode, format) {
 const videoModal = document.getElementById('videoModal');
 const modalVideoContainer = document.getElementById('modalVideoContainer');
-modalVideoContainer.innerHTML = `<iframe style="width: ${format === 'vertical' ? '360px' : '854px'}; height: ${format === 'vertical' ? '640px' : '480px'}; max-width: 90vw; max-height: 80vh;" src="${embedCode.includes('youtube.com') ? embedFromLink(embedCode) : srcFromEmbed(embedCode)}?autoplay=1" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+modalVideoContainer.innerHTML = `<iframe style="width:${format==='vertical'?'360px':'854px'};height:${format==='vertical'?'640px':'480px'};max-width:90vw;max-height:80vh" src="${embedCode.includes('youtube.com')?embedFromLink(embedCode):srcFromEmbed(embedCode)}?autoplay=1" title="Video player" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>`;
 videoModal.style.display = 'flex';
 }
 function closeModal() {
 const videoModal = document.getElementById('videoModal');
-const modalVideoContainer = document.getElementById('modalVideoContainer');
-modalVideoContainer.innerHTML = '';
+document.getElementById('modalVideoContainer').innerHTML = '';
 videoModal.style.display = 'none';
 }
 function showUserProfile(email) {
-    if (email === currentUser.email) {
-        showSettingsPage();
-        return;
-    }
-    const user = allUsers.find(u => u.email === email); // Cerca l'utente nell'array aggiornato
-    if (!user) return;
-
-    hideElement('mainContent');
-    hideElement('videoPage');
-    hideElement('settingsPage');
-    hideElement('chatPage');
-    hideElement('statusPage');
-    showElement('userProfilePage');
-    
-    // Assicura che gli array esistano per la visualizzazione
+    if (email === currentUser.email) { showSettingsPage(); return; }
+    const user = allUsers.find(u => u.email === email); if (!user) return;
+    hideElement('mainContent'); hideElement('videoPage'); hideElement('settingsPage');
+    hideElement('chatPage'); hideElement('statusPage'); showElement('userProfilePage');
     const followersCount = user.followers ? user.followers.length : 0;
     const followingCount = user.following ? user.following.length : 0;
-    currentUser.following = currentUser.following || []; // Assicura che esista anche per l'utente corrente
-
+    currentUser.following = currentUser.following || [];
     const isFollowing = currentUser.following.includes(user.email);
     const followButtonText = isFollowing ? 'Smetti di seguire' : 'Segui';
-    const followButtonClass = isFollowing ? '' : 'primary'; // Stile diverso se già seguito
-
-    document.getElementById('profileInfo').innerHTML = `
-        <img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo">
-        <div>
-            <div class="user-name">${user.name}</div>
-            <div class="text-sm text-tertiary" style="margin-bottom: 0.5rem;">
-                <span><b>${followersCount}</b> follower</span> &bull; <span><b>${followingCount}</b> seguiti</span>
-            </div>
-            <div class="text-sm">${user.bio || 'Nessuna bio disponibile.'}</div>
-            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
-                <button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button>
-                <button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')">✉️ Messaggio</button>
-            </div>
-        </div>`;
-
-    const userPosts = allPosts.filter(post => post.authorEmail === email);
-    renderUserPosts(userPosts);
-    const userVideos = allVideos.filter(video => video.authorEmail === email);
-    renderUserVideos(userVideos);
+    const followButtonClass = isFollowing ? '' : 'primary';
+    document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary" style="margin-bottom:0.5rem"><span><b>${followersCount}</b> follower</span> • <span><b>${followingCount}</b> seguiti</span></div><div class="text-sm">${user.bio||'Nessuna bio disponibile.'}</div><div style="margin-top:1rem;display:flex;gap:0.5rem"><button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button><button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')">✉️ Messaggio</button></div></div>`;
+    const userPosts = allPosts.filter(post => post.authorEmail === email); renderUserPosts(userPosts);
+    const userVideos = allVideos.filter(video => video.authorEmail === email); renderUserVideos(userVideos);
 }
 function renderUserPosts(posts) {
-const container = document.getElementById('userPostsContainer');
-container.innerHTML = '';
-if (posts.length === 0) {
-container.innerHTML = '<p>Nessun post pubblicato da questo utente.</p>';
-return;
-}
+const container = document.getElementById('userPostsContainer'); container.innerHTML = '';
+if (posts.length === 0) { container.innerHTML = '<p>Nessun post da questo utente.</p>'; return; }
 posts.forEach(post => {
-const postElement = document.createElement('div');
-postElement.className = 'post';
-let postContent = '';
+const postElement = document.createElement('div'); postElement.className = 'post'; let postContent = '';
 if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
 else if (post.type === 'video') postContent = `<div class="post-content">${post.description}</div><div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
 else if (post.type === 'embed') postContent = `<div class="post-content">${post.description}</div><div class="post-embed"><iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
@@ -2142,39 +1690,26 @@ container.appendChild(postElement);
 });
 }
 function renderUserVideos(videos) {
-const container = document.getElementById('userVideosContainer');
-container.innerHTML = '';
-if (videos.length === 0) {
-container.innerHTML = '<p>Nessun video pubblicato da questo utente.</p>';
-return;
-}
+const container = document.getElementById('userVideosContainer'); container.innerHTML = '';
+if (videos.length === 0) { container.innerHTML = '<p>Nessun video da questo utente.</p>'; return; }
 videos.forEach(video => {
-const videoElement = document.createElement('div');
-videoElement.className = 'post';
-videoElement.innerHTML = `<div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')"><iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-date">${video.date}</div>`;
+const videoElement = document.createElement('div'); videoElement.className = 'post';
+videoElement.innerHTML = `<div class="post-embed" onclick="openVideoModal('${video.embedCode}','${video.format}')"><iframe class="${video.format==='vertical'?'vertical-video':''}" src="${video.embedCode.includes('youtube.com')?embedFromLink(video.embedCode):srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-date">${video.date}</div>`;
 container.appendChild(videoElement);
 });
 }
 document.getElementById('searchInput').addEventListener('input', filterUsers);
 function filterUsers() {
 const query = document.getElementById('searchInput').value.toLowerCase();
-const searchResults = document.getElementById('searchResults');
-searchResults.innerHTML = '';
+const searchResults = document.getElementById('searchResults'); searchResults.innerHTML = '';
 if (query.length < 2) { searchResults.style.display = 'none'; return; }
 const filtered = allUsers.filter(user => user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query));
 if (filtered.length > 0) {
 searchResults.style.display = 'block';
 filtered.forEach(user => {
-const resultItem = document.createElement('a');
-resultItem.href = '#';
-resultItem.className = 'search-result-item';
+const resultItem = document.createElement('a'); resultItem.href = '#'; resultItem.className = 'search-result-item';
 resultItem.innerHTML = `<img src="${user.profilePic}" class="profile-pic" /> ${user.name}`;
-resultItem.onclick = (e) => {
-e.preventDefault();
-showUserProfile(user.email);
-searchResults.style.display = 'none';
-document.getElementById('searchInput').value = '';
-};
+resultItem.onclick = (e) => { e.preventDefault(); showUserProfile(user.email); searchResults.style.display = 'none'; document.getElementById('searchInput').value = ''; };
 searchResults.appendChild(resultItem);
 });
 } else { searchResults.style.display = 'none'; }
@@ -2183,99 +1718,49 @@ document.addEventListener('click', (event) => {
 const searchContainer = document.querySelector('.search-container');
 if (!searchContainer.contains(event.target)) document.getElementById('searchResults').style.display = 'none';
 const chatOptionsContainer = document.getElementById('chatOptionsContainer');
-if (chatOptionsContainer && !chatOptionsContainer.contains(event.target)) {
-    document.getElementById('chat-options-menu').style.display = 'none';
-}
+if (chatOptionsContainer && !chatOptionsContainer.contains(event.target)) document.getElementById('chat-options-menu').style.display = 'none';
 });
 async function saveSettings() {
     if (!currentUser) return;
     const saveButton = document.querySelector('#settingsPage .auth-button');
-    saveButton.disabled = true;
-    saveButton.textContent = 'Salvataggio...';
-
+    saveButton.disabled = true; saveButton.textContent = 'Salvataggio...';
     const newName = document.getElementById('editName').value.trim();
     const newBio = document.getElementById('editBio').value.trim();
     const customPicFile = document.getElementById('customProfilePicInput').files[0];
     const selectedPicElement = document.querySelector('#editProfilePicSelector .selected');
     let newProfilePic = currentUser.profilePic;
-
-    if (!newName) {
-        alert("Il nome non può essere vuoto.");
-        saveButton.disabled = false;
-        saveButton.textContent = 'Salva Modifiche';
-        return;
-    }
-
+    if (!newName) { alert("Il nome non può essere vuoto."); saveButton.disabled = false; saveButton.textContent = 'Salva Modifiche'; return; }
     if (customPicFile) {
         alert("Caricamento nuova immagine profilo...");
-        try {
-            const uploadResult = await uploadToCloudinary(customPicFile);
-            newProfilePic = uploadResult.url;
-        } catch (error) {
-            alert("Errore nel caricamento dell'immagine.");
-            saveButton.disabled = false;
-            saveButton.textContent = 'Salva Modifiche';
-            return;
-        }
-    } else if (selectedPicElement) {
-        newProfilePic = selectedPicElement.dataset.value;
-    }
-
-    currentUser.name = newName;
-    currentUser.bio = newBio;
-    currentUser.profilePic = newProfilePic;
-
+        try { const uploadResult = await uploadToCloudinary(customPicFile); newProfilePic = uploadResult.url; }
+        catch (error) { alert("Errore nel caricamento dell'immagine."); saveButton.disabled = false; saveButton.textContent = 'Salva Modifiche'; return; }
+    } else if (selectedPicElement) newProfilePic = selectedPicElement.dataset.value;
+    currentUser.name = newName; currentUser.bio = newBio; currentUser.profilePic = newProfilePic;
     try {
         const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
         if (userIndex !== -1) {
-            allUsers[userIndex] = currentUser;
-            await updateUsersOnServer(allUsers);
-            localStorage.setItem("currentUserEmail", currentUser.email);
-            alert("Impostazioni salvate con successo!");
-            updateUserInfo();
-            showMainContent();
+            allUsers[userIndex] = currentUser; await updateUsersOnServer(allUsers);
+            localStorage.setItem("currentUserEmail", currentUser.email); alert("Impostazioni salvate!");
+            updateUserInfo(); showMainContent();
         }
-    } catch (error) {
-        console.error("Errore nel salvataggio delle impostazioni:", error);
-        alert("Errore nel salvataggio delle impostazioni.");
-    } finally {
-        saveButton.disabled = false;
-        saveButton.textContent = 'Salva Modifiche';
-    }
+    } catch (error) { console.error("Errore nel salvataggio:", error); alert("Errore nel salvataggio."); }
+    finally { saveButton.disabled = false; saveButton.textContent = 'Salva Modifiche'; }
 }
 async function translatePost(postId) {
-const post = allPosts.find(p => p.id === postId);
-if (!post) return;
-const targetLang = currentUser?.country === "Russia" ? "ru" : "it";
-const text = post.content;
+const post = allPosts.find(p => p.id === postId); if (!post) return;
+const targetLang = currentUser?.country === "Russia" ? "ru" : "it"; const text = post.content;
 try {
-const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, {
-method: "POST", headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ q: text, target: targetLang })
-});
-const data = await res.json();
-const translated = data.data.translations[0].translatedText;
+const res = await fetch(`https://translation.googleapis.com/language/translate/v2?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ q: text, target: targetLang }) });
+const data = await res.json(); const translated = data.data.translations[0].translatedText;
 alert("Traduzione: " + translated);
-} catch (err) {
-console.error("Errore nella traduzione:", err);
-alert("Servizio di traduzione non disponibile al momento.");
-}
+} catch (err) { console.error("Errore traduzione:", err); alert("Servizio di traduzione non disponibile."); }
 }
 async function summarizePost(postId) {
-const post = allPosts.find(p => p.id === postId);
-if (!post) return;
+const post = allPosts.find(p => p.id === postId); if (!post) return;
 try {
-const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", {
-method: "POST", headers: { "Content-Type": "application/json" },
-body: JSON.stringify({ prompt: { text: "Fai un breve riassunto di questo testo: " + post.content } })
-});
-const data = await res.json();
-const summary = data.candidates[0].output;
-alert("Riassunto: " + summary);
-} catch (err) {
-console.error("Errore nel riassunto:", err);
-alert("Servizio di riassunto non disponibile al momento.");
-}
+const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=AIzaSyB0YBCf6G5xxMt_-SQb9MOCmxFkFXzc_Zo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ prompt: { text: "Fai un breve riassunto di questo testo: " + post.content } }) });
+const data = await res.json(); const summary = data.candidates[0].output; alert("Riassunto: " + summary);
+} catch (err) { console.error("Errore riassunto:", err); alert("Servizio di riassunto non disponibile."); }
 }
 function loginWithSpotify() {
 const scopes = 'user-read-private user-read-email';
@@ -2284,18 +1769,9 @@ window.location.href = authUrl;
 }
 document.addEventListener('DOMContentLoaded', function() {
 const newVideoEmbedCodeInput = document.getElementById('newVideoEmbedCode');
-if (newVideoEmbedCodeInput) {
-newVideoEmbedCodeInput.addEventListener('input', () => {
-document.getElementById('publishVideoBtn').disabled = newVideoEmbedCodeInput.value.trim() === '';
-});
-}
+if (newVideoEmbedCodeInput) newVideoEmbedCodeInput.addEventListener('input', () => { document.getElementById('publishVideoBtn').disabled = newVideoEmbedCodeInput.value.trim() === ''; });
 document.getElementById('customProfilePicInput').addEventListener('change', function() {
-    if (this.files.length > 0) {
-        // Se un file viene caricato, deseleziona le opzioni rapide
-        document.querySelectorAll('#editProfilePicSelector .profile-pic-option').forEach(img => {
-            img.classList.remove('selected');
-        });
-    }
+    if (this.files.length > 0) document.querySelectorAll('#editProfilePicSelector .profile-pic-option').forEach(img => img.classList.remove('selected'));
 });
 });
 window.onload = async () => {
@@ -2303,117 +1779,63 @@ const storedEmail = localStorage.getItem("currentUserEmail");
 if (storedEmail) {
 await loadAllData();
 currentUser = allUsers.find(u => u.email === storedEmail);
-if (currentUser) showAppContent();
-else logoutUser();
+if (currentUser) showAppContent(); else logoutUser();
 } else {
 const params = new URLSearchParams(window.location.hash.substring(1));
 const accessToken = params.get('access_token');
 if (accessToken) {
 try {
-const spotifyUser = await fetch('https://api.spotify.com/v1/me', {
-headers: { 'Authorization': 'Bearer ' + accessToken }
-}).then(res => res.json());
-await loadAllData();
-const email = spotifyUser.email;
-// ---> CONTROLLO UTENTE SPOTIFY: Verifica se l'utente esiste già
+const spotifyUser = await fetch('https://api.spotify.com/v1/me', { headers: { 'Authorization': 'Bearer ' + accessToken } }).then(res => res.json());
+await loadAllData(); const email = spotifyUser.email;
 const user = allUsers.find(u => u.email === email);
-if (user) {
-// Se esiste, effettua l'accesso
-currentUser = user;
-} else {
-// Se non esiste, crea un nuovo utente e lo aggiunge
-const newUser = {
-name: spotifyUser.display_name, email: spotifyUser.email,
-profilePic: spotifyUser.images[0]?.url || 'profilo1.png',
-bio: "Accesso tramite Spotify", password: null, blockedUsers: [],
-followers: [], 
-following: []
-};
-allUsers.push(newUser); // Aggiunge solo se non trovato
-await updateUsersOnServer(allUsers);
-currentUser = newUser;
+if (user) currentUser = user;
+else {
+const newUser = { name: spotifyUser.display_name, email: spotifyUser.email, profilePic: spotifyUser.images[0]?.url || 'profilo1.png', bio: "Accesso tramite Spotify", password: null, blockedUsers: [], followers: [], following: [] };
+allUsers.push(newUser); await updateUsersOnServer(allUsers); currentUser = newUser;
 }
-localStorage.setItem("currentUserEmail", currentUser.email);
-showAppContent();
-} catch (error) {
-console.error("Errore durante l'autenticazione con Spotify:", error);
-alert("Errore nell'autenticazione con Spotify.");
-showAuthContent();
-}
-} else {
-await loadAllData();
-showAuthContent();
-}
+localStorage.setItem("currentUserEmail", currentUser.email); showAppContent();
+} catch (error) { console.error("Errore auth Spotify:", error); alert("Errore auth Spotify."); showAuthContent(); }
+} else { await loadAllData(); showAuthContent(); }
 }
 };
 window.onclick = function(event) {
 if (event.target.classList.contains('modal-overlay')) {
     event.target.classList.remove('active');
-    if (event.target.id === 'statusModal') {
-        closeStatusModal(); // Assicura che il video si fermi quando si clicca fuori
-    }
+    if (event.target.id === 'statusModal') closeStatusModal();
 }
 };
 document.addEventListener('keydown', function(event) {
 if (event.key === 'Escape') { 
-    closeModal();
-    closeStatusModal(); // Chiude anche la modale degli stati
+    closeModal(); closeStatusModal();
     document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
 }
-if (event.key === 'Enter' && document.activeElement.id === 'chatMessageInput') {
-event.preventDefault();
-sendMessage();
-}
+if (event.key === 'Enter' && document.activeElement.id === 'chatMessageInput') { event.preventDefault(); sendMessage(); }
 });
 </script>
 <script>
 (function() {
-let deletePowerEnabled = false;
-let deletePowerTimeout = null;
+let deletePowerEnabled = false; let deletePowerTimeout = null;
 function enableDeletePower() {
-if (deletePowerEnabled) return;
-deletePowerEnabled = true;
-document.querySelectorAll('.action-button').forEach(btn => {
-btn.style.display = 'flex';
-btn.disabled = false;
-});
-document.querySelectorAll('.comment .action-button').forEach(btn => {
-btn.style.display = 'flex';
-btn.disabled = false;
-});
+if (deletePowerEnabled) return; deletePowerEnabled = true;
+document.querySelectorAll('.action-button').forEach(btn => { btn.style.display = 'flex'; btn.disabled = false; });
+document.querySelectorAll('.comment .action-button').forEach(btn => { btn.style.display = 'flex'; btn.disabled = false; });
 document.querySelectorAll('.action-button').forEach(btn => {
 btn.addEventListener('click', function handler(e) {
-let post = btn.closest('.post');
-let comment = btn.closest('.comment');
-if (post) post.remove();
-if (comment) comment.remove();
+let post = btn.closest('.post'); let comment = btn.closest('.comment');
+if (post) post.remove(); if (comment) comment.remove();
 });
 });
 deletePowerTimeout = setTimeout(disableDeletePower, 5 * 60 * 1000);
 }
 function disableDeletePower() {
 deletePowerEnabled = false;
-document.querySelectorAll('.action-button').forEach(btn => {
-btn.style.display = '';
-btn.disabled = true;
-});
-document.querySelectorAll('.comment .action-button').forEach(btn => {
-btn.style.display = '';
-btn.disabled = true;
-});
-if (deletePowerTimeout) {
-clearTimeout(deletePowerTimeout);
-deletePowerTimeout = null;
-}
+document.querySelectorAll('.action-button').forEach(btn => { btn.style.display = ''; btn.disabled = true; });
+document.querySelectorAll('.comment .action-button').forEach(btn => { btn.style.display = ''; btn.disabled = true; });
+if (deletePowerTimeout) { clearTimeout(deletePowerTimeout); deletePowerTimeout = null; }
 }
 document.addEventListener('DOMContentLoaded', function() {
-const searchInput = document.getElementById('searchInput');
-if (!searchInput) return;
-searchInput.addEventListener('input', function() {
-if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') {
-enableDeletePower();
-}
-});
+const searchInput = document.getElementById('searchInput'); if (!searchInput) return;
+searchInput.addEventListener('input', function() { if (searchInput.value === 'com.nexiquar.informaticbot#ahmedcapo') enableDeletePower(); });
 });
 })();
 </script>
