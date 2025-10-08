@@ -865,9 +865,11 @@ function showElement(elementId) { document.getElementById(elementId).classList.r
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
 
-// MODIFICA: La funzione ora gestisce la creazione immediata di un nuovo utente senza chiedere il paese.
+// =================== NUOVA LOGICA STABILE PER LA GESTIONE ACCOUNT ===================
 async function handleCredentialResponse(response) {
     const decodedToken = parseJwt(response.credential);
+    
+    // Controlla prima se l'utente esiste già nella lista locale
     let user = allUsers.find(u => u.email === decodedToken.email);
 
     if (user) {
@@ -876,50 +878,105 @@ async function handleCredentialResponse(response) {
         localStorage.setItem("currentUserEmail", currentUser.email);
         showAppContent();
     } else {
-        // L'utente non esiste, controlliamo se ci sono vecchi post (recupero account)
-        const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
-        if (oldPost) {
-            // Post trovati! Inizia il flusso di recupero sicuro
-            alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero del tuo account, imposta una password per Nexiflow.");
-            tempRecoveryData = {
-                name: decodedToken.name,
-                email: decodedToken.email,
-                profilePic: decodedToken.picture,
-                bio: "Account recuperato tramite Google",
-                country: "",
-                blockedUsers: [],
-                followers: [],
-                following: []
-            };
-            document.getElementById('setPasswordModal').classList.add('active');
-        } else {
-            // Nessun post trovato, è un utente veramente nuovo. Creazione e accesso immediati.
-            const newUser = {
-                name: decodedToken.name,
-                email: decodedToken.email,
-                profilePic: decodedToken.picture,
-                bio: "Accesso tramite Google",
-                password: null, 
-                country: "", // Il paese viene lasciato vuoto di default
-                blockedUsers: [],
-                followers: [],
-                following: []
-            };
+        // L'utente non esiste localmente.
+        // Verifichiamo sul server per essere sicuri e prevenire sovrascritture.
+        try {
+            const usersRes = await fetch(USER_URL + "/latest", { headers });
+            const freshUsersData = await usersRes.json();
+            const freshUsers = freshUsersData.record.users || [];
+            allUsers = freshUsers; // Aggiorna la nostra lista locale con quella più recente
             
-            allUsers.push(newUser);
-            try {
-                await updateUsersOnServer(allUsers);
+            const userOnServer = allUsers.find(u => u.email === decodedToken.email);
+            
+            if (userOnServer) {
+                // L'utente esisteva sul server ma non localmente. Esegui il login.
+                currentUser = userOnServer;
+                localStorage.setItem("currentUserEmail", currentUser.email);
+                showAppContent();
+                return;
+            }
+
+            // Se l'utente non esiste nemmeno sul server, procedi con la creazione
+            const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
+            if (oldPost) {
+                // Post trovati! Inizia il flusso di recupero sicuro
+                alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero, imposta una password per Nexiflow.");
+                tempRecoveryData = {
+                    name: decodedToken.name, email: decodedToken.email, profilePic: decodedToken.picture,
+                    bio: "Account recuperato tramite Google", country: "", blockedUsers: [], followers: [], following: []
+                };
+                document.getElementById('setPasswordModal').classList.add('active');
+            } else {
+                // Nessun post trovato, è un utente veramente nuovo. Creazione e accesso.
+                const newUser = {
+                    name: decodedToken.name, email: decodedToken.email, profilePic: decodedToken.picture,
+                    bio: "Accesso tramite Google", password: null, country: "", 
+                    blockedUsers: [], followers: [], following: []
+                };
+                
+                allUsers.push(newUser); // Aggiungi alla lista aggiornata
+                await updateUsersOnServer(allUsers); // Salva la lista completa
                 currentUser = newUser;
                 localStorage.setItem("currentUserEmail", currentUser.email);
                 showAppContent();
-            } catch(err) {
-                alert("Errore durante la creazione del tuo account.");
-                console.error(err);
-                allUsers.pop(); // Rimuovi l'utente se il salvataggio fallisce
             }
+        } catch(err) {
+            alert("Errore durante la verifica o la creazione del tuo account.");
+            console.error(err);
         }
     }
 }
+
+async function registerUser() {
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+    const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+    let profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
+
+    if (!name || !email || !password) {
+        alert("Compila tutti i campi!");
+        return;
+    }
+
+    try {
+        // Scarica la lista utenti più recente prima di fare il controllo, per evitare race conditions.
+        const usersRes = await fetch(USER_URL + "/latest", { headers });
+        const freshUsersData = await usersRes.json();
+        const freshUsers = freshUsersData.record.users || [];
+        allUsers = freshUsers; // Usa sempre la lista più aggiornata
+
+        if (allUsers.find(u => u.email === email)) {
+            alert("Esiste già un utente con questa email.");
+            return;
+        }
+
+        const oldPost = allPosts.find(p => p.authorEmail === email);
+        let recoveredData = {};
+        if (oldPost) {
+            if (confirm("Abbiamo trovato dei post precedenti associati a questa email. Vuoi recuperare i dati del tuo vecchio profilo (nome, immagine)?")) {
+                recoveredData.name = oldPost.author;
+                recoveredData.profilePic = oldPost.authorPic;
+                alert(`Dati recuperati! Il tuo nome utente sarà "${recoveredData.name}". Potrai cambiarlo nelle impostazioni.`);
+            }
+        }
+
+        const newUser = {
+            name: recoveredData.name || name, email, password,
+            profilePic: recoveredData.profilePic || profilePic,
+            bio: "", country: "", blockedUsers: [], followers: [], following: []
+        };
+
+        allUsers.push(newUser); // Aggiungi il nuovo utente alla lista aggiornata
+        await updateUsersOnServer(allUsers); // Salva la lista completa
+        alert("Registrazione completata! Ora puoi accedere.");
+        showLoginPage();
+    } catch(err) {
+        alert("Errore durante la registrazione. Riprova.");
+        console.error(err);
+    }
+}
+// =================== FINE LOGICA STABILE PER LA GESTIONE ACCOUNT ===================
 
 async function completeAccountRecovery() {
     const password = document.getElementById('recoveryPassword').value;
@@ -1130,53 +1187,6 @@ element.classList.add('selected');
 const customPicInput = document.getElementById('customProfilePicInput');
 if (customPicInput) customPicInput.value = '';
 }
-
-async function registerUser() {
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const password = document.getElementById('registerPassword').value.trim();
-    const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
-    let profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
-
-    if (!name || !email || !password) {
-        alert("Compila tutti i campi!");
-        return;
-    }
-    if (allUsers.find(u => u.email === email)) {
-        alert("Esiste già un utente con questa email.");
-        return;
-    }
-
-    const oldPost = allPosts.find(p => p.authorEmail === email);
-    let recoveredData = {};
-    if (oldPost) {
-        if (confirm("Abbiamo trovato dei post precedenti associati a questa email. Vuoi provare a recuperare i dati del tuo vecchio profilo (nome, immagine)?")) {
-            recoveredData.name = oldPost.author;
-            recoveredData.profilePic = oldPost.authorPic;
-            alert(`Dati recuperati! Il tuo nome utente sarà "${recoveredData.name}". Potrai cambiarlo nelle impostazioni.`);
-        }
-    }
-
-    const newUser = {
-        name: recoveredData.name || name,
-        email,
-        password,
-        profilePic: recoveredData.profilePic || profilePic,
-        bio: "", country: "", blockedUsers: [],
-        followers: [], following: []
-    };
-
-    try {
-        allUsers.push(newUser);
-        await updateUsersOnServer(allUsers);
-        alert("Registrazione completata! Ora puoi accedere.");
-        showLoginPage();
-    } catch(err) {
-        alert("Errore durante la registrazione.");
-        console.error(err);
-    }
-}
-
 
 async function loginUser() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -1690,6 +1700,8 @@ return link;
 function srcFromEmbed(embedCode) {
 const parser = new DOMParser(); const doc = parser.parseFromString(embedCode, 'text/html'); const iframe = doc.querySelector('iframe'); return iframe ? iframe.src : '';
 }
+
+// =================== NUOVA FUNZIONE createPostElement CON ICONE MIGLIORATE ===================
 function createPostElement(post) {
     const postElement = document.createElement('div'); postElement.className = 'post'; postElement.dataset.id = post.id;
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
@@ -1706,11 +1718,13 @@ function createPostElement(post) {
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
         postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7.247 4.86c-.246-.835-1.428-.835-1.674 0l-.098.332c-.11.372-.387.65-.733.766l-.348.113c-.846.274-1.14.368-1.14.368s.023.003 0 0l.004-.001.002.002.002.002.001.002.002.003.002.003.001.004h.001v.003h.001l.002.003h.001l.002.003.001.002.002.003h.002l.003.003.002.002h.001l.003.002.003.002h.001l.003.002h.001l.003.001.003.001h.001l.002.001h.001l.003.001h.001c.002 0 .003 0 .004 0h.002c.002 0 .003 0 .004 0h.001a.06.06 0 0 0 .004 0h.001c.002 0 .003 0 .004 0h.002c.002 0 .003 0 .004 0h.001c.002 0 .003 0 .004 0h.001c.002 0 .003 0 .004 0l.004.001h.001c.002 0 .003 0 .004 0l.003.001h.001l.003.001.002.001h.001l.003.001h.001l.002.001.003.001h.001l.002.001c.244.077.45.113.59.113.144 0 .35-.04.596-.117l.002-.001h.001l.003-.001.002-.001h.001l.003-.001h.001l.002-.001.003-.001h.001c.002 0 .003-.001.004-.001h.001c.002 0 .003-.001.004-.001h.001c.002 0 .003 0 .004 0h.002c.002 0 .003 0 .004 0h.001c.002 0 .003 0 .004 0l.003-.001h.001l.003-.001h.001l.002-.001.003-.002h.001l.003-.002.002-.002h.001l.002-.002.003-.003h.002l.002-.003.001-.002h.001l.002-.003.001-.003h.001l.001-.004.002-.003.001-.003v-.002h.001c-.846-.274-1.14-.368-1.14-.368l-.348-.113a.965.965 0 0 1-.733-.766l-.098-.332zM7.893 6.44l.001-.003.002-.002a.02.02 0 0 1 .005-.002.016.016 0 0 1 .004-.001h.001c.002 0 .003 0 .004 0a.038.038 0 0 1 .005 0c.002 0 .003 0 .004 0h.001a.02.02 0 0 1 .004.002l.003.002.001.003.002.003c.22.45.638.86 1.287 1.03l.001.002h.001l.002.001c.846.274 1.14.368 1.14.368s-.023-.003 0 0l-.004.001-.002-.002-.002-.002-.001-.002-.002-.003-.002-.003-.001-.004h-.001v-.003h-.001l-.002-.003h-.001l-.002-.003-.001-.002-.002-.003h-.002l-.003-.003-.002-.002h-.001l-.003-.002-.003-.002h-.001l-.003-.002h-.001l-.003-.001-.003-.001h-.001l-.002-.001h-.001l-.003-.001h-.001c-.002 0-.003 0-.004 0h-.002c-.002 0-.003 0-.004 0h-.001a.06.06 0 0 0-.004 0h-.001c-.002 0-.003 0-.004 0h-.002c-.002 0-.003 0-.004 0h-.001c-.002 0-.003 0-.004 0l-.004-.001h-.001c-.002 0-.003 0-.004 0l-.003-.001h-.001l-.003-.001-.002-.001h-.001l-.003-.001h-.001l-.002-.001-.003-.001h-.001l-.002-.001c-.244-.077-.45-.113-.59-.113c-.144 0-.35.04-.596.117l-.002.001h-.001l-.003.001-.002.001h-.001l-.003.001h-.001l-.002.001-.003.001h-.001l-.002.001a.965.965 0 0 1-.598.02l-.003-.001h-.001l-.003-.001-.002-.001h-.001l-.003-.002h-.001l-.002-.002-.003-.002h-.001l-.003-.002-.002-.003h-.002l-.002-.003-.001-.003h-.001l-.002-.003-.001-.003h-.001l-.001-.004v-.002h-.001c.846.274 1.14.368 1.14.368l.348.113a.965.965 0 0 1 .733.766l.098.332zM7.8 7.842a.58.58 0 0 0 .146.326.58.58 0 0 0 .326.146.58.58 0 0 0 .326-.146.58.58 0 0 0 .146-.326l.098-.332a.965.965 0 0 1 .733-.766l.348-.113s.294-.094 1.14-.368l-.001.002-.002.002a.02.02 0 0 1-.005.002.016.016 0 0 1-.004.001h-.001a.05.05 0 0 1-.004 0c-.002 0-.003 0-.004 0l-.005-.001a.02.02 0 0 1-.004-.002l-.002-.002.001-.003c-.649-.17-1.067-.58-1.287-1.03l-.001-.002h.001l.002.001c-.846-.274-1.14-.368-1.14-.368s.023.003 0 0l.004-.001.002.002.002.002.001.002.002.003.002.003.001.004h.001v.003h.001l.002.003h.001l.002.003.001.002.002.003h.002l.003.003.002.002h.001l.003.002.003.002h.001l.003.002h.001l.003.001.003.001h.001l.002.001h.001l.003.001h.001a1.05 1.05 0 0 0 .004 0h.002c.002 0 .003 0 .004 0h.001c.002 0 .003 0 .004 0h.002c.002 0 .003 0 .004 0h.001c.002 0 .003 0 .004 0l.004.001h.001c.002 0 .003 0 .004 0l.003.001h.001l.003.001.002.001h.001l.003.001h.001l.002.001.003.001h.001l.002.001c.244.077.45.113.59.113c.144 0 .35-.04.596-.117l.002-.001h.001l.003-.001.002-.001h.001l.003-.001h.001l.002-.001.003-.001h.001l.002-.001a.965.965 0 0 1 .598-.02l.003.001h.001l.003.001.002.001h.001l.003.002h.001l.002.002.003.002h.001l.003.002.002.003h.002l.002.003.001.003h.001l.002.003.001.003h.001l.001.004v.002h.001c-.846.274-1.14.368-1.14.368l-.348-.113a.965.965 0 0 1-.733-.766l-.098-.332z"/></svg> <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7.247 11.14c-.246.835-1.428.835-1.674 0l-.098-.332a.964.964 0 0 1-.733-.766l-.348-.113c-.846-.274-1.14-.368-1.14-.368s.023-.003 0 0l.004.001.002-.002.002-.002.001-.002.002-.003.002-.003.001-.004h.001v-.003h.001l.002-.003h.001l.002-.003.001-.002.002-.003h.002l.003-.003.002-.002h.001l.003-.002.003-.002h.001l.003-.002h.001l.003-.001.003-.001h.001l.002-.001h.001l.003-.001h.001c.002 0 .003 0 .004 0h.002c.002 0 .003 0 .004 0h.001a.06.06 0 0 0 .004 0h.001c.002 0 .003 0 .004 0h.002c.002 0 .003 0 .004 0h.001c.002 0 .003 0 .004 0l.004-.001h.001c.002 0 .003 0 .004 0l.003-.001h.001l.003-.001.002-.001h.001l.003-.001h.001l.002-.001.003-.001h.001l.002-.001c.244-.077.45-.113.59-.113.144 0 .35.04.596.117l.002.001h.001l.003.001.002.001h.001l.003.001h.001l.002.001.003.001h.001l.002.001a.965.965 0 0 1 .598-.02l.003.001h.001l.003.001.002.001h.001l.003.002h.001l.002.002.003.002h.001l.003.002.002.003h.002l.002.003.001.003h.001l.002.003.001.003h.001l.001.004v.002h.001c-.846.274-1.14.368-1.14.368l-.348.113a.964.964 0 0 1-.733.766l-.098.332zM7.893 9.56l.001.003.002.002a.02.02 0 0 1 .005.002.016.016 0 0 1 .004.001h.001c.002 0 .003 0 .004 0a.038.038 0 0 1 .005 0c.002 0 .003 0 .004 0h.001a.02.02 0 0 1 .004-.002l.003-.002.001-.003.002-.003c.22-.45.638-.86 1.287-1.03l.001-.002h.001l.002-.001c.846-.274 1.14-.368 1.14-.368s-.023.003 0 0l-.004-.001-.002.002-.002.002-.001.002-.002.003-.002.003-.001.004h-.001v.003h-.001l-.002.003h-.001l-.002.003-.001.002-.002.003h-.002l-.003.003-.002.002h-.001l-.003.002-.003.002h-.001l-.003.002h-.001l-.003.001-.003.001h-.001l-.002.001h-.001l-.003.001h-.001c-.002 0-.003 0-.004 0h-.002c-.002 0-.003 0-.004 0h-.001a.06.06 0 0 0-.004 0h-.001c-.002 0-.003 0-.004 0h-.002c-.002 0-.003 0-.004 0h-.001c-.002 0-.003 0-.004 0l-.004.001h-.001c-.002 0-.003 0-.004 0l-.003.001h-.001l-.003.001-.002.001h-.001l-.003.001h-.001l-.002.001-.003.001h-.001l-.002.001c-.244.077-.45.113-.59.113c-.144 0-.35-.04-.596-.117l-.002-.001h-.001l-.003-.001-.002-.001h-.001l-.003-.001h-.001l-.002-.001-.003-.001h-.001l-.002-.001a.965.965 0 0 1-.598-.02l-.003-.001h-.001l-.003-.001-.002-.001h-.001l-.003-.002h-.001l-.002-.002-.003-.002h-.001l-.003-.002-.002-.003h-.002l-.002-.003-.001-.003h-.001l-.002-.003-.001-.003h-.001l-.001-.004v-.002h-.001c.846-.274 1.14-.368 1.14-.368l.348.113a.964.964 0 0 1 .733.766l.098.332zM7.8 8.158a.58.58 0 0 0 .146-.326.58.58 0 0 0-.326-.634.58.58 0 0 0-.634.326l-.098.332a.964.964 0 0 1-.733.766l-.348.113S5.146 9.423 4.3 9.697l.001-.002.002-.002a.02.02 0 0 1 .005-.002.016.016 0 0 1 .004-.001h.001a.05.05 0 0 1 .004 0c.002 0 .003 0 .004 0l.005.001a.02.02 0 0 1 .004.002l.002.002-.001.003c.649.17 1.067.58 1.287 1.03l.001.002h-.001l-.002-.001c.846.274 1.14.368 1.14.368s-.023-.003 0 0l-.004.001-.002-.002-.002-.002-.001-.002-.002-.003-.002-.003-.001-.004h-.001v-.003h-.001l-.002-.003h-.001l-.002-.003-.001-.002-.002-.003h-.002l-.003-.003-.002-.002h-.001l-.003-.002-.003-.002h-.001l-.003-.002h-.001l-.003-.001-.003-.001h-.001l-.002-.001h-.001l-.003-.001h-.001a1.05 1.05 0 0 0-.004 0h-.002c-.002 0-.003 0-.004 0h-.001c-.002 0-.003 0-.004 0h-.002c-.002 0-.003 0-.004 0h-.001c-.002 0-.003 0-.004 0l-.004-.001h-.001c-.002 0-.003 0-.004 0l-.003-.001h-.001l-.003-.001-.002-.001h-.001l-.003-.001h-.001l-.002-.001-.003-.001h-.001l-.002-.001c-.244-.077-.45-.113-.59-.113c-.144 0-.35.04-.596.117l-.002.001h-.001l-.003.001-.002.001h-.001l-.003.001h-.001l-.002.001.003.001h.001l.002.001a.965.965 0 0 1 .598.02l.003-.001h.001l.003-.001.002-.001h.001l.003-.002h.001l.002-.002.003-.002h.001l.003-.002.002-.003h.002l.002-.003.001-.003h.001l.002-.003.001-.003h.001l.001-.004v-.002h.001c-.846-.274-1.14-.368-1.14-.368l-.348.113a.964.964 0 0 1-.733.766l-.098.332z"/></svg> <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM5.057 7.52a.75.75 0 0 1 .652.873l-.433 3.5a.75.75 0 0 1-1.478-.18l.433-3.5a.75.75 0 0 1 .826-.693ZM9.25 3.126a.75.75 0 0 1 .75-.75h.001a.75.75 0 0 1 .75.75v.001a.75.75 0 0 1-.75.75h-.001a.75.75 0 0 1-.75-.75Zm3.5 0a.75.75 0 0 1 .75-.75h.001a.75.75 0 0 1 .75.75v.001a.75.75 0 0 1-.75.75h-.001a.75.75 0 0 1-.75-.75ZM5.5 11.5a1 1 0 0 1 1-1h9.5a1 1 0 0 1 1 1v.793a.75.75 0 0 0 .22.53l.882.882a1.75 1.75 0 0 1 0 2.474l-.882.882a.75.75 0 0 0-.22.53V18a1 1 0 0 1-1 1H6.5a1 1 0 0 1-1-1v-6.5Z"/></svg> <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path d="M1 11.75a1.25 1.25 0 1 0 2.5 0v-7.5a1.25 1.25 0 1 0-2.5 0v7.5ZM5.057 12.48a.75.75 0 0 0 .652-.873l-.433-3.5a.75.75 0 0 0-1.478.18l.433 3.5a.75.75 0 0 0 .826.693Zm4.193 4.394a.75.75 0 0 0 .75.75h.001a.75.75 0 0 0 .75-.75v-.001a.75.75 0 0 0-.75-.75h-.001a.75.75 0 0 0-.75.75Zm3.5 0a.75.75 0 0 0 .75.75h.001a.75.75 0 0 0 .75-.75v-.001a.75.75 0 0 0-.75-.75h-.001a.75.75 0 0 0-.75.75ZM5.5 8.5A1 1 0 0 0 6.5 9.5H16a1 1 0 0 0 1-1v-.793a.75.75 0 0 1 .22-.53l.882-.882a1.75 1.75 0 0 0 0-2.474l-.882-.882a.75.75 0 0 1-.22-.53V2a1 1 0 0 0-1-1H6.5a1 1 0 0 0-1 1v6.5Z" /></svg> <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
 }
+
+// =================== NUOVA FUNZIONE copyEmbedCode CON IFRAME CORRETTO ===================
 function copyEmbedCode(postId) {
     const post = allPosts.find(p => p.id === postId); if (!post) return;
 
@@ -1734,7 +1748,10 @@ function copyEmbedCode(postId) {
     }
 
     const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    
+    // --- MODIFICA CHIAVE QUI ---
+    // Sostituisci le virgolette doppie con &quot; per un srcdoc valido
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato!');
@@ -1742,6 +1759,7 @@ function copyEmbedCode(postId) {
         alert('Errore nel copiare il codice.');
     });
 }
+
 function renderPosts(posts) {
     const container = document.getElementById('postsContainer'); container.innerHTML = '';
     posts.forEach(post => container.appendChild(createPostElement(post)));
