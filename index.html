@@ -741,7 +741,6 @@ img.onclick = () => insertSticker(`stiker${i}.png`);
 stickerPicker.appendChild(img);
 }
 }
-// MODIFICA: La funzione inserisce l'URL completo per garantire la visibilità negli iframe
 function insertSticker(stickerPath) {
     const postText = document.getElementById('postText');
     const fullStickerUrl = `https://nexiflow.netlify.app/${stickerPath}`;
@@ -781,7 +780,6 @@ let currentVideoPageFormat = 'vertical';
 let newVideoFormat = 'horizontal';
 let currentOpenChat = { id: null, type: null };
 let pollingInterval = null;
-// MODIFICA: Aggiunta una variabile temporanea per il processo di recupero
 let tempRecoveryData = null;
 
 
@@ -789,21 +787,17 @@ function showElement(elementId) { document.getElementById(elementId).classList.r
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
 
-// MODIFICA: Logica di accesso Google migliorata per gestire il recupero sicuro dell'account
 function handleCredentialResponse(response) {
     const decodedToken = parseJwt(response.credential);
     let user = allUsers.find(u => u.email === decodedToken.email);
 
     if (user) {
-        // L'utente esiste, procedi con il login normale
         currentUser = user;
         localStorage.setItem("currentUserEmail", currentUser.email);
         showAppContent();
     } else {
-        // L'utente non esiste, controlliamo se ci sono vecchi post (recupero account)
         const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
         if (oldPost) {
-            // Post trovati! Inizia il flusso di recupero sicuro
             alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero del tuo account, imposta una password per Nexiflow.");
             tempRecoveryData = {
                 name: decodedToken.name,
@@ -817,26 +811,23 @@ function handleCredentialResponse(response) {
             };
             document.getElementById('setPasswordModal').classList.add('active');
         } else {
-            // Nessun post trovato, è un utente veramente nuovo
             const newUser = {
                 name: decodedToken.name,
                 email: decodedToken.email,
                 profilePic: decodedToken.picture,
                 bio: "Accesso tramite Google",
-                password: null, // Gli utenti Google non hanno password di default
+                password: null,
                 country: "",
                 blockedUsers: [],
                 followers: [],
                 following: []
             };
-            // Salviamo temporaneamente i dati e chiediamo il paese
             currentUser = newUser;
             document.getElementById('countryModal').classList.add('active');
         }
     }
 }
 
-// MODIFICA: Nuova funzione per completare il recupero dell'account dopo l'impostazione della password
 async function completeAccountRecovery() {
     const password = document.getElementById('recoveryPassword').value;
     if (password.length < 6) {
@@ -844,7 +835,6 @@ async function completeAccountRecovery() {
         return;
     }
 
-    // Aggiungi la password ai dati temporanei e crea l'utente
     tempRecoveryData.password = password;
     currentUser = tempRecoveryData;
     allUsers.push(currentUser);
@@ -859,7 +849,7 @@ async function completeAccountRecovery() {
         alert("Si è verificato un errore durante il recupero dell'account.");
         console.error(err);
     } finally {
-        tempRecoveryData = null; // Pulisci i dati temporanei
+        tempRecoveryData = null;
     }
 }
 
@@ -872,7 +862,6 @@ function saveCountry() {
     }
     currentUser.country = country;
     
-    // Controlla se l'utente esiste già, altrimenti aggiungilo
     if (!allUsers.find(u => u.email === currentUser.email)) {
         allUsers.push(currentUser);
     }
@@ -1049,7 +1038,6 @@ const customPicInput = document.getElementById('customProfilePicInput');
 if (customPicInput) customPicInput.value = '';
 }
 
-// NUOVA FUNZIONE DI REGISTRAZIONE CON RECUPERO ACCOUNT
 async function registerUser() {
     const name = document.getElementById('registerName').value.trim();
     const email = document.getElementById('registerEmail').value.trim();
@@ -1066,7 +1054,6 @@ async function registerUser() {
         return;
     }
 
-    // LOGICA DI RECUPERO ACCOUNT
     const oldPost = allPosts.find(p => p.authorEmail === email);
     let recoveredData = {};
     if (oldPost) {
@@ -1098,22 +1085,35 @@ async function registerUser() {
 }
 
 
+// MODIFICA: Funzione di login estesa per gestire il recupero dell'account
 async function loginUser() {
-const email = document.getElementById('loginEmail').value.trim();
-const password = document.getElementById('loginPassword').value.trim();
-const user = allUsers.find(u => u.email === email);
-if (user) {
-if (user.password === password) {
-currentUser = user;
-localStorage.setItem("currentUserEmail", email);
-alert(`Benvenuto, ${currentUser.name}!`);
-showAppContent();
-} else {
-alert("Password non corretta. Riprova.");
-}
-} else {
-alert("Utente non trovato. Controlla l'email o registrati.");
-}
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const user = allUsers.find(u => u.email === email);
+
+    if (user) {
+        // L'utente esiste, controlla la password
+        if (user.password === password) {
+            currentUser = user;
+            localStorage.setItem("currentUserEmail", email);
+            alert(`Benvenuto, ${currentUser.name}!`);
+            showAppContent();
+        } else {
+            alert("Password non corretta. Riprova.");
+        }
+    } else {
+        // L'utente non esiste, controlla se ci sono post da recuperare
+        const oldPost = allPosts.find(p => p.authorEmail === email);
+        if (oldPost) {
+            // Guida l'utente alla registrazione per recuperare l'account
+            alert("Nessun account trovato con questa email, ma abbiamo rilevato dei post a tuo nome. Per recuperarli, registrati di nuovo usando la stessa email.");
+            showRegisterPage();
+            document.getElementById('registerEmail').value = email; // Pre-compila l'email
+        } else {
+            // Nessun account e nessun post, utente veramente non trovato
+            alert("Utente non trovato. Controlla l'email o registrati.");
+        }
+    }
 }
 function logoutUser() {
 currentUser = null;
@@ -1623,16 +1623,13 @@ function createPostElement(post) {
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
 }
-// MODIFICA: Funzione aggiornata per usare URL assoluti per foto profilo e sticker
 function copyEmbedCode(postId) {
     const post = allPosts.find(p => p.id === postId); if (!post) return;
 
     const baseUrl = "https://nexiflow.netlify.app/";
 
-    // Converte l'URL della foto profilo in assoluto se non lo è già
     const authorPicUrl = post.authorPic.startsWith('http') ? post.authorPic : baseUrl + post.authorPic;
     
-    // Converte gli URL degli sticker/immagini nel contenuto del post
     let processedContent = post.content;
     if (post.type === 'text') {
         processedContent = post.content.replace(/src="stiker/g, `src="${baseUrl}stiker`);
@@ -1649,7 +1646,7 @@ function copyEmbedCode(postId) {
     }
 
     const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato!');
@@ -1692,7 +1689,6 @@ async function deletePost(id) {
     const post = allPosts.find(p => p.id === id); if (!post) return;
     if (post.authorEmail !== currentUser.email) { alert("Puoi eliminare solo i tuoi post."); return; }
 
-    // MODIFICA: Logica di conferma password migliorata
     if (!currentUser.password) {
         alert("Per eliminare i post, devi prima impostare una password per il tuo account Nexiflow nelle Impostazioni. Questo è necessario anche se accedi con Google.");
         showSettingsPage();
@@ -1700,7 +1696,7 @@ async function deletePost(id) {
     }
 
     const password = prompt("Inserisci la tua password di Nexiflow per confermare l'eliminazione:");
-    if (password === null) return; // L'utente ha annullato
+    if (password === null) return;
     if (password !== currentUser.password) {
         alert("Password non corretta.");
         return;
