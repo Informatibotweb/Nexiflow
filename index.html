@@ -787,21 +787,17 @@ function showElement(elementId) { document.getElementById(elementId).classList.r
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
 
-// MODIFICA: La funzione ora gestisce la creazione immediata di un nuovo utente senza chiedere il paese.
 async function handleCredentialResponse(response) {
     const decodedToken = parseJwt(response.credential);
     let user = allUsers.find(u => u.email === decodedToken.email);
 
     if (user) {
-        // L'utente esiste, procedi con il login normale
         currentUser = user;
         localStorage.setItem("currentUserEmail", currentUser.email);
         showAppContent();
     } else {
-        // L'utente non esiste, controlliamo se ci sono vecchi post (recupero account)
         const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
         if (oldPost) {
-            // Post trovati! Inizia il flusso di recupero sicuro
             alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero del tuo account, imposta una password per Nexiflow.");
             tempRecoveryData = {
                 name: decodedToken.name,
@@ -815,14 +811,14 @@ async function handleCredentialResponse(response) {
             };
             document.getElementById('setPasswordModal').classList.add('active');
         } else {
-            // Nessun post trovato, è un utente veramente nuovo. Creazione e accesso immediati.
+            // MODIFICA: Creazione e accesso immediati per un nuovo utente Google, senza chiedere il paese.
             const newUser = {
                 name: decodedToken.name,
                 email: decodedToken.email,
                 profilePic: decodedToken.picture,
                 bio: "Accesso tramite Google",
                 password: null, 
-                country: "", // Il paese viene lasciato vuoto di default
+                country: "",
                 blockedUsers: [],
                 followers: [],
                 following: []
@@ -837,7 +833,7 @@ async function handleCredentialResponse(response) {
             } catch(err) {
                 alert("Errore durante la creazione del tuo account.");
                 console.error(err);
-                allUsers.pop(); // Rimuovi l'utente se il salvataggio fallisce
+                allUsers.pop();
             }
         }
     }
@@ -868,7 +864,6 @@ async function completeAccountRecovery() {
     }
 }
 
-// Questa funzione ora è deprecata per il login con Google, ma la lasciamo per usi futuri eventuali.
 function saveCountry() {
     const country = document.getElementById("countrySelect").value;
     if (!country) {
@@ -995,7 +990,7 @@ async function loadAllData() {
         }, {});
 
         renderPosts(allPosts);
-        checkForNewStatuses(); // Controlla le notifiche per gli stati
+        checkForNewStatuses();
 
     } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
@@ -1409,11 +1404,10 @@ function openStatusViewer(authorEmail) {
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     if (userStatuses.length === 0) return;
     
-    // AGGIUNGI STATI AI VISTI
     let seenStatuses = getSeenStatuses();
     userStatuses.forEach(s => { if (!seenStatuses.includes(s.id)) seenStatuses.push(s.id); });
     setSeenStatuses(seenStatuses);
-    checkForNewStatuses(); // Aggiorna il pallino
+    checkForNewStatuses();
 
     statusViewerData.userStatuses = userStatuses; statusViewerData.currentIndex = 0;
     const modal = document.getElementById('statusModal');
@@ -1481,39 +1475,24 @@ document.getElementById('statusUploadInput').addEventListener('change', async fu
 // ========================= CODICE FOLLOWER (CORRETTO E SICURO) ============================
 async function toggleFollow(targetUserEmail) {
     if (!currentUser || !targetUserEmail || currentUser.email === targetUserEmail) return;
-
-    // Lavora sempre sulla copia master dei dati per evitare inconsistenze
     const userFollowing = allUsers.find(u => u.email === currentUser.email);
     const userToFollow = allUsers.find(u => u.email === targetUserEmail);
-
     if (!userFollowing || !userToFollow) {
         console.error("Azione Follow fallita: utente non trovato nei dati locali.");
         return;
     }
-
-    // Assicura che gli array esistano (per compatibilità con vecchi account)
     userFollowing.following = userFollowing.following || [];
     userToFollow.followers = userToFollow.followers || [];
-
     const isFollowing = userFollowing.following.includes(targetUserEmail);
-
     if (isFollowing) {
-        // Unfollow: Rimuovi l'email da entrambi gli array
         userFollowing.following = userFollowing.following.filter(email => email !== targetUserEmail);
         userToFollow.followers = userToFollow.followers.filter(email => email !== userFollowing.email);
     } else {
-        // Follow: Aggiungi l'email a entrambi gli array
         userFollowing.following.push(targetUserEmail);
         userToFollow.followers.push(userFollowing.email);
     }
-    
-    // Aggiorna l'oggetto currentUser globale per riflettere le modifiche immediatamente nell'UI
     currentUser = userFollowing;
-
-    // Salva l'intero array aggiornato sul server
     await updateUsersOnServer(allUsers);
-    
-    // Ricarica la pagina del profilo per mostrare il nuovo stato
     showUserProfile(targetUserEmail);
 }
 // =================================== FINE CODICE FOLLOWER ===================================
@@ -1633,6 +1612,7 @@ function createPostElement(post) {
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
 }
+// MODIFICA: La funzione ora converte correttamente le virgolette per l'attributo srcdoc
 function copyEmbedCode(postId) {
     const post = allPosts.find(p => p.id === postId); if (!post) return;
 
@@ -1656,7 +1636,9 @@ function copyEmbedCode(postId) {
     }
 
     const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    
+    // La correzione chiave è qui: .replace(/"/g, '&quot;')
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato!');
