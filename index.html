@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BHXQ3M8FYD"></script>
+<script async src="https://www.googletagmanager.com/gtag/js/id=G-BHXQ3M8FYD"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -787,17 +787,21 @@ function showElement(elementId) { document.getElementById(elementId).classList.r
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
 
-function handleCredentialResponse(response) {
+// MODIFICA: La funzione ora gestisce la creazione immediata di un nuovo utente senza chiedere il paese.
+async function handleCredentialResponse(response) {
     const decodedToken = parseJwt(response.credential);
     let user = allUsers.find(u => u.email === decodedToken.email);
 
     if (user) {
+        // L'utente esiste, procedi con il login normale
         currentUser = user;
         localStorage.setItem("currentUserEmail", currentUser.email);
         showAppContent();
     } else {
+        // L'utente non esiste, controlliamo se ci sono vecchi post (recupero account)
         const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
         if (oldPost) {
+            // Post trovati! Inizia il flusso di recupero sicuro
             alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero del tuo account, imposta una password per Nexiflow.");
             tempRecoveryData = {
                 name: decodedToken.name,
@@ -811,19 +815,30 @@ function handleCredentialResponse(response) {
             };
             document.getElementById('setPasswordModal').classList.add('active');
         } else {
+            // Nessun post trovato, è un utente veramente nuovo. Creazione e accesso immediati.
             const newUser = {
                 name: decodedToken.name,
                 email: decodedToken.email,
                 profilePic: decodedToken.picture,
                 bio: "Accesso tramite Google",
-                password: null,
-                country: "",
+                password: null, 
+                country: "", // Il paese viene lasciato vuoto di default
                 blockedUsers: [],
                 followers: [],
                 following: []
             };
-            currentUser = newUser;
-            document.getElementById('countryModal').classList.add('active');
+            
+            allUsers.push(newUser);
+            try {
+                await updateUsersOnServer(allUsers);
+                currentUser = newUser;
+                localStorage.setItem("currentUserEmail", currentUser.email);
+                showAppContent();
+            } catch(err) {
+                alert("Errore durante la creazione del tuo account.");
+                console.error(err);
+                allUsers.pop(); // Rimuovi l'utente se il salvataggio fallisce
+            }
         }
     }
 }
@@ -853,7 +868,7 @@ async function completeAccountRecovery() {
     }
 }
 
-
+// Questa funzione ora è deprecata per il login con Google, ma la lasciamo per usi futuri eventuali.
 function saveCountry() {
     const country = document.getElementById("countrySelect").value;
     if (!country) {
@@ -1085,14 +1100,12 @@ async function registerUser() {
 }
 
 
-// MODIFICA: Funzione di login estesa per gestire il recupero dell'account
 async function loginUser() {
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     const user = allUsers.find(u => u.email === email);
 
     if (user) {
-        // L'utente esiste, controlla la password
         if (user.password === password) {
             currentUser = user;
             localStorage.setItem("currentUserEmail", email);
@@ -1102,15 +1115,12 @@ async function loginUser() {
             alert("Password non corretta. Riprova.");
         }
     } else {
-        // L'utente non esiste, controlla se ci sono post da recuperare
         const oldPost = allPosts.find(p => p.authorEmail === email);
         if (oldPost) {
-            // Guida l'utente alla registrazione per recuperare l'account
             alert("Nessun account trovato con questa email, ma abbiamo rilevato dei post a tuo nome. Per recuperarli, registrati di nuovo usando la stessa email.");
             showRegisterPage();
-            document.getElementById('registerEmail').value = email; // Pre-compila l'email
+            document.getElementById('registerEmail').value = email;
         } else {
-            // Nessun account e nessun post, utente veramente non trovato
             alert("Utente non trovato. Controlla l'email o registrati.");
         }
     }
