@@ -13,38 +13,37 @@ gtag('config', 'G-BHXQ3M8FYD');
 <title>Nexiflow™ by Nexiquar</title>
 <link rel="icon" type="image/png" href="nexiflow.png">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;500;700&display=swap');
 
 /* ==============================================================
-   RADICAL DESIGN OVERHAUL - by Gemini
-   Stessa struttura CSS originale, valori completamente cambiati.
+   HALLOWEEN THEME OVERHAUL - by Gemini
    ==============================================================
 */
 :root {
-    /* Palette di colori e variabili completamente nuove */
-    --primary: #10B981; /* Verde Menta Vibrante */
-    --primary-dark: #0F996B;
-    --secondary: #6B7280;
-    --accent: #F59E0B;
-    --success: #10B981;
-    --danger: #EF4444;
+    /* Palette di colori HALLOWEEN */
+    --primary: #FF6700; /* Arancione Zucca */
+    --primary-dark: #D45600;
+    --secondary: #A9A9A9; /* Grigio Ragnatela */
+    --accent: #6E26A5; /* Viola Spettrale */
+    --success: #50C878; /* Verde Smeraldo (pozione) */
+    --danger: #DC143C; /* Rosso Sangue */
     --warning: #F59E0B;
 
-    /* Palette Light Mode */
-    --bg-primary: #F9FAFB;
+    /* Palette Light Mode "Casa Infestata" */
+    --bg-primary: #f5f5f5; /* Grigio Nebbia */
     --bg-secondary: #FFFFFF;
-    --bg-tertiary: #F3F4F6;
-    --text-primary: #111827;
+    --bg-tertiary: #E8E8E8;
+    --text-primary: #121212; /* Nero Profondo */
     --text-secondary: #4B5563;
-    --text-tertiary: #9CA3AF;
-    --border-light: #E5E7EB;
-    --border-medium: #D1D5DB;
+    --text-tertiary: #808080;
+    --border-light: #DCDCDC;
+    --border-medium: #C0C0C0;
 
-    /* Ombre più morbide e diffuse */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 0 35px rgba(0, 0, 0, 0.07);
+    /* Ombre inquietanti */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.15);
+    --shadow-lg: 0 10px 15px -3px rgb(255 103 0 / 0.2), 0 4px 6px -4px rgb(255 103 0 / 0.2);
+    --shadow-xl: 0 0 35px rgba(0, 0, 0, 0.1);
 
     /* Raggi degli angoli rivisti */
     --radius-sm: 8px;
@@ -63,12 +62,12 @@ gtag('config', 'G-BHXQ3M8FYD');
 }
 
 body.dark-mode {
-    /* Palette Dark Mode ad alto contrasto */
-    --bg-primary: #111827;
-    --bg-secondary: #1F2937;
-    --bg-tertiary: #374151;
-    --text-primary: #F9FAFB;
-    --text-secondary: #D1D5DB;
+    /* Palette Dark Mode "Notte di Terrore" */
+    --bg-primary: #121212; /* Nero Abissale */
+    --bg-secondary: #1E1E1E; /* Carbone Scuro */
+    --bg-tertiary: #2C2C2C; /* Grigio Tomba */
+    --text-primary: #E0E0E0; /* Bianco Fantasma */
+    --text-secondary: #A0A0A0;
     --text-tertiary: #6B7280;
     --border-light: #374151;
     --border-medium: #4B5563;
@@ -78,18 +77,27 @@ body.dark-mode {
 
 body {
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--bg-primary);
+    background-color: var(--bg-primary);
+    background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
     color: var(--text-primary);
     line-height: 1.6;
     transition: all 0.3s ease;
     min-height: 100vh;
 }
 
+.brand-name, .auth-card h2, .chat-sidebar-header h3 {
+    font-family: 'Creepster', cursive;
+    letter-spacing: 2px;
+    font-weight: normal;
+}
+.brand-name { font-size: 2rem; }
+.auth-card h2 { font-size: 2.25rem; }
+
 .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-md); }
 
 /* Stile Header 'Glassmorphism' */
 header {
-    background: rgba(249, 250, 251, 0.8);
+    background: rgba(245, 245, 245, 0.8); /* Grigio Nebbia Trasparente */
     border-bottom: 1px solid var(--border-light);
     padding: var(--spacing-md) 0;
     position: sticky;
@@ -99,13 +107,12 @@ header {
     -webkit-backdrop-filter: blur(16px);
 }
 body.dark-mode header {
-    background: rgba(17, 24, 39, 0.8);
+    background: rgba(18, 18, 18, 0.8); /* Nero Abissale Trasparente */
 }
 
 .header-content { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); }
 .logo-section { display: flex; align-items: center; gap: var(--spacing-md); }
 #logo { height: 40px; width: auto; }
-.brand-name { font-size: 1.6rem; font-weight: 700; color: var(--text-primary); text-decoration: none; }
 .header-nav { display: flex; align-items: center; gap: var(--spacing-sm); }
 
 .nav-button {
@@ -140,7 +147,7 @@ body.dark-mode header {
     border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-primary);
     font-size: 0.9rem; transition: all 0.2s ease;
 }
-#searchInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+#searchInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.2); }
 #searchResults {
     position: absolute; top: 110%; left: 0; right: 0; background: var(--bg-secondary);
     border: 1px solid var(--border-light); border-radius: var(--radius-md);
@@ -188,7 +195,7 @@ body.dark-mode header {
     background: var(--bg-primary); color: var(--text-primary); font-size: 1rem;
     transition: all 0.2s ease; resize: vertical;
 }
-.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
+.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.2); }
 
 .publish-button {
     padding: var(--spacing-md) var(--spacing-xl); background: var(--primary); color: white; border: none;
@@ -242,7 +249,7 @@ body.dark-mode header {
     border: 1px solid var(--border-light); border-radius: var(--radius-full); background: var(--bg-tertiary);
     color: var(--text-secondary); font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease;
 }
-.vote-button:hover { border-color: var(--primary); color: var(--primary); background: rgba(16, 185, 129, 0.1); }
+.vote-button:hover { border-color: var(--primary); color: var(--primary); background: rgba(255, 103, 0, 0.1); }
 .vote-count { font-weight: 600; color: var(--text-primary); }
 .post-actions-footer { display: flex; gap: var(--spacing-sm); }
 .footer-button {
@@ -272,7 +279,6 @@ body.dark-mode header {
     background: var(--bg-secondary); padding: var(--spacing-2xl); border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl); width: 100%; max-width: 400px; border: 1px solid var(--border-light);
 }
-.auth-card h2 { text-align: center; margin-bottom: var(--spacing-xl); font-size: 1.75rem; font-weight: 700; }
 .auth-form { display: flex; flex-direction: column; gap: var(--spacing-lg); }
 .auth-input {
     padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-md);
@@ -342,7 +348,6 @@ body.dark-mode header {
     justify-content: space-between;
     align-items: center;
 }
-.chat-sidebar-header h3 { font-size: 1.25rem; }
 .new-chat-buttons button {
     background: transparent; border: none; font-size: 1.5rem; cursor: pointer;
     color: var(--text-secondary); margin-left: var(--spacing-sm);
@@ -438,7 +443,7 @@ footer {
     .header-content { flex-wrap: wrap; gap: var(--spacing-md); }
     .header-nav { order: 3; width: 100%; justify-content: center; flex-wrap: wrap; }
     .search-container { min-width: 150px; }
-    .brand-name { font-size: 1.25rem; }
+    .brand-name { font-size: 1.5rem; }
     .post { padding: var(--spacing-lg); }
     .post-footer { flex-direction: column; align-items: stretch; }
     .vote-section { justify-content: center; }
@@ -535,7 +540,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div class="container">
 <div class="header-content">
 <div class="logo-section">
-<img id="logo" src="logo1.png" alt="Nexiflow Logo">
+<img id="logo" src="logo-halloween-light.png" alt="Nexiflow Logo">
 <a href="#" class="brand-name" onclick="showMainContent()">Nexiflow</a>
 </div>
 <div class="search-container">
@@ -637,7 +642,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
     </div>
     <div class="chat-main">
         <div id="chat-welcome-screen">
-            <img src="logo1.png" alt="Nexiflow Logo">
+            <img src="logo-halloween-light.png" alt="Nexiflow Logo">
             <h2>Benvenuto nella Chat di Nexiflow</h2>
             <p>Seleziona una conversazione per iniziare a chattare.</p>
         </div>
@@ -1646,10 +1651,14 @@ async function toggleFollow(targetUserEmail) {
 
 
 function toggleTheme() {
-document.body.classList.toggle('dark-mode');
-const isDark = document.body.classList.contains('dark-mode');
-const logo = isDark ? 'logo2.png' : 'logo1.png';
-document.getElementById('logo').src = logo;
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    const logo = isDark ? 'logo-halloween-dark.png' : 'logo-halloween-light.png';
+    document.getElementById('logo').src = logo;
+    const welcomeLogo = document.querySelector('#chat-welcome-screen img');
+    if (welcomeLogo) {
+        welcomeLogo.src = logo;
+    }
 }
 function toggleInput() { document.getElementById('inputArea').classList.toggle('active'); }
 function setPostType(type, button) {
@@ -1780,8 +1789,10 @@ function copyEmbedCode(postId) {
         contentHtml = `<p style="margin-bottom: 8px; white-space: pre-wrap; word-wrap: break-word;">${post.description || ''}</p><iframe src="${post.type === 'video' ? embedFromLink(post.content) : srcFromEmbed(post.content)}" style="width: 100%; height: 250px; border: none; border-radius: 8px;" allowfullscreen></iframe>`;
     }
 
-    const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#FF6700;text-decoration:none">Nexiflow™</a></div></div>`;
+    
+    // *** FIX: Sostituisci le virgolette con &quot; per un srcdoc valido ***
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato!');
