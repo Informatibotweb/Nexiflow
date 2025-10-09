@@ -547,7 +547,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
     <button class="nav-button" onclick="showChatPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2z"/></svg>Chat</button>
     <button class="nav-button" onclick="showVideoPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/></svg>Video</button>
     <button class="nav-button primary" onclick="showMainContent(); toggleInput()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg>Nuovo Post</button>
-    <button class="nav-button" onclick="showSettingsPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413-1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858"/></svg>Impostazioni</button>
+    <button class="nav-button" onclick="showSettingsPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c-1.4-.413-1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858"/></svg>Impostazioni</button>
     <button class="theme-toggle nav-button" onclick="toggleTheme()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278"/></svg></button>
     <button class="nav-button" onclick="logoutUser()">Logout</button>
 </div>
@@ -865,7 +865,7 @@ function showElement(elementId) { document.getElementById(elementId).classList.r
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
 
-// =================== NUOVA LOGICA STABILE PER LA GESTIONE ACCOUNT ===================
+// =================== LOGICA STABILE PER LA GESTIONE ACCOUNT ===================
 async function handleCredentialResponse(response) {
     const decodedToken = parseJwt(response.credential);
     
@@ -976,7 +976,6 @@ async function registerUser() {
         console.error(err);
     }
 }
-// =================== FINE LOGICA STABILE PER LA GESTIONE ACCOUNT ===================
 
 async function completeAccountRecovery() {
     const password = document.getElementById('recoveryPassword').value;
@@ -1003,31 +1002,6 @@ async function completeAccountRecovery() {
     }
 }
 
-// Questa funzione ora è deprecata per il login con Google, ma la lasciamo per usi futuri eventuali.
-function saveCountry() {
-    const country = document.getElementById("countrySelect").value;
-    if (!country) {
-        alert("Seleziona un Paese!");
-        return;
-    }
-    currentUser.country = country;
-    
-    if (!allUsers.find(u => u.email === currentUser.email)) {
-        allUsers.push(currentUser);
-    }
-
-    updateUsersOnServer(allUsers)
-        .then(() => {
-            localStorage.setItem("currentUserEmail", currentUser.email);
-            hideElement("countryModal");
-            showAppContent();
-        })
-        .catch(err => {
-            alert("Errore nel salvataggio del profilo.");
-            console.error(err);
-        });
-}
-
 function parseJwt(token) {
 var base64Url = token.split('.')[1];
 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -1037,7 +1011,7 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 return JSON.parse(jsonPayload);
 }
 
-// =================== DATA POLLING & INTELLIGENT RENDERING ===================
+// =================== DATA POLLING & FUNZIONI VARIE ===================
 
 function startPolling() {
     if (pollingInterval) clearInterval(pollingInterval);
@@ -1066,7 +1040,6 @@ async function refreshData() {
         const newMessagesData = await messagesRes.json();
         const newStatusData = await statusRes.json();
 
-        // Aggiorna post
         const newPosts = newPostsData.record.posts || [];
         if (newPosts.length > allPosts.length) {
             const addedPosts = newPosts.slice(0, newPosts.length - allPosts.length);
@@ -1074,7 +1047,6 @@ async function refreshData() {
             renderNewPosts(addedPosts);
         }
 
-        // Aggiorna messaggi
         const newMessagesRecord = newMessagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
         if (JSON.stringify(allMessagesData) !== JSON.stringify(newMessagesRecord)) {
             allMessagesData = newMessagesRecord;
@@ -1084,7 +1056,6 @@ async function refreshData() {
             }
         }
 
-        // Aggiorna stati e notifica
         const newStatuses = newStatusData.record.statuses || [];
         if (JSON.stringify(allStatuses) !== JSON.stringify(newStatuses)) {
             allStatuses = newStatuses;
@@ -1130,7 +1101,7 @@ async function loadAllData() {
         }, {});
 
         renderPosts(allPosts);
-        checkForNewStatuses(); // Controlla le notifiche per gli stati
+        checkForNewStatuses();
 
     } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
@@ -1262,7 +1233,7 @@ const currentPic = picSelector.querySelector(`img[data-value='${currentUser.prof
 if (currentPic) { currentPic.classList.add('selected'); }
 }
 
-// =================================== CODICE CHAT (INVARIATO) ===================================
+// =================================== CODICE CHAT ===================================
 function showChatPage() {
     if (!currentUser) { alert("Devi essere loggato per usare la chat."); return; }
     hideElement('mainContent'); hideElement('videoPage'); hideElement('userProfilePage');
@@ -1445,7 +1416,7 @@ function getConversationKey(email1, email2) { return [email1, email2].sort().joi
 // =================================== FINE CODICE CHAT ===================================
 
 
-// =================================== CODICE STATI CON NOTIFICA ===================================
+// =================================== CODICE STATI ===================================
 let statusViewerData = { currentIndex: 0, userStatuses: [], timeoutId: null };
 function getSeenStatuses() { return JSON.parse(localStorage.getItem('seenStatuses')) || []; }
 function setSeenStatuses(seenIds) { localStorage.setItem('seenStatuses', JSON.stringify(seenIds)); }
@@ -1497,11 +1468,10 @@ function openStatusViewer(authorEmail) {
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     if (userStatuses.length === 0) return;
     
-    // AGGIUNGI STATI AI VISTI
     let seenStatuses = getSeenStatuses();
     userStatuses.forEach(s => { if (!seenStatuses.includes(s.id)) seenStatuses.push(s.id); });
     setSeenStatuses(seenStatuses);
-    checkForNewStatuses(); // Aggiorna il pallino
+    checkForNewStatuses(); 
 
     statusViewerData.userStatuses = userStatuses; statusViewerData.currentIndex = 0;
     const modal = document.getElementById('statusModal');
@@ -1566,42 +1536,35 @@ document.getElementById('statusUploadInput').addEventListener('change', async fu
 // =================================== FINE CODICE STATI ===================================
 
 
-// ========================= CODICE FOLLOWER (CORRETTO E SICURO) ============================
+// ========================= CODICE FOLLOWER ============================
 async function toggleFollow(targetUserEmail) {
     if (!currentUser || !targetUserEmail || currentUser.email === targetUserEmail) return;
 
-    // Lavora sempre sulla copia master dei dati per evitare inconsistenze
     const userFollowing = allUsers.find(u => u.email === currentUser.email);
     const userToFollow = allUsers.find(u => u.email === targetUserEmail);
 
     if (!userFollowing || !userToFollow) {
-        console.error("Azione Follow fallita: utente non trovato nei dati locali.");
+        console.error("Azione Follow fallita: utente non trovato.");
         return;
     }
 
-    // Assicura che gli array esistano (per compatibilità con vecchi account)
     userFollowing.following = userFollowing.following || [];
     userToFollow.followers = userToFollow.followers || [];
 
     const isFollowing = userFollowing.following.includes(targetUserEmail);
 
     if (isFollowing) {
-        // Unfollow: Rimuovi l'email da entrambi gli array
         userFollowing.following = userFollowing.following.filter(email => email !== targetUserEmail);
         userToFollow.followers = userToFollow.followers.filter(email => email !== userFollowing.email);
     } else {
-        // Follow: Aggiungi l'email a entrambi gli array
         userFollowing.following.push(targetUserEmail);
         userToFollow.followers.push(userFollowing.email);
     }
     
-    // Aggiorna l'oggetto currentUser globale per riflettere le modifiche immediatamente nell'UI
     currentUser = userFollowing;
 
-    // Salva l'intero array aggiornato sul server
     await updateUsersOnServer(allUsers);
     
-    // Ricarica la pagina del profilo per mostrare il nuovo stato
     showUserProfile(targetUserEmail);
 }
 // =================================== FINE CODICE FOLLOWER ===================================
@@ -1701,7 +1664,7 @@ function srcFromEmbed(embedCode) {
 const parser = new DOMParser(); const doc = parser.parseFromString(embedCode, 'text/html'); const iframe = doc.querySelector('iframe'); return iframe ? iframe.src : '';
 }
 
-// =================== NUOVA FUNZIONE createPostElement CON ICONE MIGLIORATE ===================
+// =================== FUNZIONE MODIFICATA CON IMMAGINI PNG PER I LIKE ===================
 function createPostElement(post) {
     const postElement = document.createElement('div'); postElement.className = 'post'; postElement.dataset.id = post.id;
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
@@ -1718,13 +1681,12 @@ function createPostElement(post) {
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
         postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path d="M1 8.25a1.25 1.25 0 1 1 2.5 0v7.5a1.25 1.25 0 1 1-2.5 0v-7.5ZM5.057 7.52a.75.75 0 0 1 .652.873l-.433 3.5a.75.75 0 0 1-1.478-.18l.433-3.5a.75.75 0 0 1 .826-.693ZM9.25 3.126a.75.75 0 0 1 .75-.75h.001a.75.75 0 0 1 .75.75v.001a.75.75 0 0 1-.75.75h-.001a.75.75 0 0 1-.75-.75Zm3.5 0a.75.75 0 0 1 .75-.75h.001a.75.75 0 0 1 .75.75v.001a.75.75 0 0 1-.75.75h-.001a.75.75 0 0 1-.75-.75ZM5.5 11.5a1 1 0 0 1 1-1h9.5a1 1 0 0 1 1 1v.793a.75.75 0 0 0 .22.53l.882.882a1.75 1.75 0 0 1 0 2.474l-.882.882a.75.75 0 0 0-.22.53V18a1 1 0 0 1-1 1H6.5a1 1 0 0 1-1-1v-6.5Z"/></svg> <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="20" height="20"><path d="M1 11.75a1.25 1.25 0 1 0 2.5 0v-7.5a1.25 1.25 0 1 0-2.5 0v7.5ZM5.057 12.48a.75.75 0 0 0 .652-.873l-.433-3.5a.75.75 0 0 0-1.478.18l.433 3.5a.75.75 0 0 0 .826.693Zm4.193 4.394a.75.75 0 0 0 .75.75h.001a.75.75 0 0 0 .75-.75v-.001a.75.75 0 0 0-.75-.75h-.001a.75.75 0 0 0-.75.75Zm3.5 0a.75.75 0 0 0 .75.75h.001a.75.75 0 0 0 .75-.75v-.001a.75.75 0 0 0-.75-.75h-.001a.75.75 0 0 0-.75.75ZM5.5 8.5A1 1 0 0 0 6.5 9.5H16a1 1 0 0 0 1-1v-.793a.75.75 0 0 1 .22-.53l.882-.882a1.75 1.75 0 0 0 0-2.474l-.882-.882a.75.75 0 0 1-.22-.53V2a1 1 0 0 0-1-1H6.5a1 1 0 0 0-1 1v6.5Z" /></svg> <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')"><img src="pollicesu.png" alt="Like" style="width:16px; height:16px;"> <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')"><img src="pollicegiu.png" alt="Dislike" style="width:16px; height:16px;"> <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
 }
 
-// =================== NUOVA FUNZIONE copyEmbedCode CON IFRAME CORRETTO ===================
 function copyEmbedCode(postId) {
     const post = allPosts.find(p => p.id === postId); if (!post) return;
 
@@ -1749,8 +1711,6 @@ function copyEmbedCode(postId) {
 
     const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
     
-    // --- MODIFICA CHIAVE QUI ---
-    // Sostituisci le virgolette doppie con &quot; per un srcdoc valido
     const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
