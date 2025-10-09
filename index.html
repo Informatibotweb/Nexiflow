@@ -865,11 +865,12 @@ function showElement(elementId) { document.getElementById(elementId).classList.r
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
 function toggleElement(elementId) { document.getElementById(elementId).classList.toggle('hidden'); }
 
-// =================== LOGICA STABILE PER LA GESTIONE ACCOUNT ===================
+// MODIFICA: La funzione ora gestisce la creazione immediata di un nuovo utente senza chiedere il paese.
 async function handleCredentialResponse(response) {
     const decodedToken = parseJwt(response.credential);
     
-    // Controlla prima se l'utente esiste già nella lista locale
+    // FETCH LATEST USERS FIRST
+    await loadAllUsers();
     let user = allUsers.find(u => u.email === decodedToken.email);
 
     if (user) {
@@ -878,102 +879,51 @@ async function handleCredentialResponse(response) {
         localStorage.setItem("currentUserEmail", currentUser.email);
         showAppContent();
     } else {
-        // L'utente non esiste localmente.
-        // Verifichiamo sul server per essere sicuri e prevenire sovrascritture.
-        try {
-            const usersRes = await fetch(USER_URL + "/latest", { headers });
-            const freshUsersData = await usersRes.json();
-            const freshUsers = freshUsersData.record.users || [];
-            allUsers = freshUsers; // Aggiorna la nostra lista locale con quella più recente
+        // L'utente non esiste, controlliamo se ci sono vecchi post (recupero account)
+        const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
+        if (oldPost) {
+            // Post trovati! Inizia il flusso di recupero sicuro
+            alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero del tuo account, imposta una password per Nexiflow.");
+            tempRecoveryData = {
+                name: decodedToken.name,
+                email: decodedToken.email,
+                profilePic: decodedToken.picture,
+                bio: "Account recuperato tramite Google",
+                country: "",
+                blockedUsers: [],
+                followers: [],
+                following: []
+            };
+            document.getElementById('setPasswordModal').classList.add('active');
+        } else {
+            // Nessun post trovato, è un utente veramente nuovo. Creazione e accesso immediati.
+            const newUser = {
+                name: decodedToken.name,
+                email: decodedToken.email,
+                profilePic: decodedToken.picture,
+                bio: "Accesso tramite Google",
+                password: null, 
+                country: "", // Il paese viene lasciato vuoto di default
+                blockedUsers: [],
+                followers: [],
+                following: []
+            };
             
-            const userOnServer = allUsers.find(u => u.email === decodedToken.email);
-            
-            if (userOnServer) {
-                // L'utente esisteva sul server ma non localmente. Esegui il login.
-                currentUser = userOnServer;
-                localStorage.setItem("currentUserEmail", currentUser.email);
-                showAppContent();
-                return;
-            }
-
-            // Se l'utente non esiste nemmeno sul server, procedi con la creazione
-            const oldPost = allPosts.find(p => p.authorEmail === decodedToken.email);
-            if (oldPost) {
-                // Post trovati! Inizia il flusso di recupero sicuro
-                alert("Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero, imposta una password per Nexiflow.");
-                tempRecoveryData = {
-                    name: decodedToken.name, email: decodedToken.email, profilePic: decodedToken.picture,
-                    bio: "Account recuperato tramite Google", country: "", blockedUsers: [], followers: [], following: []
-                };
-                document.getElementById('setPasswordModal').classList.add('active');
-            } else {
-                // Nessun post trovato, è un utente veramente nuovo. Creazione e accesso.
-                const newUser = {
-                    name: decodedToken.name, email: decodedToken.email, profilePic: decodedToken.picture,
-                    bio: "Accesso tramite Google", password: null, country: "", 
-                    blockedUsers: [], followers: [], following: []
-                };
+            try {
+                // Append and update
+                const updatedUsers = await readLatestUsers();
+                updatedUsers.push(newUser);
+                await updateUsersOnServer(updatedUsers);
                 
-                allUsers.push(newUser); // Aggiungi alla lista aggiornata
-                await updateUsersOnServer(allUsers); // Salva la lista completa
+                allUsers = updatedUsers; // Update local state
                 currentUser = newUser;
                 localStorage.setItem("currentUserEmail", currentUser.email);
                 showAppContent();
-            }
-        } catch(err) {
-            alert("Errore durante la verifica o la creazione del tuo account.");
-            console.error(err);
-        }
-    }
-}
-
-async function registerUser() {
-    const name = document.getElementById('registerName').value.trim();
-    const email = document.getElementById('registerEmail').value.trim();
-    const password = document.getElementById('registerPassword').value.trim();
-    const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
-    let profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
-
-    if (!name || !email || !password) {
-        alert("Compila tutti i campi!");
-        return;
-    }
-
-    try {
-        // Scarica la lista utenti più recente prima di fare il controllo, per evitare race conditions.
-        const usersRes = await fetch(USER_URL + "/latest", { headers });
-        const freshUsersData = await usersRes.json();
-        const freshUsers = freshUsersData.record.users || [];
-        allUsers = freshUsers; // Usa sempre la lista più aggiornata
-
-        if (allUsers.find(u => u.email === email)) {
-            alert("Esiste già un utente con questa email.");
-            return;
-        }
-
-        const oldPost = allPosts.find(p => p.authorEmail === email);
-        let recoveredData = {};
-        if (oldPost) {
-            if (confirm("Abbiamo trovato dei post precedenti associati a questa email. Vuoi recuperare i dati del tuo vecchio profilo (nome, immagine)?")) {
-                recoveredData.name = oldPost.author;
-                recoveredData.profilePic = oldPost.authorPic;
-                alert(`Dati recuperati! Il tuo nome utente sarà "${recoveredData.name}". Potrai cambiarlo nelle impostazioni.`);
+            } catch(err) {
+                alert("Errore durante la creazione del tuo account.");
+                console.error(err);
             }
         }
-
-        const newUser = {
-            name: recoveredData.name || name, email, password,
-            profilePic: recoveredData.profilePic || profilePic,
-            bio: "", country: "", blockedUsers: [], followers: [], following: []
-        };
-
-        allUsers.push(newUser); // Aggiungi il nuovo utente alla lista aggiornata
-        await updateUsersOnServer(allUsers); // Salva la lista completa
-        alert("Registrazione completata! Ora puoi accedere.");
-        showLoginPage();
-    } catch(err) {
-        alert("Errore durante la registrazione. Riprova.");
-        console.error(err);
     }
 }
 
@@ -986,10 +936,13 @@ async function completeAccountRecovery() {
 
     tempRecoveryData.password = password;
     currentUser = tempRecoveryData;
-    allUsers.push(currentUser);
-
+    
     try {
-        await updateUsersOnServer(allUsers);
+        const updatedUsers = await readLatestUsers();
+        updatedUsers.push(currentUser);
+        await updateUsersOnServer(updatedUsers);
+
+        allUsers = updatedUsers; // Update local state
         localStorage.setItem("currentUserEmail", currentUser.email);
         document.getElementById('setPasswordModal').classList.remove('active');
         alert(`Account recuperato con successo! Benvenuto, ${currentUser.name}!`);
@@ -1002,6 +955,31 @@ async function completeAccountRecovery() {
     }
 }
 
+// Questa funzione ora è deprecata per il login con Google, ma la lasciamo per usi futuri eventuali.
+async function saveCountry() {
+    const country = document.getElementById("countrySelect").value;
+    if (!country) {
+        alert("Seleziona un Paese!");
+        return;
+    }
+    currentUser.country = country;
+    
+    try {
+        const users = await readLatestUsers();
+        if (!users.find(u => u.email === currentUser.email)) {
+            users.push(currentUser);
+        }
+        await updateUsersOnServer(users);
+        allUsers = users;
+        localStorage.setItem("currentUserEmail", currentUser.email);
+        hideElement("countryModal");
+        showAppContent();
+    } catch(err) {
+        alert("Errore nel salvataggio del profilo.");
+        console.error(err);
+    }
+}
+
 function parseJwt(token) {
 var base64Url = token.split('.')[1];
 var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -1011,7 +989,7 @@ return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
 return JSON.parse(jsonPayload);
 }
 
-// =================== DATA POLLING & FUNZIONI VARIE ===================
+// =================== DATA POLLING & INTELLIGENT RENDERING ===================
 
 function startPolling() {
     if (pollingInterval) clearInterval(pollingInterval);
@@ -1040,6 +1018,7 @@ async function refreshData() {
         const newMessagesData = await messagesRes.json();
         const newStatusData = await statusRes.json();
 
+        // Aggiorna post
         const newPosts = newPostsData.record.posts || [];
         if (newPosts.length > allPosts.length) {
             const addedPosts = newPosts.slice(0, newPosts.length - allPosts.length);
@@ -1047,6 +1026,7 @@ async function refreshData() {
             renderNewPosts(addedPosts);
         }
 
+        // Aggiorna messaggi
         const newMessagesRecord = newMessagesData.record || { privateMessages: {}, groupChats: {}, channels: {} };
         if (JSON.stringify(allMessagesData) !== JSON.stringify(newMessagesRecord)) {
             allMessagesData = newMessagesRecord;
@@ -1056,6 +1036,7 @@ async function refreshData() {
             }
         }
 
+        // Aggiorna stati e notifica
         const newStatuses = newStatusData.record.statuses || [];
         if (JSON.stringify(allStatuses) !== JSON.stringify(newStatuses)) {
             allStatuses = newStatuses;
@@ -1069,6 +1050,27 @@ async function refreshData() {
         console.error("Errore durante l'aggiornamento dei dati:", err);
     }
 }
+
+async function readLatestUsers() {
+    try {
+        const res = await fetch(USER_URL + "/latest", { headers });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return data.record.users || [];
+    } catch (err) {
+        console.error("Errore nel leggere gli utenti:", err);
+        return [];
+    }
+}
+
+async function loadAllUsers() {
+    allUsers = await readLatestUsers();
+    usersData = allUsers.reduce((map, user) => {
+        map[user.email] = user;
+        return map;
+    }, {});
+}
+
 
 async function loadAllData() {
     try {
@@ -1101,7 +1103,7 @@ async function loadAllData() {
         }, {});
 
         renderPosts(allPosts);
-        checkForNewStatuses();
+        checkForNewStatuses(); // Controlla le notifiche per gli stati
 
     } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
@@ -1158,6 +1160,58 @@ element.classList.add('selected');
 const customPicInput = document.getElementById('customProfilePicInput');
 if (customPicInput) customPicInput.value = '';
 }
+
+async function registerUser() {
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value.trim();
+    const selectedPic = document.querySelector('#registerProfilePicSelector .selected');
+    let profilePic = selectedPic ? selectedPic.dataset.value : 'profilo1.png';
+
+    if (!name || !email || !password) {
+        alert("Compila tutti i campi!");
+        return;
+    }
+    
+    // FETCH LATEST USERS FIRST
+    const existingUsers = await readLatestUsers();
+    
+    if (existingUsers.find(u => u.email === email)) {
+        alert("Esiste già un utente con questa email.");
+        return;
+    }
+
+    const oldPost = allPosts.find(p => p.authorEmail === email);
+    let recoveredData = {};
+    if (oldPost) {
+        if (confirm("Abbiamo trovato dei post precedenti associati a questa email. Vuoi provare a recuperare i dati del tuo vecchio profilo (nome, immagine)?")) {
+            recoveredData.name = oldPost.author;
+            recoveredData.profilePic = oldPost.authorPic;
+            alert(`Dati recuperati! Il tuo nome utente sarà "${recoveredData.name}". Potrai cambiarlo nelle impostazioni.`);
+        }
+    }
+
+    const newUser = {
+        name: recoveredData.name || name,
+        email,
+        password,
+        profilePic: recoveredData.profilePic || profilePic,
+        bio: "", country: "", blockedUsers: [],
+        followers: [], following: []
+    };
+
+    try {
+        existingUsers.push(newUser);
+        await updateUsersOnServer(existingUsers);
+        allUsers = existingUsers; // Update local state
+        alert("Registrazione completata! Ora puoi accedere.");
+        showLoginPage();
+    } catch(err) {
+        alert("Errore durante la registrazione.");
+        console.error(err);
+    }
+}
+
 
 async function loginUser() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -1233,7 +1287,7 @@ const currentPic = picSelector.querySelector(`img[data-value='${currentUser.prof
 if (currentPic) { currentPic.classList.add('selected'); }
 }
 
-// =================================== CODICE CHAT ===================================
+// =================================== CODICE CHAT (INVARIATO) ===================================
 function showChatPage() {
     if (!currentUser) { alert("Devi essere loggato per usare la chat."); return; }
     hideElement('mainContent'); hideElement('videoPage'); hideElement('userProfilePage');
@@ -1404,7 +1458,16 @@ async function blockAndReportUser() {
     const recipientName = usersData[recipientEmail].name;
     if (!confirm(`Sei sicuro di voler bloccare ${recipientName} e segnalare la conversazione? L'utente non potrà più inviarti messaggi.`)) return;
     if (!currentUser.blockedUsers) currentUser.blockedUsers = [];
-    if (!currentUser.blockedUsers.includes(recipientEmail)) { currentUser.blockedUsers.push(recipientEmail); await updateUsersOnServer(allUsers); }
+    if (!currentUser.blockedUsers.includes(recipientEmail)) { 
+        currentUser.blockedUsers.push(recipientEmail);
+        const users = await readLatestUsers();
+        const userIndex = users.findIndex(u => u.email === currentUser.email);
+        if (userIndex !== -1) {
+            users[userIndex] = currentUser;
+            await updateUsersOnServer(users);
+            allUsers = users;
+        }
+    }
     const messages = allMessagesData.privateMessages[currentOpenChat.id] || [];
     const last30Messages = messages.slice(-30);
     const reportBody = `Segnalazione utente:\n- Utente Segnalato: ${recipientName} (${recipientEmail})\n- Utente che Segnala: ${currentUser.name} (${currentUser.email})\n\nUltimi 30 messaggi:\n\n` + last30Messages.map(msg => `[${new Date(msg.date).toLocaleString('it-IT')}] ${usersData[msg.senderEmail].name}: ${msg.text}`).join('\n');
@@ -1416,7 +1479,7 @@ function getConversationKey(email1, email2) { return [email1, email2].sort().joi
 // =================================== FINE CODICE CHAT ===================================
 
 
-// =================================== CODICE STATI ===================================
+// =================================== CODICE STATI CON NOTIFICA ===================================
 let statusViewerData = { currentIndex: 0, userStatuses: [], timeoutId: null };
 function getSeenStatuses() { return JSON.parse(localStorage.getItem('seenStatuses')) || []; }
 function setSeenStatuses(seenIds) { localStorage.setItem('seenStatuses', JSON.stringify(seenIds)); }
@@ -1468,10 +1531,11 @@ function openStatusViewer(authorEmail) {
         .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
     if (userStatuses.length === 0) return;
     
+    // AGGIUNGI STATI AI VISTI
     let seenStatuses = getSeenStatuses();
     userStatuses.forEach(s => { if (!seenStatuses.includes(s.id)) seenStatuses.push(s.id); });
     setSeenStatuses(seenStatuses);
-    checkForNewStatuses(); 
+    checkForNewStatuses(); // Aggiorna il pallino
 
     statusViewerData.userStatuses = userStatuses; statusViewerData.currentIndex = 0;
     const modal = document.getElementById('statusModal');
@@ -1536,35 +1600,45 @@ document.getElementById('statusUploadInput').addEventListener('change', async fu
 // =================================== FINE CODICE STATI ===================================
 
 
-// ========================= CODICE FOLLOWER ============================
+// ========================= CODICE FOLLOWER (CORRETTO E SICURO) ============================
 async function toggleFollow(targetUserEmail) {
     if (!currentUser || !targetUserEmail || currentUser.email === targetUserEmail) return;
 
-    const userFollowing = allUsers.find(u => u.email === currentUser.email);
-    const userToFollow = allUsers.find(u => u.email === targetUserEmail);
+    // Lavora sempre sulla copia master dei dati per evitare inconsistenze
+    const allUsersServerCopy = await readLatestUsers();
+    
+    const userFollowing = allUsersServerCopy.find(u => u.email === currentUser.email);
+    const userToFollow = allUsersServerCopy.find(u => u.email === targetUserEmail);
 
     if (!userFollowing || !userToFollow) {
-        console.error("Azione Follow fallita: utente non trovato.");
+        console.error("Azione Follow fallita: utente non trovato nei dati del server.");
         return;
     }
 
+    // Assicura che gli array esistano (per compatibilità con vecchi account)
     userFollowing.following = userFollowing.following || [];
     userToFollow.followers = userToFollow.followers || [];
 
     const isFollowing = userFollowing.following.includes(targetUserEmail);
 
     if (isFollowing) {
+        // Unfollow: Rimuovi l'email da entrambi gli array
         userFollowing.following = userFollowing.following.filter(email => email !== targetUserEmail);
         userToFollow.followers = userToFollow.followers.filter(email => email !== userFollowing.email);
     } else {
+        // Follow: Aggiungi l'email a entrambi gli array
         userFollowing.following.push(targetUserEmail);
         userToFollow.followers.push(userFollowing.email);
     }
     
+    // Aggiorna l'oggetto currentUser globale per riflettere le modifiche immediatamente nell'UI
     currentUser = userFollowing;
+    allUsers = allUsersServerCopy; // Aggiorna la copia locale
 
-    await updateUsersOnServer(allUsers);
+    // Salva l'intero array aggiornato sul server
+    await updateUsersOnServer(allUsersServerCopy);
     
+    // Ricarica la pagina del profilo per mostrare il nuovo stato
     showUserProfile(targetUserEmail);
 }
 // =================================== FINE CODICE FOLLOWER ===================================
@@ -1663,8 +1737,6 @@ return link;
 function srcFromEmbed(embedCode) {
 const parser = new DOMParser(); const doc = parser.parseFromString(embedCode, 'text/html'); const iframe = doc.querySelector('iframe'); return iframe ? iframe.src : '';
 }
-
-// =================== FUNZIONE MODIFICATA CON IMMAGINI PNG PER I LIKE ===================
 function createPostElement(post) {
     const postElement = document.createElement('div'); postElement.className = 'post'; postElement.dataset.id = post.id;
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
@@ -1681,12 +1753,11 @@ function createPostElement(post) {
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
         postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')"><img src="pollicesu.png" alt="Like" style="width:16px; height:16px;"> <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')"><img src="pollicegiu.png" alt="Dislike" style="width:16px; height:16px;"> <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">❤ <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">💔 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
 }
-
 function copyEmbedCode(postId) {
     const post = allPosts.find(p => p.id === postId); if (!post) return;
 
@@ -1710,8 +1781,7 @@ function copyEmbedCode(postId) {
     }
 
     const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
-    
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato!');
@@ -1719,7 +1789,6 @@ function copyEmbedCode(postId) {
         alert('Errore nel copiare il codice.');
     });
 }
-
 function renderPosts(posts) {
     const container = document.getElementById('postsContainer'); container.innerHTML = '';
     posts.forEach(post => container.appendChild(createPostElement(post)));
@@ -1816,7 +1885,7 @@ filteredVideos.forEach(video => {
 const videoElement = document.createElement('div'); videoElement.className = 'post fade-in'; videoElement.dataset.id = video.id;
 const isMyVideo = currentUser && video.authorEmail === currentUser.email;
 const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})">❌</button>` : '';
-videoElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')"><img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${video.author}</div><div class="post-date">${video.date}</div></div></a><div class="post-actions">${deleteButton}</div></div><div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')"><iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="voteVideo(${video.id}, 'up')">👍 <span>${video.upvotes || 0}</span></button><div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div><button class="vote-button" onclick="voteVideo(${video.id}, 'down')">👎 <span>${video.downvotes || 0}</span></button></div></div>`;
+videoElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')"><img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${video.author}</div><div class="post-date">${video.date}</div></div></a><div class="post-actions">${deleteButton}</div></div><div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')"><iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="voteVideo(${video.id}, 'up')">❤ <span>${video.upvotes || 0}</span></button><div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div><button class="vote-button" onclick="voteVideo(${video.id}, 'down')">💔 <span>${video.downvotes || 0}</span></button></div></div>`;
 videoGrid.appendChild(videoElement);
 });
 }
@@ -1850,17 +1919,31 @@ const videoModal = document.getElementById('videoModal');
 document.getElementById('modalVideoContainer').innerHTML = '';
 videoModal.style.display = 'none';
 }
-function showUserProfile(email) {
+async function showUserProfile(email) {
     if (email === currentUser.email) { showSettingsPage(); return; }
-    const user = allUsers.find(u => u.email === email); if (!user) return;
+    
+    // Assicurati di avere i dati più recenti
+    await loadAllUsers();
+    
+    const user = allUsers.find(u => u.email === email); 
+    if (!user) {
+        alert("Utente non trovato.");
+        return;
+    }
+
     hideElement('mainContent'); hideElement('videoPage'); hideElement('settingsPage');
     hideElement('chatPage'); hideElement('statusPage'); showElement('userProfilePage');
+
     const followersCount = user.followers ? user.followers.length : 0;
     const followingCount = user.following ? user.following.length : 0;
-    currentUser.following = currentUser.following || [];
+    
+    // Assicurati che l'utente corrente abbia un array following
+    if (!currentUser.following) currentUser.following = [];
+    
     const isFollowing = currentUser.following.includes(user.email);
     const followButtonText = isFollowing ? 'Smetti di seguire' : 'Segui';
     const followButtonClass = isFollowing ? '' : 'primary';
+
     document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary" style="margin-bottom:0.5rem"><span><b>${followersCount}</b> follower</span> • <span><b>${followingCount}</b> seguiti</span></div><div class="text-sm">${user.bio||'Nessuna bio disponibile.'}</div><div style="margin-top:1rem;display:flex;gap:0.5rem"><button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button><button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button></div></div>`;
     const userPosts = allPosts.filter(post => post.authorEmail === email); renderUserPosts(userPosts);
     const userVideos = allVideos.filter(video => video.authorEmail === email); renderUserVideos(userVideos);
@@ -1912,27 +1995,66 @@ async function saveSettings() {
     if (!currentUser) return;
     const saveButton = document.querySelector('#settingsPage .auth-button');
     saveButton.disabled = true; saveButton.textContent = 'Salvataggio...';
+    
     const newName = document.getElementById('editName').value.trim();
     const newBio = document.getElementById('editBio').value.trim();
     const customPicFile = document.getElementById('customProfilePicInput').files[0];
     const selectedPicElement = document.querySelector('#editProfilePicSelector .selected');
     let newProfilePic = currentUser.profilePic;
-    if (!newName) { alert("Il nome non può essere vuoto."); saveButton.disabled = false; saveButton.textContent = 'Salva Modifiche'; return; }
+    
+    if (!newName) { 
+        alert("Il nome non può essere vuoto."); 
+        saveButton.disabled = false; 
+        saveButton.textContent = 'Salva Modifiche'; 
+        return; 
+    }
+    
     if (customPicFile) {
         alert("Caricamento nuova immagine profilo...");
-        try { const uploadResult = await uploadToCloudinary(customPicFile); newProfilePic = uploadResult.url; }
-        catch (error) { alert("Errore nel caricamento dell'immagine."); saveButton.disabled = false; saveButton.textContent = 'Salva Modifiche'; return; }
-    } else if (selectedPicElement) newProfilePic = selectedPicElement.dataset.value;
-    currentUser.name = newName; currentUser.bio = newBio; currentUser.profilePic = newProfilePic;
-    try {
-        const userIndex = allUsers.findIndex(u => u.email === currentUser.email);
-        if (userIndex !== -1) {
-            allUsers[userIndex] = currentUser; await updateUsersOnServer(allUsers);
-            localStorage.setItem("currentUserEmail", currentUser.email); alert("Impostazioni salvate!");
-            updateUserInfo(); showMainContent();
+        try { 
+            const uploadResult = await uploadToCloudinary(customPicFile); 
+            newProfilePic = uploadResult.url; 
         }
-    } catch (error) { console.error("Errore nel salvataggio:", error); alert("Errore nel salvataggio."); }
-    finally { saveButton.disabled = false; saveButton.textContent = 'Salva Modifiche'; }
+        catch (error) { 
+            alert("Errore nel caricamento dell'immagine."); 
+            saveButton.disabled = false; 
+            saveButton.textContent = 'Salva Modifiche'; 
+            return; 
+        }
+    } else if (selectedPicElement) {
+        newProfilePic = selectedPicElement.dataset.value;
+    }
+    
+    try {
+        const users = await readLatestUsers();
+        const userIndex = users.findIndex(u => u.email === currentUser.email);
+        
+        if (userIndex !== -1) {
+            users[userIndex].name = newName;
+            users[userIndex].bio = newBio;
+            users[userIndex].profilePic = newProfilePic;
+            
+            await updateUsersOnServer(users);
+            
+            // Update local state AFTER successful server update
+            allUsers = users;
+            currentUser = users[userIndex];
+            
+            localStorage.setItem("currentUserEmail", currentUser.email);
+            alert("Impostazioni salvate!");
+            updateUserInfo();
+            showMainContent();
+        } else {
+            alert("Errore: utente non trovato nel database.");
+        }
+    } catch (error) { 
+        console.error("Errore nel salvataggio:", error); 
+        alert("Errore nel salvataggio delle impostazioni."); 
+    }
+    finally { 
+        saveButton.disabled = false; 
+        saveButton.textContent = 'Salva Modifiche'; 
+    }
 }
 async function translatePost(postId) {
 const post = allPosts.find(p => p.id === postId); if (!post) return;
@@ -1974,14 +2096,23 @@ const accessToken = params.get('access_token');
 if (accessToken) {
 try {
 const spotifyUser = await fetch('https://api.spotify.com/v1/me', { headers: { 'Authorization': 'Bearer ' + accessToken } }).then(res => res.json());
-await loadAllData(); const email = spotifyUser.email;
-const user = allUsers.find(u => u.email === email);
-if (user) currentUser = user;
-else {
-const newUser = { name: spotifyUser.display_name, email: spotifyUser.email, profilePic: spotifyUser.images[0]?.url || 'profilo1.png', bio: "Accesso tramite Spotify", password: null, blockedUsers: [], followers: [], following: [] };
-allUsers.push(newUser); await updateUsersOnServer(allUsers); currentUser = newUser;
+await loadAllData(); 
+const email = spotifyUser.email;
+
+const existingUsers = await readLatestUsers();
+const user = existingUsers.find(u => u.email === email);
+
+if (user) {
+    currentUser = user;
+} else {
+    const newUser = { name: spotifyUser.display_name, email: spotifyUser.email, profilePic: spotifyUser.images[0]?.url || 'profilo1.png', bio: "Accesso tramite Spotify", password: null, blockedUsers: [], followers: [], following: [] };
+    existingUsers.push(newUser); 
+    await updateUsersOnServer(existingUsers);
+    allUsers = existingUsers;
+    currentUser = newUser;
 }
-localStorage.setItem("currentUserEmail", currentUser.email); showAppContent();
+localStorage.setItem("currentUserEmail", currentUser.email);
+showAppContent();
 } catch (error) { console.error("Errore auth Spotify:", error); alert("Errore auth Spotify."); showAuthContent(); }
 } else { await loadAllData(); showAuthContent(); }
 }
