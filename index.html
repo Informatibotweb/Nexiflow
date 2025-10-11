@@ -16,7 +16,7 @@ gtag('config', 'G-BHXQ3M8FYD');
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;500;700&display=swap');
 
 /* ==============================================================
-   HALLOWEEN THEME OVERHAUL - by Gemini
+   HALLOWEEN THEME OVERHAUL
    ==============================================================
 */
 :root {
@@ -78,12 +78,25 @@ body.dark-mode {
 body {
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
     background-color: var(--bg-primary);
-    background-image: url('https://www.transparenttextures.com/patterns/az-subtle.png');
     color: var(--text-primary);
     line-height: 1.6;
     transition: all 0.3s ease;
     min-height: 100vh;
+    
+    /* ==============================================================
+       NUOVO SFONDO ZUCCA (MODIFICA RICHIESTA)
+       ==============================================================
+    */
+    background-image: url('logo-halloween-light.png'); /* Usa una delle tue immagini */
+    background-repeat: repeat; /* Fa in modo che lo sfondo si ripeta */
+    background-size: 200px; /* Cambia questo valore per avere più o meno zucche! */
+    background-attachment: fixed; /* Lo sfondo sta fermo mentre scorri */
 }
+
+body.dark-mode {
+    background-image: url('logo-halloween-dark.png'); /* Sfondo diverso per il tema scuro */
+}
+
 
 .brand-name, .auth-card h2, .chat-sidebar-header h3 {
     font-family: 'Creepster', cursive;
@@ -207,10 +220,14 @@ body.dark-mode header {
 
 .posts { display: flex; flex-direction: column; gap: var(--spacing-xl); }
 .post {
+    display: flex; /* MODIFICA: serve per affiancare l'immagine casuale */
+    align-items: center; /* MODIFICA: allinea l'immagine al centro verticalmente */
     background: var(--bg-secondary); border-radius: var(--radius-xl); padding: var(--spacing-xl);
     box-shadow: var(--shadow-xl); transition: all 0.3s ease; position: relative;
     border: 1px solid var(--border-light);
 }
+.post-inner-content { flex: 1; } /* MODIFICA: contenitore per il contenuto del post */
+
 .post:hover { box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); transform: translateY(-4px); }
 .post-header {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg);
@@ -229,6 +246,7 @@ body.dark-mode header {
 }
 .action-button:hover { background: var(--danger); color: white; }
 .post-content { margin-bottom: var(--spacing-lg); line-height: 1.7; word-wrap: break-word; }
+.post-content a { color: var(--primary); text-decoration: underline; } /* Stile per i link cliccabili */
 .post-uploaded-content img, .post-uploaded-content video {
     max-width: 100%;
     max-height: 70vh;
@@ -263,7 +281,7 @@ body.dark-mode header {
     margin-top: var(--spacing-lg); padding-top: var(--spacing-lg);
     border-top: 1px solid var(--border-light); display: none;
 }
-.comment { background: var(--bg-primary); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm); word-wrap: break-word; }
+.comment { background: var(--bg-primary); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm); }
 .comment-form { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
 .comment-input {
     flex: 1; padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--border-light);
@@ -482,6 +500,7 @@ footer {
 </style>
 </head>
 <body>
+
 <script src="https://accounts.google.com/gsi/client" defer async></script>
 <div class="modal-overlay" id="modalOverlay"></div>
 <div class="container">
@@ -865,28 +884,25 @@ let currentOpenChat = { id: null, type: null };
 let pollingInterval = null;
 let tempRecoveryData = null;
 
-// ========= INIZIO MODIFICA: FUNZIONE PER RICONOSCERE I LINK =========
-/**
- * Trova tutti i link in una stringa di testo e li converte in tag <a> cliccabili.
- * @param {string} text Il testo di input.
- * @returns {string} Il testo con i link HTML.
- */
-function linkify(text) {
-    if (!text) return '';
-    // Regex per trovare URL con o senza protocollo, www, e con vari TLD.
-    // Gestisce anche percorsi, query string e frammenti.
-    const urlRegex = /(\b(https?:\/\/|www\.|[a-zA-Z0-9.-]+\.(com|org|net|io|gov|edu|it|fr|de|es|uk|ca|au|dev|app|co|info|tech|site|online))\S*)/gi;
 
+/* ==============================================================
+   NUOVA FUNZIONE: LINK CLICCABILI (MODIFICA RICHIESTA)
+   ==============================================================
+*/
+function linkify(text) {
+    // Regex per trovare URL nel testo, ma ignora quelli già dentro un tag <a> o <img>
+    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    
+    // Sostituisce il testo semplice che contiene link con un vero tag <a>
     return text.replace(urlRegex, function(url) {
-        let href = url;
-        // Se l'URL non inizia con http o https, anteponi '//'
-        if (!/^(https?:\/\/)/i.test(href)) {
-            href = '//' + href;
+        let fullUrl = url;
+        if (!fullUrl.startsWith('http')) {
+            fullUrl = 'http://' + fullUrl;
         }
-        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
     });
 }
-// ========= FINE MODIFICA =========
+
 
 function showElement(elementId) { document.getElementById(elementId).classList.remove('hidden'); }
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
@@ -1412,9 +1428,7 @@ function renderMessages(isUpdate) {
         const isSent = msg.senderEmail === currentUser.email;
         messageElement.className = `chat-message ${isSent ? 'sent' : 'received'}`;
         let senderNameHTML = (currentOpenChat.type === 'group' && !isSent) ? `<div class="sender-name">${sender.name}</div>` : '';
-        // ========= INIZIO MODIFICA: Applica linkify ai messaggi di chat =========
-        messageElement.innerHTML = `${senderNameHTML}<div>${linkify(msg.text)}</div>`;
-        // ========= FINE MODIFICA =========
+        messageElement.innerHTML = `${senderNameHTML}<div>${msg.text}</div>`;
         chatBody.appendChild(messageElement);
     });
     if (shouldScroll) chatBody.scrollTop = chatBody.scrollHeight;
@@ -1775,20 +1789,30 @@ function createPostElement(post) {
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
     const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></button>` : '';
     const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button>` : '';
-    let postContent = '';
-    // ========= INIZIO MODIFICA: Applica linkify al contenuto e alla descrizione dei post =========
-    if (post.type === 'text') postContent = `<div class="post-content">${linkify(post.content)}</div>`;
-    else if (post.type === 'video') postContent = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-    else if (post.type === 'embed') postContent = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-    else if (post.type === 'twitter') postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
+    
+    let postContentHTML = '';
+    // MODIFICA: La funzione linkify viene applicata qui
+    if (post.type === 'text') {
+        postContentHTML = `<div class="post-content">${linkify(post.content)}</div>`;
+    } 
+    else if (post.type === 'video') postContentHTML = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'embed') postContentHTML = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'twitter') postContentHTML = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
     else if (post.type === 'upload') {
         let mediaElement = '';
         if (post.fileType === 'image') mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
-        postContent = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
+        postContentHTML = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    // ========= FINE MODIFICA =========
-    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">❤ <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">💔 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+
+    // MODIFICA: aggiunto un div interno per gestire il layout con flexbox
+    postElement.innerHTML = `<div class="post-inner-content">
+        <div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>
+        ${postContentHTML}
+        <div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">❤ <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">💔 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div>
+        <div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>
+    </div>`;
+    
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
@@ -1826,9 +1850,12 @@ function copyEmbedCode(postId) {
         alert('Errore nel copiare il codice.');
     });
 }
+
 function renderPosts(posts) {
     const container = document.getElementById('postsContainer'); container.innerHTML = '';
     posts.forEach(post => container.appendChild(createPostElement(post)));
+    // NUOVA FUNZIONE: aggiunge le immagini di halloween dopo aver creato i post
+    addHalloweenImagesToPosts();
 }
 function renderNewPosts(newPosts) {
     const container = document.getElementById('postsContainer');
@@ -1836,7 +1863,39 @@ function renderNewPosts(newPosts) {
         const postElement = createPostElement(post); postElement.style.animation = 'slideDown 0.5s ease-out';
         container.insertBefore(postElement, container.firstChild);
     });
+    // NUOVA FUNZIONE: aggiunge le immagini di halloween anche ai nuovi post
+    addHalloweenImagesToPosts();
 }
+
+/* ==============================================================
+   NUOVA FUNZIONE: IMMAGINI HALLOWEEN (MODIFICA RICHIESTA)
+   ==============================================================
+*/
+function addHalloweenImagesToPosts() {
+    const halloweenImages = ['stregha.png', 'pipistrello.png', 'scheletro.png', 'zucche.png'];
+    const posts = document.querySelectorAll('.post');
+
+    posts.forEach(post => {
+        // Controlla se l'immagine è già stata aggiunta per non duplicarla
+        if (post.querySelector('.halloween-random-image')) {
+            return; 
+        }
+
+        const randomImageSrc = halloweenImages[Math.floor(Math.random() * halloweenImages.length)];
+        const imgElement = document.createElement('img');
+        imgElement.src = randomImageSrc;
+        imgElement.alt = "Halloween";
+        imgElement.className = 'halloween-random-image'; // Aggiungiamo una classe per identificarla
+        imgElement.style.width = '60px';
+        imgElement.style.height = 'auto';
+        imgElement.style.marginLeft = '15px';
+        imgElement.style.opacity = '0.8';
+
+        post.appendChild(imgElement);
+    });
+}
+
+
 async function startPrivateChatFromPost(recipientEmail) {
     if (!currentUser) { alert("Devi essere loggato per inviare messaggi."); return; }
     if (currentUser.email === recipientEmail) { alert("Non puoi inviare messaggi a te stesso."); return; }
@@ -1901,9 +1960,7 @@ const commentList = containerElement.querySelector(`#comments-${postId}`); if (!
 commentList.innerHTML = '';
 comments.forEach(comment => {
 const commentElement = document.createElement('div'); commentElement.className = 'comment';
-// ========= INIZIO MODIFICA: Applica linkify ai commenti =========
-commentElement.innerHTML = `<strong>${comment.author}</strong>: ${linkify(comment.text)}<div class="post-date">${comment.date}</div>`;
-// ========= FINE MODIFICA =========
+commentElement.innerHTML = `<strong>${comment.author}</strong>: ${comment.text}<div class="post-date">${comment.date}</div>`;
 commentList.appendChild(commentElement);
 });
 }
@@ -1983,9 +2040,7 @@ async function showUserProfile(email) {
     const followButtonText = isFollowing ? 'Smetti di seguire' : 'Segui';
     const followButtonClass = isFollowing ? '' : 'primary';
 
-    // ========= INIZIO MODIFICA: Applica linkify alla bio dell'utente =========
-    document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary" style="margin-bottom:0.5rem"><span><b>${followersCount}</b> follower</span> • <span><b>${followingCount}</b> seguiti</span></div><div class="text-sm">${linkify(user.bio||'Nessuna bio disponibile.')}</div><div style="margin-top:1rem;display:flex;gap:0.5rem"><button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button><button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button></div></div>`;
-    // ========= FINE MODIFICA =========
+    document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary" style="margin-bottom:0.5rem"><span><b>${followersCount}</b> follower</span> • <span><b>${followingCount}</b> seguiti</span></div><div class="text-sm">${user.bio||'Nessuna bio disponibile.'}</div><div style="margin-top:1rem;display:flex;gap:0.5rem"><button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button><button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button></div></div>`;
     const userPosts = allPosts.filter(post => post.authorEmail === email); renderUserPosts(userPosts);
     const userVideos = allVideos.filter(video => video.authorEmail === email); renderUserVideos(userVideos);
 }
@@ -1994,11 +2049,9 @@ const container = document.getElementById('userPostsContainer'); container.inner
 if (posts.length === 0) { container.innerHTML = '<p>Nessun post da questo utente.</p>'; return; }
 posts.forEach(post => {
 const postElement = document.createElement('div'); postElement.className = 'post'; let postContent = '';
-// ========= INIZIO MODIFICA: Applica linkify ai post nella pagina profilo =========
-if (post.type === 'text') postContent = `<div class="post-content">${linkify(post.content)}</div>`;
-else if (post.type === 'video') postContent = `<div class="post-content">${linkify(post.description)}</div><div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
-else if (post.type === 'embed') postContent = `<div class="post-content">${linkify(post.description)}</div><div class="post-embed"><iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
-// ========= FINE MODIFICA =========
+if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
+else if (post.type === 'video') postContent = `<div class="post-content">${post.description}</div><div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
+else if (post.type === 'embed') postContent = `<div class="post-content">${post.description}</div><div class="post-embed"><iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
 postElement.innerHTML = `${postContent}<div class="post-date">${post.date}</div>`;
 container.appendChild(postElement);
 });
