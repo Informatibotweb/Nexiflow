@@ -16,7 +16,7 @@ gtag('config', 'G-BHXQ3M8FYD');
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;500;700&display=swap');
 
 /* ==============================================================
-   HALLOWEEN THEME OVERHAUL
+   HALLOWEEN THEME OVERHAUL - by Gemini
    ==============================================================
 */
 :root {
@@ -84,43 +84,6 @@ body {
     transition: all 0.3s ease;
     min-height: 100vh;
 }
-
-/* ==============================================================
-   ZUCCHE DECORATIVE SPARSE
-   ==============================================================
-*/
-.pumpkin-patch-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1; /* Le mette dietro a tutto */
-    pointer-events: none; /* Le rende non cliccabili */
-}
-.pumpkin-patch-background .pumpkin {
-    position: absolute;
-    opacity: 0.1;
-    transition: opacity 0.3s ease;
-}
-body.dark-mode .pumpkin-patch-background .pumpkin {
-    opacity: 0.15;
-}
-
-/* Posizioni e stili individuali delle zucche */
-.pumpkin.p1 { top: 5%; left: 10%; width: 150px; transform: rotate(-15deg); }
-.pumpkin.p2 { top: 70%; left: 5%; width: 100px; transform: rotate(10deg); }
-.pumpkin.p3 { top: 15%; right: 8%; width: 120px; transform: rotate(20deg); }
-.pumpkin.p4 { top: 80%; right: 15%; width: 180px; transform: rotate(-5deg); }
-.pumpkin.p5 { bottom: 2%; left: 50%; transform: translateX(-50%) rotate(5deg); width: 80px; }
-.pumpkin.p6 { top: 50%; left: 30%; width: 60px; transform: rotate(25deg); opacity: 0.05;}
-.pumpkin.p7 { top: 40%; right: 35%; width: 90px; transform: rotate(-10deg); opacity: 0.08;}
-
-body.dark-mode .pumpkin.p6 { opacity: 0.1; }
-body.dark-mode .pumpkin.p7 { opacity: 0.12; }
-/* Fine Zucche Decorative */
-
 
 .brand-name, .auth-card h2, .chat-sidebar-header h3 {
     font-family: 'Creepster', cursive;
@@ -265,7 +228,7 @@ body.dark-mode header {
     align-items: center; justify-content: center;
 }
 .action-button:hover { background: var(--danger); color: white; }
-.post-content { margin-bottom: var(--spacing-lg); line-height: 1.7; }
+.post-content { margin-bottom: var(--spacing-lg); line-height: 1.7; word-wrap: break-word; }
 .post-uploaded-content img, .post-uploaded-content video {
     max-width: 100%;
     max-height: 70vh;
@@ -300,7 +263,7 @@ body.dark-mode header {
     margin-top: var(--spacing-lg); padding-top: var(--spacing-lg);
     border-top: 1px solid var(--border-light); display: none;
 }
-.comment { background: var(--bg-primary); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm); }
+.comment { background: var(--bg-primary); padding: var(--spacing-md); border-radius: var(--radius-md); margin-bottom: var(--spacing-sm); word-wrap: break-word; }
 .comment-form { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
 .comment-input {
     flex: 1; padding: var(--spacing-sm) var(--spacing-md); border: 1px solid var(--border-light);
@@ -490,7 +453,6 @@ footer {
     .chat-sidebar { width: 100%; max-width: none; border-right: none; border-bottom: 1px solid var(--border-light); height: 40%; }
     .auth-container { padding: var(--spacing-md); }
     .auth-card { padding: var(--spacing-xl); }
-    .pumpkin.p6, .pumpkin.p7 { display: none; } /* Nasconde le zucche che potrebbero sovrapporsi al contenuto su schermi piccoli */
 }
 
 @media (max-width: 480px) {
@@ -520,17 +482,6 @@ footer {
 </style>
 </head>
 <body>
-
-<div class="pumpkin-patch-background">
-    <img src="logo-halloween-light.png" class="pumpkin p1" alt="">
-    <img src="logo-halloween-dark.png" class="pumpkin p2" alt="">
-    <img src="logo-halloween-light.png" class="pumpkin p3" alt="">
-    <img src="logo-halloween-dark.png" class="pumpkin p4" alt="">
-    <img src="logo-halloween-light.png" class="pumpkin p5" alt="">
-    <img src="logo-halloween-dark.png" class="pumpkin p6" alt="">
-    <img src="logo-halloween-light.png" class="pumpkin p7" alt="">
-</div>
-
 <script src="https://accounts.google.com/gsi/client" defer async></script>
 <div class="modal-overlay" id="modalOverlay"></div>
 <div class="container">
@@ -914,6 +865,28 @@ let currentOpenChat = { id: null, type: null };
 let pollingInterval = null;
 let tempRecoveryData = null;
 
+// ========= INIZIO MODIFICA: FUNZIONE PER RICONOSCERE I LINK =========
+/**
+ * Trova tutti i link in una stringa di testo e li converte in tag <a> cliccabili.
+ * @param {string} text Il testo di input.
+ * @returns {string} Il testo con i link HTML.
+ */
+function linkify(text) {
+    if (!text) return '';
+    // Regex per trovare URL con o senza protocollo, www, e con vari TLD.
+    // Gestisce anche percorsi, query string e frammenti.
+    const urlRegex = /(\b(https?:\/\/|www\.|[a-zA-Z0-9.-]+\.(com|org|net|io|gov|edu|it|fr|de|es|uk|ca|au|dev|app|co|info|tech|site|online))\S*)/gi;
+
+    return text.replace(urlRegex, function(url) {
+        let href = url;
+        // Se l'URL non inizia con http o https, anteponi '//'
+        if (!/^(https?:\/\/)/i.test(href)) {
+            href = '//' + href;
+        }
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+    });
+}
+// ========= FINE MODIFICA =========
 
 function showElement(elementId) { document.getElementById(elementId).classList.remove('hidden'); }
 function hideElement(elementId) { document.getElementById(elementId).classList.add('hidden'); }
@@ -1439,7 +1412,9 @@ function renderMessages(isUpdate) {
         const isSent = msg.senderEmail === currentUser.email;
         messageElement.className = `chat-message ${isSent ? 'sent' : 'received'}`;
         let senderNameHTML = (currentOpenChat.type === 'group' && !isSent) ? `<div class="sender-name">${sender.name}</div>` : '';
-        messageElement.innerHTML = `${senderNameHTML}<div>${msg.text}</div>`;
+        // ========= INIZIO MODIFICA: Applica linkify ai messaggi di chat =========
+        messageElement.innerHTML = `${senderNameHTML}<div>${linkify(msg.text)}</div>`;
+        // ========= FINE MODIFICA =========
         chatBody.appendChild(messageElement);
     });
     if (shouldScroll) chatBody.scrollTop = chatBody.scrollHeight;
@@ -1801,16 +1776,18 @@ function createPostElement(post) {
     const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></button>` : '';
     const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button>` : '';
     let postContent = '';
-    if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
-    else if (post.type === 'video') postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-    else if (post.type === 'embed') postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    // ========= INIZIO MODIFICA: Applica linkify al contenuto e alla descrizione dei post =========
+    if (post.type === 'text') postContent = `<div class="post-content">${linkify(post.content)}</div>`;
+    else if (post.type === 'video') postContent = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'embed') postContent = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
     else if (post.type === 'twitter') postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
     else if (post.type === 'upload') {
         let mediaElement = '';
         if (post.fileType === 'image') mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
-        postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
+        postContent = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
+    // ========= FINE MODIFICA =========
     postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">❤ <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">💔 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
@@ -1924,7 +1901,9 @@ const commentList = containerElement.querySelector(`#comments-${postId}`); if (!
 commentList.innerHTML = '';
 comments.forEach(comment => {
 const commentElement = document.createElement('div'); commentElement.className = 'comment';
-commentElement.innerHTML = `<strong>${comment.author}</strong>: ${comment.text}<div class="post-date">${comment.date}</div>`;
+// ========= INIZIO MODIFICA: Applica linkify ai commenti =========
+commentElement.innerHTML = `<strong>${comment.author}</strong>: ${linkify(comment.text)}<div class="post-date">${comment.date}</div>`;
+// ========= FINE MODIFICA =========
 commentList.appendChild(commentElement);
 });
 }
@@ -2004,7 +1983,9 @@ async function showUserProfile(email) {
     const followButtonText = isFollowing ? 'Smetti di seguire' : 'Segui';
     const followButtonClass = isFollowing ? '' : 'primary';
 
-    document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary" style="margin-bottom:0.5rem"><span><b>${followersCount}</b> follower</span> • <span><b>${followingCount}</b> seguiti</span></div><div class="text-sm">${user.bio||'Nessuna bio disponibile.'}</div><div style="margin-top:1rem;display:flex;gap:0.5rem"><button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button><button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button></div></div>`;
+    // ========= INIZIO MODIFICA: Applica linkify alla bio dell'utente =========
+    document.getElementById('profileInfo').innerHTML = `<img src="${user.profilePic}" class="profile-pic" alt="Foto Profilo"><div><div class="user-name">${user.name}</div><div class="text-sm text-tertiary" style="margin-bottom:0.5rem"><span><b>${followersCount}</b> follower</span> • <span><b>${followingCount}</b> seguiti</span></div><div class="text-sm">${linkify(user.bio||'Nessuna bio disponibile.')}</div><div style="margin-top:1rem;display:flex;gap:0.5rem"><button class="nav-button ${followButtonClass}" onclick="toggleFollow('${user.email}')">${followButtonText}</button><button class="nav-button" onclick="startPrivateChatFromPost('${user.email}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button></div></div>`;
+    // ========= FINE MODIFICA =========
     const userPosts = allPosts.filter(post => post.authorEmail === email); renderUserPosts(userPosts);
     const userVideos = allVideos.filter(video => video.authorEmail === email); renderUserVideos(userVideos);
 }
@@ -2013,9 +1994,11 @@ const container = document.getElementById('userPostsContainer'); container.inner
 if (posts.length === 0) { container.innerHTML = '<p>Nessun post da questo utente.</p>'; return; }
 posts.forEach(post => {
 const postElement = document.createElement('div'); postElement.className = 'post'; let postContent = '';
-if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
-else if (post.type === 'video') postContent = `<div class="post-content">${post.description}</div><div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
-else if (post.type === 'embed') postContent = `<div class="post-content">${post.description}</div><div class="post-embed"><iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
+// ========= INIZIO MODIFICA: Applica linkify ai post nella pagina profilo =========
+if (post.type === 'text') postContent = `<div class="post-content">${linkify(post.content)}</div>`;
+else if (post.type === 'video') postContent = `<div class="post-content">${linkify(post.description)}</div><div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
+else if (post.type === 'embed') postContent = `<div class="post-content">${linkify(post.description)}</div><div class="post-embed"><iframe src="${srcFromEmbed(post.content)}" frameborder="0" allowfullscreen></iframe></div>`;
+// ========= FINE MODIFICA =========
 postElement.innerHTML = `${postContent}<div class="post-date">${post.date}</div>`;
 container.appendChild(postElement);
 });
