@@ -13,37 +13,38 @@ gtag('config', 'G-BHXQ3M8FYD');
 <title>Nexiflow™ by Nexiquar</title>
 <link rel="icon" type="image/png" href="nexiflow.png">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 /* ==============================================================
-   HALLOWEEN THEME OVERHAUL
+   RADICAL DESIGN OVERHAUL - by Gemini
+   Stessa struttura CSS originale, valori completamente cambiati.
    ==============================================================
 */
 :root {
-    /* Palette di colori HALLOWEEN */
-    --primary: #FF6700; /* Arancione Zucca */
-    --primary-dark: #D45600;
-    --secondary: #A9A9A9; /* Grigio Ragnatela */
-    --accent: #6E26A5; /* Viola Spettrale */
-    --success: #50C878; /* Verde Smeraldo (pozione) */
-    --danger: #DC143C; /* Rosso Sangue */
+    /* Palette di colori e variabili completamente nuove */
+    --primary: #10B981; /* Verde Menta Vibrante */
+    --primary-dark: #0F996B;
+    --secondary: #6B7280;
+    --accent: #F59E0B;
+    --success: #10B981;
+    --danger: #EF4444;
     --warning: #F59E0B;
 
-    /* Palette Light Mode "Casa Infestata" */
-    --bg-primary: #f5f5f5; /* Grigio Nebbia */
+    /* Palette Light Mode */
+    --bg-primary: #F9FAFB;
     --bg-secondary: #FFFFFF;
-    --bg-tertiary: #E8E8E8;
-    --text-primary: #121212; /* Nero Profondo */
+    --bg-tertiary: #F3F4F6;
+    --text-primary: #111827;
     --text-secondary: #4B5563;
-    --text-tertiary: #808080;
-    --border-light: #DCDCDC;
-    --border-medium: #C0C0C0;
+    --text-tertiary: #9CA3AF;
+    --border-light: #E5E7EB;
+    --border-medium: #D1D5DB;
 
-    /* Ombre inquietanti */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.15), 0 2px 4px -2px rgb(0 0 0 / 0.15);
-    --shadow-lg: 0 10px 15px -3px rgb(255 103 0 / 0.2), 0 4px 6px -4px rgb(255 103 0 / 0.2);
-    --shadow-xl: 0 0 35px rgba(0, 0, 0, 0.1);
+    /* Ombre più morbide e diffuse */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 0 35px rgba(0, 0, 0, 0.07);
 
     /* Raggi degli angoli rivisti */
     --radius-sm: 8px;
@@ -62,12 +63,12 @@ gtag('config', 'G-BHXQ3M8FYD');
 }
 
 body.dark-mode {
-    /* Palette Dark Mode "Notte di Terrore" */
-    --bg-primary: #121212; /* Nero Abissale */
-    --bg-secondary: #1E1E1E; /* Carbone Scuro */
-    --bg-tertiary: #2C2C2C; /* Grigio Tomba */
-    --text-primary: #E0E0E0; /* Bianco Fantasma */
-    --text-secondary: #A0A0A0;
+    /* Palette Dark Mode ad alto contrasto */
+    --bg-primary: #111827;
+    --bg-secondary: #1F2937;
+    --bg-tertiary: #374151;
+    --text-primary: #F9FAFB;
+    --text-secondary: #D1D5DB;
     --text-tertiary: #6B7280;
     --border-light: #374151;
     --border-medium: #4B5563;
@@ -77,40 +78,18 @@ body.dark-mode {
 
 body {
     font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: var(--bg-primary);
+    background: var(--bg-primary);
     color: var(--text-primary);
     line-height: 1.6;
     transition: all 0.3s ease;
     min-height: 100vh;
-    
-    /* ==============================================================
-       NUOVO SFONDO ZUCCA (MODIFICA RICHIESTA)
-       ==============================================================
-    */
-    background-image: url('logo-halloween-light.png'); /* Usa una delle tue immagini */
-    background-repeat: repeat; /* Fa in modo che lo sfondo si ripeta */
-    background-size: 200px; /* Cambia questo valore per avere più o meno zucche! */
-    background-attachment: fixed; /* Lo sfondo sta fermo mentre scorri */
 }
-
-body.dark-mode {
-    background-image: url('logo-halloween-dark.png'); /* Sfondo diverso per il tema scuro */
-}
-
-
-.brand-name, .auth-card h2, .chat-sidebar-header h3 {
-    font-family: 'Creepster', cursive;
-    letter-spacing: 2px;
-    font-weight: normal;
-}
-.brand-name { font-size: 2rem; }
-.auth-card h2 { font-size: 2.25rem; }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-md); }
 
 /* Stile Header 'Glassmorphism' */
 header {
-    background: rgba(245, 245, 245, 0.8); /* Grigio Nebbia Trasparente */
+    background: rgba(249, 250, 251, 0.8);
     border-bottom: 1px solid var(--border-light);
     padding: var(--spacing-md) 0;
     position: sticky;
@@ -120,12 +99,13 @@ header {
     -webkit-backdrop-filter: blur(16px);
 }
 body.dark-mode header {
-    background: rgba(18, 18, 18, 0.8); /* Nero Abissale Trasparente */
+    background: rgba(17, 24, 39, 0.8);
 }
 
 .header-content { display: flex; align-items: center; justify-content: space-between; gap: var(--spacing-lg); }
 .logo-section { display: flex; align-items: center; gap: var(--spacing-md); }
 #logo { height: 40px; width: auto; }
+.brand-name { font-size: 1.6rem; font-weight: 700; color: var(--text-primary); text-decoration: none; }
 .header-nav { display: flex; align-items: center; gap: var(--spacing-sm); }
 
 .nav-button {
@@ -160,7 +140,7 @@ body.dark-mode header {
     border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-primary);
     font-size: 0.9rem; transition: all 0.2s ease;
 }
-#searchInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.2); }
+#searchInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
 #searchResults {
     position: absolute; top: 110%; left: 0; right: 0; background: var(--bg-secondary);
     border: 1px solid var(--border-light); border-radius: var(--radius-md);
@@ -208,7 +188,7 @@ body.dark-mode header {
     background: var(--bg-primary); color: var(--text-primary); font-size: 1rem;
     transition: all 0.2s ease; resize: vertical;
 }
-.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 103, 0, 0.2); }
+.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); }
 
 .publish-button {
     padding: var(--spacing-md) var(--spacing-xl); background: var(--primary); color: white; border: none;
@@ -220,14 +200,10 @@ body.dark-mode header {
 
 .posts { display: flex; flex-direction: column; gap: var(--spacing-xl); }
 .post {
-    display: flex; /* MODIFICA: serve per affiancare l'immagine casuale */
-    align-items: center; /* MODIFICA: allinea l'immagine al centro verticalmente */
     background: var(--bg-secondary); border-radius: var(--radius-xl); padding: var(--spacing-xl);
     box-shadow: var(--shadow-xl); transition: all 0.3s ease; position: relative;
     border: 1px solid var(--border-light);
 }
-.post-inner-content { flex: 1; } /* MODIFICA: contenitore per il contenuto del post */
-
 .post:hover { box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); transform: translateY(-4px); }
 .post-header {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg);
@@ -245,8 +221,7 @@ body.dark-mode header {
     align-items: center; justify-content: center;
 }
 .action-button:hover { background: var(--danger); color: white; }
-.post-content { margin-bottom: var(--spacing-lg); line-height: 1.7; word-wrap: break-word; }
-.post-content a { color: var(--primary); text-decoration: underline; } /* Stile per i link cliccabili */
+.post-content { margin-bottom: var(--spacing-lg); line-height: 1.7; }
 .post-uploaded-content img, .post-uploaded-content video {
     max-width: 100%;
     max-height: 70vh;
@@ -267,7 +242,7 @@ body.dark-mode header {
     border: 1px solid var(--border-light); border-radius: var(--radius-full); background: var(--bg-tertiary);
     color: var(--text-secondary); font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease;
 }
-.vote-button:hover { border-color: var(--primary); color: var(--primary); background: rgba(255, 103, 0, 0.1); }
+.vote-button:hover { border-color: var(--primary); color: var(--primary); background: rgba(16, 185, 129, 0.1); }
 .vote-count { font-weight: 600; color: var(--text-primary); }
 .post-actions-footer { display: flex; gap: var(--spacing-sm); }
 .footer-button {
@@ -297,6 +272,7 @@ body.dark-mode header {
     background: var(--bg-secondary); padding: var(--spacing-2xl); border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl); width: 100%; max-width: 400px; border: 1px solid var(--border-light);
 }
+.auth-card h2 { text-align: center; margin-bottom: var(--spacing-xl); font-size: 1.75rem; font-weight: 700; }
 .auth-form { display: flex; flex-direction: column; gap: var(--spacing-lg); }
 .auth-input {
     padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-md);
@@ -366,6 +342,7 @@ body.dark-mode header {
     justify-content: space-between;
     align-items: center;
 }
+.chat-sidebar-header h3 { font-size: 1.25rem; }
 .new-chat-buttons button {
     background: transparent; border: none; font-size: 1.5rem; cursor: pointer;
     color: var(--text-secondary); margin-left: var(--spacing-sm);
@@ -461,7 +438,7 @@ footer {
     .header-content { flex-wrap: wrap; gap: var(--spacing-md); }
     .header-nav { order: 3; width: 100%; justify-content: center; flex-wrap: wrap; }
     .search-container { min-width: 150px; }
-    .brand-name { font-size: 1.5rem; }
+    .brand-name { font-size: 1.25rem; }
     .post { padding: var(--spacing-lg); }
     .post-footer { flex-direction: column; align-items: stretch; }
     .vote-section { justify-content: center; }
@@ -500,7 +477,6 @@ footer {
 </style>
 </head>
 <body>
-
 <script src="https://accounts.google.com/gsi/client" defer async></script>
 <div class="modal-overlay" id="modalOverlay"></div>
 <div class="container">
@@ -559,7 +535,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div class="container">
 <div class="header-content">
 <div class="logo-section">
-<img id="logo" src="logo-halloween-light.png" alt="Nexiflow Logo">
+<img id="logo" src="logo1.png" alt="Nexiflow Logo">
 <a href="#" class="brand-name" onclick="showMainContent()">Nexiflow</a>
 </div>
 <div class="search-container">
@@ -661,7 +637,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
     </div>
     <div class="chat-main">
         <div id="chat-welcome-screen">
-            <img src="logo-halloween-light.png" alt="Nexiflow Logo">
+            <img src="logo1.png" alt="Nexiflow Logo">
             <h2>Benvenuto nella Chat di Nexiflow</h2>
             <p>Seleziona una conversazione per iniziare a chattare.</p>
         </div>
@@ -883,25 +859,6 @@ let newVideoFormat = 'horizontal';
 let currentOpenChat = { id: null, type: null };
 let pollingInterval = null;
 let tempRecoveryData = null;
-
-
-/* ==============================================================
-   NUOVA FUNZIONE: LINK CLICCABILI (MODIFICA RICHIESTA)
-   ==============================================================
-*/
-function linkify(text) {
-    // Regex per trovare URL nel testo, ma ignora quelli già dentro un tag <a> o <img>
-    const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])|(\bwww\.[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-    
-    // Sostituisce il testo semplice che contiene link con un vero tag <a>
-    return text.replace(urlRegex, function(url) {
-        let fullUrl = url;
-        if (!fullUrl.startsWith('http')) {
-            fullUrl = 'http://' + fullUrl;
-        }
-        return `<a href="${fullUrl}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-    });
-}
 
 
 function showElement(elementId) { document.getElementById(elementId).classList.remove('hidden'); }
@@ -1689,14 +1646,10 @@ async function toggleFollow(targetUserEmail) {
 
 
 function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    const logo = isDark ? 'logo-halloween-dark.png' : 'logo-halloween-light.png';
-    document.getElementById('logo').src = logo;
-    const welcomeLogo = document.querySelector('#chat-welcome-screen img');
-    if (welcomeLogo) {
-        welcomeLogo.src = logo;
-    }
+document.body.classList.toggle('dark-mode');
+const isDark = document.body.classList.contains('dark-mode');
+const logo = isDark ? 'logo2.png' : 'logo1.png';
+document.getElementById('logo').src = logo;
 }
 function toggleInput() { document.getElementById('inputArea').classList.toggle('active'); }
 function setPostType(type, button) {
@@ -1789,30 +1742,18 @@ function createPostElement(post) {
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
     const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></button>` : '';
     const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button>` : '';
-    
-    let postContentHTML = '';
-    // MODIFICA: La funzione linkify viene applicata qui
-    if (post.type === 'text') {
-        postContentHTML = `<div class="post-content">${linkify(post.content)}</div>`;
-    } 
-    else if (post.type === 'video') postContentHTML = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-    else if (post.type === 'embed') postContentHTML = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
-    else if (post.type === 'twitter') postContentHTML = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
+    let postContent = '';
+    if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
+    else if (post.type === 'video') postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe src="${embedFromLink(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'embed') postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-embed"><iframe class="${post.embedFormat === 'vertical' ? 'vertical-video' : ''}" src="${srcFromEmbed(post.content)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+    else if (post.type === 'twitter') postContent = `<blockquote class="twitter-tweet"><a href="${post.content}"></a></blockquote>`;
     else if (post.type === 'upload') {
         let mediaElement = '';
         if (post.fileType === 'image') mediaElement = `<img src="${post.content}" alt="Immagine caricata">`;
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
-        postContentHTML = `${post.description ? `<div class="post-content">${linkify(post.description)}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
+        postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-
-    // MODIFICA: aggiunto un div interno per gestire il layout con flexbox
-    postElement.innerHTML = `<div class="post-inner-content">
-        <div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>
-        ${postContentHTML}
-        <div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">❤ <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">💔 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div>
-        <div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>
-    </div>`;
-    
+    postElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">❤ <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">💔 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
@@ -1839,9 +1780,7 @@ function copyEmbedCode(postId) {
         contentHtml = `<p style="margin-bottom: 8px; white-space: pre-wrap; word-wrap: break-word;">${post.description || ''}</p><iframe src="${post.type === 'video' ? embedFromLink(post.content) : srcFromEmbed(post.content)}" style="width: 100%; height: 250px; border: none; border-radius: 8px;" allowfullscreen></iframe>`;
     }
 
-    const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#FF6700;text-decoration:none">Nexiflow™</a></div></div>`;
-    
-    // *** FIX: Sostituisci le virgolette con " per un srcdoc valido ***
+    const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#00D4FF;text-decoration:none">Nexiflow™</a></div></div>`;
     const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
@@ -1850,12 +1789,9 @@ function copyEmbedCode(postId) {
         alert('Errore nel copiare il codice.');
     });
 }
-
 function renderPosts(posts) {
     const container = document.getElementById('postsContainer'); container.innerHTML = '';
     posts.forEach(post => container.appendChild(createPostElement(post)));
-    // NUOVA FUNZIONE: aggiunge le immagini di halloween dopo aver creato i post
-    addHalloweenImagesToPosts();
 }
 function renderNewPosts(newPosts) {
     const container = document.getElementById('postsContainer');
@@ -1863,39 +1799,7 @@ function renderNewPosts(newPosts) {
         const postElement = createPostElement(post); postElement.style.animation = 'slideDown 0.5s ease-out';
         container.insertBefore(postElement, container.firstChild);
     });
-    // NUOVA FUNZIONE: aggiunge le immagini di halloween anche ai nuovi post
-    addHalloweenImagesToPosts();
 }
-
-/* ==============================================================
-   NUOVA FUNZIONE: IMMAGINI HALLOWEEN (MODIFICA RICHIESTA)
-   ==============================================================
-*/
-function addHalloweenImagesToPosts() {
-    const halloweenImages = ['stregha.png', 'pipistrello.png', 'scheletro.png', 'zucche.png'];
-    const posts = document.querySelectorAll('.post');
-
-    posts.forEach(post => {
-        // Controlla se l'immagine è già stata aggiunta per non duplicarla
-        if (post.querySelector('.halloween-random-image')) {
-            return; 
-        }
-
-        const randomImageSrc = halloweenImages[Math.floor(Math.random() * halloweenImages.length)];
-        const imgElement = document.createElement('img');
-        imgElement.src = randomImageSrc;
-        imgElement.alt = "Halloween";
-        imgElement.className = 'halloween-random-image'; // Aggiungiamo una classe per identificarla
-        imgElement.style.width = '60px';
-        imgElement.style.height = 'auto';
-        imgElement.style.marginLeft = '15px';
-        imgElement.style.opacity = '0.8';
-
-        post.appendChild(imgElement);
-    });
-}
-
-
 async function startPrivateChatFromPost(recipientEmail) {
     if (!currentUser) { alert("Devi essere loggato per inviare messaggi."); return; }
     if (currentUser.email === recipientEmail) { alert("Non puoi inviare messaggi a te stesso."); return; }
