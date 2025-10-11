@@ -16,7 +16,7 @@ gtag('config', 'G-BHXQ3M8FYD');
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;500;700&display=swap');
 
 /* ==============================================================
-   HALLOWEEN THEME OVERHAUL - by Gemini
+   HALLOWEEN THEME OVERHAUL
    ==============================================================
 */
 :root {
@@ -84,6 +84,43 @@ body {
     transition: all 0.3s ease;
     min-height: 100vh;
 }
+
+/* ==============================================================
+   ZUCCHE DECORATIVE SPARSE
+   ==============================================================
+*/
+.pumpkin-patch-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1; /* Le mette dietro a tutto */
+    pointer-events: none; /* Le rende non cliccabili */
+}
+.pumpkin-patch-background .pumpkin {
+    position: absolute;
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+body.dark-mode .pumpkin-patch-background .pumpkin {
+    opacity: 0.15;
+}
+
+/* Posizioni e stili individuali delle zucche */
+.pumpkin.p1 { top: 5%; left: 10%; width: 150px; transform: rotate(-15deg); }
+.pumpkin.p2 { top: 70%; left: 5%; width: 100px; transform: rotate(10deg); }
+.pumpkin.p3 { top: 15%; right: 8%; width: 120px; transform: rotate(20deg); }
+.pumpkin.p4 { top: 80%; right: 15%; width: 180px; transform: rotate(-5deg); }
+.pumpkin.p5 { bottom: 2%; left: 50%; transform: translateX(-50%) rotate(5deg); width: 80px; }
+.pumpkin.p6 { top: 50%; left: 30%; width: 60px; transform: rotate(25deg); opacity: 0.05;}
+.pumpkin.p7 { top: 40%; right: 35%; width: 90px; transform: rotate(-10deg); opacity: 0.08;}
+
+body.dark-mode .pumpkin.p6 { opacity: 0.1; }
+body.dark-mode .pumpkin.p7 { opacity: 0.12; }
+/* Fine Zucche Decorative */
+
 
 .brand-name, .auth-card h2, .chat-sidebar-header h3 {
     font-family: 'Creepster', cursive;
@@ -453,6 +490,7 @@ footer {
     .chat-sidebar { width: 100%; max-width: none; border-right: none; border-bottom: 1px solid var(--border-light); height: 40%; }
     .auth-container { padding: var(--spacing-md); }
     .auth-card { padding: var(--spacing-xl); }
+    .pumpkin.p6, .pumpkin.p7 { display: none; } /* Nasconde le zucche che potrebbero sovrapporsi al contenuto su schermi piccoli */
 }
 
 @media (max-width: 480px) {
@@ -482,6 +520,17 @@ footer {
 </style>
 </head>
 <body>
+
+<div class="pumpkin-patch-background">
+    <img src="logo-halloween-light.png" class="pumpkin p1" alt="">
+    <img src="logo-halloween-dark.png" class="pumpkin p2" alt="">
+    <img src="logo-halloween-light.png" class="pumpkin p3" alt="">
+    <img src="logo-halloween-dark.png" class="pumpkin p4" alt="">
+    <img src="logo-halloween-light.png" class="pumpkin p5" alt="">
+    <img src="logo-halloween-dark.png" class="pumpkin p6" alt="">
+    <img src="logo-halloween-light.png" class="pumpkin p7" alt="">
+</div>
+
 <script src="https://accounts.google.com/gsi/client" defer async></script>
 <div class="modal-overlay" id="modalOverlay"></div>
 <div class="container">
@@ -1791,8 +1840,8 @@ function copyEmbedCode(postId) {
 
     const embedHtml = `<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;font-family:'Inter',sans-serif;max-width:500px;background:#ffffff"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><img src="${authorPicUrl}" style="width:32px;height:32px;border-radius:50%"><div><strong style="font-size:14px;color:#0f172a">${post.author}</strong><p style="font-size:12px;color:#94a3b8;margin:0">${post.date}</p></div></div>${contentHtml}<div style="margin-top:12px;font-size:12px;color:#475569">Pubblicato su <a href="https://nexiflow.netlify.app" target="_blank" style="color:#FF6700;text-decoration:none">Nexiflow™</a></div></div>`;
     
-    // *** FIX: Sostituisci le virgolette con &quot; per un srcdoc valido ***
-    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '&quot;')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
+    // *** FIX: Sostituisci le virgolette con " per un srcdoc valido ***
+    const iframeCode = `<iframe srcdoc="${embedHtml.replace(/"/g, '"')}" style="width: 100%; max-width: 520px; height: 350px; border: none; overflow: hidden;" scrolling="no"></iframe>`;
     
     navigator.clipboard.writeText(iframeCode).then(() => {
         alert('Codice di incorporamento copiato!');
