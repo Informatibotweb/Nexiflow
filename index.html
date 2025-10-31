@@ -12,26 +12,27 @@ gtag('config', 'G-BHXQ3M8FYD');
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Nexiflow™ by Nexiquar</title>
 <link rel="icon" type="image/png" href="icon1.png">
-<link href='https://fonts.googleapis.com/css?family=Creepster|Aladin' rel='stylesheet' type='text/css'>
+<!-- Rimosso font 'Creepster' -->
+<link href='https://fonts.googleapis.com/css?family=Aladin' rel='stylesheet' type='text/css'>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <style>
 /* ==============================================================
-   HALLOWEEN THEME OVERHAUL - by Gemini
-   Spooky palette, animations, and ghoulish fun!
+   STANDARD THEME - by Gemini
+   Palette pulita e professionale
    ==============================================================
 */
 :root {
-    /* Halloween Palette */
-    --primary: #FF6D00; /* Pumpkin Orange */
-    --primary-dark: #E65100;
+    /* Palette Standard (Blu) */
+    --primary: #00D4FF; /* Nexi Blue */
+    --primary-dark: #00AECB;
     --secondary: #9E9E9E;
-    --accent: #7B1FA2; /* Spooky Purple */
+    --accent: #00BFFF; /* Deep Sky Blue */
     --success: #4CAF50;
     --danger: #F44336;
     --warning: #FFC107;
 
-    /* Dark Mode Palette (Default for Halloween) */
+    /* Dark Mode Palette (Default) */
     --bg-primary: #121212; /* Deep Black */
     --bg-secondary: #1E1E1E; /* Near Black */
     --bg-tertiary: #2a2a2a;
@@ -45,7 +46,8 @@ gtag('config', 'G-BHXQ3M8FYD');
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.2);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
-    --shadow-xl: 0 0 40px rgba(255, 109, 0, 0.15);
+    /* Ombra aggiornata con il nuovo colore primario */
+    --shadow-xl: 0 0 40px rgba(0, 212, 255, 0.15);
 
     /* Radius */
     --radius-sm: 8px;
@@ -72,11 +74,8 @@ body {
     line-height: 1.6;
     transition: all 0.3s ease;
     min-height: 100vh;
-    overflow-x: hidden; /* Prevent horizontal scroll from decorations */
-    background-image: -webkit-radial-gradient(top, circle cover, #3c3b52 0%, #252233 80%);
-    background-image: -moz-radial-gradient(top, circle cover, #3c3b52 0%, #252233 80%);
-    background-image: -o-radial-gradient(top, circle cover, #3c3b52 0%, #252233 80%);
-    background-image: radial-gradient(top, circle cover, #3c3b52 0%, #252233 80%);
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    /* Rimosso sfondo a gradiente a tema Halloween */
 }
 
 .container { max-width: 1200px; margin: 0 auto; padding: 0 var(--spacing-md); }
@@ -96,12 +95,12 @@ header {
 .logo-section { display: flex; align-items: center; gap: var(--spacing-md); }
 #logo { height: 40px; width: auto; }
 .brand-name {
-    font-family: 'Creepster', cursive;
+    /* Rimosso font 'Creepster' */
     font-size: 2.5rem;
     letter-spacing: 2px;
     font-weight: 700;
     color: var(--primary);
-    text-shadow: 0 0 5px var(--primary-dark);
+    /* Rimosso text-shadow */
     text-decoration: none;
 }
 .header-nav { display: flex; align-items: center; gap: var(--spacing-sm); }
@@ -128,7 +127,11 @@ header {
     border-radius: var(--radius-full); background: var(--bg-secondary); color: var(--text-primary);
     font-size: 0.9rem; transition: all 0.2s ease;
 }
-#searchInput:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 109, 0, 0.3); }
+#searchInput:focus { 
+    outline: none; border-color: var(--primary); 
+    /* Ombra focus aggiornata */
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.3); 
+}
 #searchResults {
     position: absolute; top: 110%; left: 0; right: 0; background: var(--bg-secondary);
     border: 1px solid var(--border-light); border-radius: var(--radius-md);
@@ -172,7 +175,11 @@ header {
     background: var(--bg-primary); color: var(--text-primary); font-size: 1rem;
     transition: all 0.2s ease; resize: vertical;
 }
-.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255, 109, 0, 0.3); }
+.form-input:focus { 
+    outline: none; border-color: var(--primary); 
+    /* Ombra focus aggiornata */
+    box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.3); 
+}
 .publish-button {
     padding: var(--spacing-md) var(--spacing-xl); background: var(--primary); color: white; border: none;
     border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; cursor: pointer;
@@ -185,9 +192,13 @@ header {
     background: var(--bg-secondary); border-radius: var(--radius-xl); padding: var(--spacing-xl);
     box-shadow: var(--shadow-xl); transition: all 0.3s ease; position: relative;
     border: 1px solid var(--border-light);
-    overflow: visible; /* Allow pumpkin to be visible */
+    overflow: hidden; /* Modificato da 'visible' */
 }
-.post:hover { box-shadow: 0 10px 25px -5px rgba(255, 109, 0, 0.2), 0 8px 10px -6px rgba(255, 109, 0, 0.1); transform: translateY(-4px); }
+.post:hover { 
+    /* Ombra hover aggiornata */
+    box-shadow: 0 10px 25px -5px rgba(0, 212, 255, 0.2), 0 8px 10px -6px rgba(0, 212, 255, 0.1); 
+    transform: translateY(-4px); 
+}
 .post-header {
     display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--spacing-lg);
 }
@@ -220,7 +231,11 @@ header {
     border: 1px solid var(--border-light); border-radius: var(--radius-full); background: var(--bg-tertiary);
     color: var(--text-secondary); font-size: 0.875rem; cursor: pointer; transition: all 0.2s ease;
 }
-.vote-button:hover { border-color: var(--primary); color: var(--primary); background: rgba(255, 109, 0, 0.1); }
+.vote-button:hover { 
+    border-color: var(--primary); color: var(--primary); 
+    /* Sfondo hover aggiornato */
+    background: rgba(0, 212, 255, 0.1); 
+}
 .vote-count { font-weight: 600; color: var(--text-primary); }
 .post-actions-footer { display: flex; gap: var(--spacing-sm); }
 .footer-button {
@@ -248,7 +263,12 @@ header {
     background: var(--bg-secondary); padding: var(--spacing-2xl); border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl); width: 100%; max-width: 400px; border: 1px solid var(--border-light);
 }
-.auth-card h2 { text-align: center; margin-bottom: var(--spacing-xl); font-size: 1.75rem; font-weight: 700; font-family: 'Creepster', cursive; color: var(--primary); }
+.auth-card h2 { 
+    text-align: center; margin-bottom: var(--spacing-xl); font-size: 1.75rem; 
+    font-weight: 700; 
+    /* Rimosso font 'Creepster' */
+    color: var(--primary); 
+}
 .auth-form { display: flex; flex-direction: column; gap: var(--spacing-lg); }
 .auth-input {
     padding: var(--spacing-md); border: 1px solid var(--border-light); border-radius: var(--radius-md);
@@ -421,221 +441,18 @@ footer {
 }
 
 /* ==================================
-   PUMPKIN CSS - Jack-o'-Lantern
+   BLOCCHI CSS HALLOWEEN RIMOSSI
+   - PUMPKIN CSS
+   - WITCH CSS
    ================================== */
-.pumpkin-container {
-    position: fixed;
-    bottom: -50px;
-    left: 20px;
-    width: 300px;
-    height: 200px;
-    z-index: -1;
-    transform: scale(0.6);
-    pointer-events: none;
-}
-.pumpkin-container-top-right {
-    left: auto;
-    right: 20px;
-    top: 20px;
-    bottom: auto;
-    transform: scale(0.4) scaleX(-1);
-}
-.pumpkin { position: absolute; left: 90px; }
-.pumpkin .segment {
-    position: absolute; display: block; width: 126px; height: 180px;
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    background: #fb9a39;
-    background: -moz-radial-gradient(center, ellipse cover, #fb9a39 0%, #c13c07 100%);
-    background: -webkit-radial-gradient(center, ellipse cover, #fb9a39 0%,#c13c07 100%);
-    background: radial-gradient(ellipse at center, #fb9a39 0%,#c13c07 100%);
-    box-shadow: 0 0 20px rgba(255, 109, 0, 0.7);
-}
-.pumpkin .segment:after {
-    content:""; position: absolute; width: 100%; height: 100%;
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    background: -moz-linear-gradient(top, rgba(251,154,57,0) 0%, rgba(127,35,5,0.4) 100%);
-    background: -webkit-linear-gradient(top, rgba(251,154,57,0) 0%,rgba(127,35,5,0.4) 100%);
-    background: linear-gradient(to bottom, rgba(251,154,57,0) 0%,rgba(127,35,5,0.4) 100%);
-}
-.pumpkin .segment:nth-child(5) { left: -40px; height: 160px; top: 10px; }
-.pumpkin .segment:nth-child(4) { left: 40px; height: 160px; top: 10px; }
-.pumpkin .segment:nth-child(2) { left: -60px; height: 120px; top: 30px; }
-.pumpkin .segment:nth-child(3) { left: 60px; height: 120px; top: 30px; }
-.pumpkin .segment:nth-child(6) { left: 0; height: 180px; top: 0; }
-.eye {
-    position: absolute; width: 0px; height: 0px; left: 0px; top: 30px;
-    border-right: 30px solid transparent; border-top: 30px solid transparent;
-    border-left: 30px solid #1E1E1E; border-bottom: 30px solid #1E1E1E;
-    border-radius: 60px;
-    -webkit-filter: drop-shadow( 0 0 10px #F8B500 );
-    filter: drop-shadow( 0 0 10px #F8B500 );
-}
-.eye:after {
-    content: ""; position: absolute; width: 0px; height: 0px; left: -30px; top: -30px;
-    border-right: 25px solid transparent; border-top: 25px solid transparent;
-    border-left: 25px solid #F8B500; border-bottom: 25px solid #F8B500;
-    border-radius: 60px;
-    -webkit-filter: drop-shadow( 0 0 10px #F8B500 );
-    filter: drop-shadow( 0 0 10px #F8B500 );
-}
-.left:after { left: -20px; top: -20px; }
-.left { transform: rotate( -20deg ); }
-.right { left: 60px; transform: rotate(-80deg); }
-.pumpkin .mouth {
-    position: absolute; width: 0px; height: 0px; left: 0px; top: 80px;
-    border-right: 30px solid transparent; border-top: 30px solid transparent;
-    border-left: 30px solid #1E1E1E; border-bottom: 30px solid #1E1E1E;
-    border-radius: 60px;
-    -webkit-filter: drop-shadow( 0 0 10px #F8B500 );
-    transform: scale(2,1) rotate(-45deg) translateX(10px) translateY(10px);
-}
-.mouth:after {
-    content: ""; position: absolute; width: 0px; height: 0px; left: -25px; top: -25px;
-    border-right: 25px solid transparent; border-top: 25px solid transparent;
-    border-left: 25px solid #F8B500; border-bottom: 25px solid #F8B500;
-    border-radius: 60px;
-    -webkit-filter: drop-shadow( 0 0 10px #F8B500 );
-    filter: drop-shadow( 0 0 10px #F8B500 );
-}
-.pumpkin .stem {
-    position: absolute; color: #5c7a23; font-size: 200px;
-    font-weight: 800px; font-family: sans-serif;
-    left: 10px; top: -80px; transform: rotate(180deg);
-}
-.shadow {
-    position: absolute; left: 50%; margin-left: -150px; top: 150px;
-    width: 300px; height: 100px;
-    border-radius: 150px / 50px; z-index: -2;
-    background: radial-gradient(ellipse at center, rgba(242,176,9,0.4) 0%,rgba(248,160,44,0) 72%,rgba(251,154,57,0) 100%);
-}
-.pumpkin .eye.left { animation: twitchLeft 3s ease-in-out infinite; }
-.pumpkin .eye.right { animation: twitchRight 2.8s ease-in-out infinite; }
-.pumpkin .mouth { animation: twitchMouth 3.2s ease-in-out infinite; }
-@keyframes twitchLeft {
-  0%, 100% { transform: rotate(-20deg) }
-  50% { transform: scale(1.1) rotate(-10deg) }
-}
-@keyframes twitchRight {
-  0%, 100% { transform: rotate(-80deg) }
-  50% { transform: scale(1.1) rotate(-70deg) }
-}
-@keyframes twitchMouth {
-  0%, 100% { transform: scale(2,1) rotate(-45deg) translateX(10px) translateY(10px); }
-  50% { transform: scale(2,1.5) rotate(-35deg) translateX(10px) translateY(10px); }
-}
 
-/* NEW: Small pumpkin for posts */
-.post-pumpkin {
-    position: absolute;
-    top: -20px;
-    right: -10px;
-    transform: scale(0.2);
-    z-index: 0;
-    pointer-events: none;
-}
-
-
-/* ==================================
-   WITCH CSS - Spooky Silhouettes
-   ================================== */
-.witch-container {
-    position: fixed;
-    top: 50px;
-    right: -200px;
-    z-index: -1;
-    animation: fly-by 60s linear infinite;
-    pointer-events: none;
-}
-.witch {
-    width: 150px;
-    height: 150px;
-    position: relative;
-    transform: rotate(-15deg);
-}
-.witch .hat {
-    position: absolute;
-    bottom: 90px;
-    left: 20px;
-    width: 0;
-    height: 0;
-    border-left: 40px solid transparent;
-    border-right: 40px solid transparent;
-    border-bottom: 70px solid #111;
-}
-.witch .hat::before {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: -50px;
-    width: 100px;
-    height: 10px;
-    background: #111;
-    border-radius: 5px;
-}
-.witch .broom {
-    position: absolute;
-    bottom: 50px;
-    left: 0;
-    width: 150px;
-    height: 10px;
-    background: #4a2c2a;
-    border-radius: 5px;
-    transform: rotate(10deg);
-}
-.witch .broom::after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    right: -20px;
-    width: 40px;
-    height: 20px;
-    background: #a17d52;
-    clip-path: polygon(0 0, 100% 30%, 100% 70%, 0% 100%);
-}
-@keyframes fly-by {
-    0% { transform: translateX(0) translateY(0) scale(0.5); }
-    100% { transform: translateX(-150vw) translateY(100px) scale(0.5); }
-}
 </style>
 </head>
 <body>
 
-<div class="pumpkin-container">
-    <div class="pumpkin">
-        <div class="stem">⟆</div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
-    </div>
-    <div class="shadow"></div>
-</div>
-
-<div class="pumpkin-container pumpkin-container-top-right">
-    <div class="pumpkin">
-        <div class="stem">⟆</div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="segment"></div>
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
-    </div>
-    <div class="shadow"></div>
-</div>
-
-<div class="witch-container">
-    <div class="witch">
-        <div class="hat"></div>
-        <div class="broom"></div>
-    </div>
-</div>
+<!-- 
+    Contenitori HTML per zucche e streghe rimossi 
+-->
 
 <script src="https://accounts.google.com/gsi/client" defer async></script>
 <div class="modal-overlay" id="modalOverlay"></div>
@@ -703,7 +520,7 @@ Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
 <div id="searchResults"></div>
 </div>
 <div class="header-nav">
-    <button class="nav-button" onclick="showStatusPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zM8 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/><path d="M8 8.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5-.5"/></svg>Stati<span id="status-notification-dot" class="notification-dot hidden"></span></button>
+    <button class="nav-button" onclick="showStatusPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zM8 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/><path d="M8 8.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5.5"/></svg>Stati<span id="status-notification-dot" class="notification-dot hidden"></span></button>
     <button class="nav-button" onclick="showChatPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2z"/></svg>Chat</button>
     <button class="nav-button" onclick="showVideoPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/></svg>Video</button>
     <button class="nav-button primary" onclick="showMainContent(); toggleInput()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg>Nuovo Post</button>
@@ -1882,7 +1699,7 @@ async function publishPost() {
         if (document.getElementById('inputArea').classList.contains('active')) toggleInput();
         await updatePostsOnServer(allPosts);
     } catch (error) {
-        console.error("Errore durante la pubblicazione:", error); alert(`Si è verificato un errore durante la pubblicazione: ${error.message}`);
+        console.error("Errore durante la pubblicazione:", error); alert(`Si è verificato un errore during la pubblicazione: ${error.message}`);
         allPosts.shift(); renderPosts(allPosts);
     } finally {
         publishBtn.textContent = 'Pubblica su Nexiflow'; publishBtn.disabled = false; checkPublishButtonState();
@@ -1899,8 +1716,9 @@ const parser = new DOMParser(); const doc = parser.parseFromString(embedCode, 't
 function createPostElement(post) {
     const postElement = document.createElement('div'); postElement.className = 'post'; postElement.dataset.id = post.id;
     const isMyPost = currentUser && post.authorEmail === currentUser.email;
-    const pumpkinHtml = `<div class="post-pumpkin"><div class="pumpkin"><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div></div>`;
-    const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></button>` : '';
+    // Rimossa la variabile 'pumpkinHtml'
+    const pumpkinHtml = '';
+    const deleteButton = isMyPost ? `<button class="action-button" onclick="deletePost(${post.id})" title="Elimina post"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></button>` : '';
     const privateMessageButton = !isMyPost ? `<button class="footer-button" onclick="startPrivateChatFromPost('${post.authorEmail}')"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z"/></svg> Messaggio</button>` : '';
     let postContent = '';
     if (post.type === 'text') postContent = `<div class="post-content">${post.content}</div>`;
@@ -1913,7 +1731,8 @@ function createPostElement(post) {
         else if (post.fileType === 'video') mediaElement = `<video src="${post.content}" controls></video>`;
         postContent = `${post.description ? `<div class="post-content">${post.description}</div>` : ''}<div class="post-uploaded-content">${mediaElement}</div>`;
     }
-    postElement.innerHTML = `${pumpkinHtml}<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')">🎃 <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')">👻 <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
+    // Icone 🎃 e 👻 sostituite con SVG
+    postElement.innerHTML = `${pumpkinHtml}<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${post.authorEmail}')"><img src="${post.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${post.author}</div><div class="post-date">${post.date}</div></div></a><div class="post-actions">${deleteButton}</div></div>${postContent}<div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="votePost(${post.id}, 'up')"><svg class="icon" style="width:1em; height:1em; vertical-align: -0.1em;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg> <span>${post.upvotes || 0}</span></button><div class="vote-count">${(post.upvotes || 0) - (post.downvotes || 0)}</div><button class="vote-button" onclick="votePost(${post.id}, 'down')"><svg class="icon" style="width:1em; height:1em; vertical-align: -0.1em;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4 4a.5.5 0 0 1-.708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg> <span>${post.downvotes || 0}</span></button></div><div class="post-actions-footer"><button class="footer-button" onclick="toggleComments(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2V2zm3.5 1a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1h-9zm0 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/></svg> Commenta</button>${privateMessageButton}<button class="footer-button" onclick="translatePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zM4.5 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/><path d="M11 6.75a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2a.25.25 0 0 0-.25.25v.5c0 .138.112.25.25.25h2a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75v-1.5z"/></svg> Traduci</button><button class="footer-button" onclick="summarizePost(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H4z"/><path d="M4.5 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zM4.5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm4.5 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5z"/></svg> Riassumi</button><button class="footer-button" onclick="copyEmbedCode(${post.id})"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/></svg> Incorpora</button></div></div><div class="comments-section" id="comments-section-${post.id}"><h4>Commenti:</h4><div class="comment-list" id="comments-${post.id}"></div><form class="comment-form" onsubmit="event.preventDefault(); addComment(${post.id});"><input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Scrivi un commento..." required /><button type="submit" class="comment-submit">Invia</button></form></div>`;
     renderComments(post.id, post.comments || [], postElement);
     if (post.type === 'twitter' && window.twttr) window.twttr.widgets.load(postElement);
     return postElement;
@@ -2044,8 +1863,9 @@ if (filteredVideos.length === 0) { videoGrid.innerHTML = `<p class="text-center"
 filteredVideos.forEach(video => {
 const videoElement = document.createElement('div'); videoElement.className = 'post fade-in'; videoElement.dataset.id = video.id;
 const isMyVideo = currentUser && video.authorEmail === currentUser.email;
-const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})">❌</button>` : '';
-videoElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')"><img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${video.author}</div><div class="post-date">${video.date}</div></div></a><div class="post-actions">${deleteButton}</div></div><div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')"><iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="voteVideo(${video.id}, 'up')">🎃 <span>${video.upvotes || 0}</span></button><div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div><button class="vote-button" onclick="voteVideo(${video.id}, 'down')">👻 <span>${video.downvotes || 0}</span></button></div></div>`;
+// Icona ❌ sostituita con SVG
+const deleteButton = isMyVideo ? `<button class="action-button" onclick="deleteVideo(${video.id})" title="Elimina video"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg></button>` : '';
+videoElement.innerHTML = `<div class="post-header"><a href="#" class="post-author" onclick="showUserProfile('${video.authorEmail}')"><img src="${video.authorPic}" class="profile-pic" alt="Foto Profilo"><div class="author-info"><div class="author-name">${video.author}</div><div class="post-date">${video.date}</div></div></a><div class="post-actions">${deleteButton}</div></div><div class="post-embed" onclick="openVideoModal('${video.embedCode}', '${video.format}')"><iframe class="${video.format === 'vertical' ? 'vertical-video' : ''}" src="${video.embedCode.includes('youtube.com') ? embedFromLink(video.embedCode) : srcFromEmbed(video.embedCode)}" title="Video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="post-content">${video.description}</div><div class="post-footer"><div class="vote-section"><button class="vote-button" onclick="voteVideo(${video.id}, 'up')"><svg class="icon" style="width:1em; height:1em; vertical-align: -0.1em;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5z"/></svg> <span>${video.upvotes || 0}</span></button><div class="vote-count">${(video.upvotes || 0) - (video.downvotes || 0)}</div><button class="vote-button" onclick="voteVideo(${video.id}, 'down')"><svg class="icon" style="width:1em; height:1em; vertical-align: -0.1em;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4 4a.5.5 0 0 1-.708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z"/></svg> <span>${video.downvotes || 0}</span></button></div></div>`;
 videoGrid.appendChild(videoElement);
 });
 }
@@ -2319,116 +2139,7 @@ searchInput.addEventListener('input', function() { if (searchInput.value === 'co
 })();
 </script>
 
-<script>
-(function ($) {
-	"use strict";
-	$.fn.halloweenBats = function (options) {
-		var Bat,
-			bats = [],
-			$body= $('body'),
-			innerWidth = $body.innerWidth(),
-			innerHeight = $body.innerHeight(),
-			counter,
-			defaults = {
-				image: 'https://raw.githubusercontent.com/Artimon/jquery-halloween-bats/master/bats.png', // Path to the image.
-				zIndex: 10000,
-				amount: 12,
-				width: 35,
-				height: 20,
-				frames: 4,
-				speed: 20,
-				flickering: 15
-			};
-
-		options = $.extend({}, defaults, options);
-
-		Bat = function () {
-			var self = this,
-				$bat = $('<div class="halloweenBat"/>'),
-				x, y, tx, ty, dx, dy, frame;
-
-			self.randomPosition = function (direction) {
-				var screenLength, imageLength;
-				if (direction === 'horizontal') {
-					screenLength = innerWidth;
-					imageLength = options.width;
-				} else {
-					screenLength = innerHeight;
-					imageLength = options.height;
-				}
-				return Math.random() * (screenLength - imageLength);
-			};
-
-			self.applyPosition = function () {
-				$bat.css({ left: x + 'px', top: y + 'px' });
-			};
-
-			self.move = function () {
-				var left, top, length, dLeft, dTop, ddLeft, ddTop;
-				left = tx - x; top = ty - y;
-				length = Math.sqrt(left * left + top * top);
-				length = Math.max(1, length);
-				dLeft = options.speed * (left / length);
-				dTop = options.speed * (top / length);
-				ddLeft = (dLeft - dx) / options.flickering;
-				ddTop = (dTop - dy) / options.flickering;
-				dx += ddLeft; dy += ddTop;
-				x += dx; y += dy;
-				x = Math.max(0, Math.min(x, innerWidth - options.width));
-				y = Math.max(0, Math.min(y, innerHeight - options.height));
-				self.applyPosition();
-				if (Math.random() > 0.95 ) {
-					tx = self.randomPosition('horizontal');
-					ty = self.randomPosition('vertical');
-				}
-			};
-
-			self.animate = function () {
-				frame += 1;
-				if (frame >= options.frames) frame -= options.frames;
-				$bat.css('backgroundPosition', '0 ' + (frame * -options.height) + 'px');
-			};
-
-			x = self.randomPosition('horizontal');
-			y = self.randomPosition('vertical');
-			tx = self.randomPosition('horizontal');
-			ty = self.randomPosition('vertical');
-			dx = -5 + Math.random() * 10;
-			dy = -5 + Math.random() * 10;
-			frame = Math.round(Math.random() * options.frames);
-
-			$body.append($bat);
-			$bat.css({
-				position: 'fixed',
-				left: x + 'px',
-				top: y + 'px',
-				zIndex: options.zIndex,
-				width: options.width + 'px',
-				height: options.height + 'px',
-				backgroundImage: 'url(' + options.image + ')',
-				backgroundRepeat: 'no-repeat',
-                pointerEvents: 'none'
-			});
-
-			setInterval(self.move, 40);
-			setInterval(self.animate, 200);
-		};
-
-		for (counter = 0; counter < options.amount; ++counter) {
-			bats.push(new Bat());
-		}
-
-		$(window).resize(function() {
-			innerWidth = $body.innerWidth();
-			innerHeight = $body.innerHeight();
-		});
-	};
-}(jQuery));
-
-$(document).ready(function() {
-    $.fn.halloweenBats({});
-});
-</script>
+<!-- Script dei pipistrelli di Halloween rimosso -->
 
 </body>
 
