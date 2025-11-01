@@ -1,21 +1,27 @@
-// Script per favicon dinamica (Modifica 1)
-(function() {
+// Script per favicon dinamica (FIX - Esecuzione dopo il caricamento del DOM)
+document.addEventListener('DOMContentLoaded', () => {
     const setFavicon = () => {
         const favicon = document.getElementById('favicon');
-        if (!favicon) return;
+        if (!favicon) {
+            console.error("Elemento favicon non trovato!");
+            return;
+        }
         
+        // Controlla se il tema del sistema è scuro
         const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        // Se è scuro, usa logo2.png. Altrimenti (se è chiaro), usa logo1.png
         favicon.href = isDark ? 'logo2.png' : 'logo1.png';
     };
 
-    // Imposta all'avvio
+    // Imposta la favicon all'avvio
     setFavicon();
     
-    // Aggiorna se l'utente cambia tema
+    // Aggiungi un listener per aggiornare la favicon se l'utente cambia tema
     if (window.matchMedia) {
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setFavicon);
     }
-})();
+});
 
 // Le funzioni esistenti rimangono qui...
 function toggleStickerPicker() {
