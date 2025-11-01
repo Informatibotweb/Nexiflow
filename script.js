@@ -53,7 +53,7 @@ const API_KEY = "$2a$10$KNFCGq2q1AWerjl1Jhy/hOdyDhPwIGGztn7zrkggd3vU5dFiGdvLe";
 // NUOVI BIN ID
 const POST_BIN_ID = "68960092f7e7a370d1f76798";
 const VIDEO_BIN_ID = "689600c7f7e7a370d1f767d7";
-const USER_BIN_ID = "68e15e1e43b1c97be95a5d2b";
+const USER_BIN_ID = "69066aabae596e708f3d6320";
 const MESSAGES_BIN_ID = "68e15fc5ae596e708f0615c4";
 const STATUS_BIN_ID = "68e3c0a343b1c97be95c57d0"; 
 
