@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BHXQ3M8FYD"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BHXQ3M8FYD');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nexiflow™ by Nexiquar</title>
+    
+    <link id="favicon" rel="icon" type="image/png" href="logo1.png">
+    
+    <link href='https://fonts.googleapis.com/css?family=Aladin' rel='stylesheet' type='text/css'>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://accounts.google.com/gsi/client" defer async></script>
+</head>
+<body>
+
+<div id="loadingScreen" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #121212; z-index: 9999; display: flex; align-items: center; justify-content: center;" oncontextmenu="return false;">
+    <video id="loadingVideo" width="100%" height="100%" preload="auto" muted playsinline style="object-fit: cover; pointer-events: none;">
+        </video>
+</div>
+
+<div class="modal-overlay" id="modalOverlay"></div>
+<div class="container">
+<div id="authContent" class="hidden">
+    <div id="loginPage">
+    <div class="auth-container">
+    <div class="auth-card">
+    <h2>Accedi a Nexiflow</h2>
+    <div class="auth-form">
+    <input type="email" id="loginEmail" class="auth-input" placeholder="Email" />
+    <input type="password" id="loginPassword" class="auth-input" placeholder="Password" />
+    <button onclick="loginUser()" class="auth-button">Accedi</button>
+    <div class="auth-divider">o</div>
+    <div id="g_id_onload"
+    data-client_id="744167679001-old6qgj92p1mpgrgps0ju6sdh5gb8c47.apps.googleusercontent.com"
+    data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
+    <button onclick="loginWithSpotify()" class="social-login">
+    <img src="https://www.scdn.co/i/_global/favicon.png" alt="Spotify" />
+    Accedi con Spotify
+    </button>
+    </div>
+    <div class="auth-link">
+    Non hai un account? <a href="#" onclick="showRegisterPage()">Registrati</a>
+    </div>
+    </div>
+    </div>
+    </div>
+    <div id="registerPage" class="hidden">
+    <div class="auth-container">
+    <div class="auth-card">
+    <h2>Registrati su Nexiflow</h2>
+    <div class="auth-form">
+    <input type="text" id="registerName" class="auth-input" placeholder="Nome" />
+    <input type="email" id="registerEmail" class="auth-input" placeholder="Email" />
+    <input type="password" id="registerPassword" class="auth-input" placeholder="Password" />
+    <label>Scegli un'immagine profilo:</label>
+    <div class="profile-pic-selector" id="registerProfilePicSelector">
+    <img src="profilo1.png" class="profile-pic-option selected" data-value="profilo1.png" onclick="selectProfilePic(this, 'register')">
+    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'register')">
+    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'register')">
+    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'register')">
+    </div>
+    <button onclick="registerUser()" class="auth-button">Registrati</button>
+    </div>
+    <div class="auth-link">
+    Hai già un account? <a href="#" onclick="showLoginPage()">Accedi</a>
+    </div>
+    </div>
+    </div>
+    </div>
+</div>
+
+<div id="appContent" class="hidden">
+    <header>
+    <div class="container">
+    <div class="header-content">
+    <div class="logo-section">
+    <img id="logo" src="logo1.png" alt="Nexiflow Logo">
+    </div>
+    <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Cerca utenti..." />
+    <div id="searchResults"></div>
+    </div>
+    <div class="header-nav">
+        <button class="nav-button" onclick="showStatusPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1.5 2A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2zM8 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6m0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8"/><path d="M8 8.5a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5.5"/></svg>Stati<span id="status-notification-dot" class="notification-dot hidden"></span></button>
+        <button class="nav-button" onclick="showChatPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.5a1 1 0 0 0-.8.4l-1.9 2.533a1 1 0 0 1-1.6 0L5.3 12.4a1 1 0 0 0-.8-.4H2a2 2 0 0 1-2-2z"/></svg>Chat</button>
+        <button class="nav-button" onclick="showVideoPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M0 12V4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm6.79-6.907A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814z"/></svg>Video</button>
+        <button class="nav-button primary" onclick="showMainContent(); toggleInput()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg>Nuovo Post</button>
+        <button class="nav-button" onclick="showSettingsPage()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c-1.4-.413-1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858"/></svg>Impostazioni</button>
+        <button class="nav-button" onclick="logoutUser()">Logout</button>
+    </div>
+    </div>
+    </div>
+    </header>
+    <div class="container">
+    <div id="welcomeMessage" class="user-info">
+    <img id="userProfilePic" class="profile-pic" />
+    <div>
+    <div class="user-name" id="userNameDisplay"></div>
+    <div class="text-sm text-tertiary">Benvenuto su Nexiflow</div>
+    </div>
+    </div>
+    <div class="input-area" id="inputArea">
+    <div class="post-type-selector">
+    <button id="post-type-text" class="active" onclick="setPostType('text', this)">Testo</button>
+    <button id="post-type-video" onclick="setPostType('video', this)">Video</button>
+    <button id="post-type-embed" onclick="setPostType('embed', this)">Incorpora</button>
+    <button id="post-type-twitter" onclick="setPostType('twitter', this)">Twitter</button>
+    <button id="post-type-upload" onclick="setPostType('upload', this)">Carica File</button>
+    </div>
+    <div id="post-text-fields" class="post-type-fields">
+    <textarea id="postText" class="form-input" rows="3" placeholder="Cosa stai pensando?"></textarea>
+    <button id="addStickerBtn" class="footer-button" onclick="toggleStickerPicker()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg>Aggiungi Sticker</button>
+    <div id="stickerPicker" class="sticker-picker"></div>
+    </div>
+    <div id="post-video-fields" class="post-type-fields hidden">
+    <textarea id="videoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+    <input type="url" id="videoLink" class="form-input" placeholder="Link del video (YouTube, etc.)"/>
+    </div>
+    <div id="post-embed-fields" class="post-type-fields hidden">
+    <textarea id="embedDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+    <div class="post-type-selector">
+    <button id="embed-format-horizontal" class="active" onclick="setVideoFormat('horizontal')">Video Normale</button>
+    <button id="embed-format-vertical" onclick="setVideoFormat('vertical')">Short/Reel</button>
+    </div>
+    <textarea id="embedCode" class="form-input" rows="4" placeholder="Codice di incorporazione (iframe)..."></textarea>
+    </div>
+    <div id="post-twitter-fields" class="post-type-fields hidden">
+    <input type="url" id="twitterLink" class="form-input" placeholder="Link del post Twitter/X" />
+    </div>
+    <div id="post-upload-fields" class="post-type-fields hidden">
+        <label>Seleziona un'immagine o un video:</label>
+        <input type="file" id="fileUploadInput" class="form-input" accept="image/*,video/*">
+        <textarea id="uploadCaption" class="form-input" rows="2" placeholder="Aggiungi una didascalia..."></textarea>
+    </div>
+    <button id="publishBtn" class="publish-button" onclick="publishPost()" disabled>Pubblica su Nexiflow</button>
+    </div>
+    <div id="mainContent" class="main-content">
+    <div class="posts" id="postsContainer"></div>
+    </div>
+    <div id="videoPage" class="main-content hidden">
+    <div class="post-header">
+    <button class="nav-button" onclick="showMainContent()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg> Torna alla bacheca</button>
+    <div class="post-type-selector">
+    <button id="video-type-shorts" class="active" onclick="showVideos('vertical', this)">Shorts / Reels</button>
+    <button id="video-type-normal" onclick="showVideos('horizontal', this)">Video Normali</button>
+    </div>
+    <button class="nav-button primary" onclick="toggleVideoInput()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg> Aggiungi Video</button>
+    </div>
+    <div id="videoInputArea" class="input-area">
+    <div class="post-type-fields">
+    <textarea id="newVideoDescription" class="form-input" rows="2" placeholder="Descrizione del video..."></textarea>
+    <div class="post-type-selector">
+    <button id="new-video-format-horizontal" class="active" onclick="setNewVideoFormat('horizontal')">Video Normale</button>
+    <button id="new-video-format-vertical" onclick="setNewVideoFormat('vertical')">Short/Reel</button>
+    </div>
+    <textarea id="newVideoEmbedCode" class="form-input" rows="4" placeholder="Link o codice di incorporazione..."></textarea>
+    </div>
+    <button id="publishVideoBtn" class="publish-button" onclick="publishNewVideo()" disabled>Pubblica Video</button>
+    </div>
+    <div class="posts" id="videoGrid"></div>
+    </div>
+    
+    <div id="chatPage" class="main-content hidden">
+        <div class="chat-sidebar">
+            <div class="chat-sidebar-header">
+                <h3>Le tue chat</h3>
+                <div class="new-chat-buttons">
+                    <button onclick="showAddContactModal()" title="Nuova Chat"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/></svg></button>
+                    <button onclick="showCreateGroupModal()" title="Crea Gruppo"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.978-1A.261.261 0 0 1 7 12.996c.001-.264.167-1.03.76-1.72C8.312 10.629 9.282 10 11 10c1.717 0 2.687.63 3.24 1.276.593.69.758 1.457.76 1.72l-.008.004h-8.032zM11 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm3-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0zM6.5 10.25a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM3 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/></svg></button>
+                    <button onclick="showCreateChannelModal()" title="Crea Canale"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L4.543 2.843a.5.5 0 0 0 .707.707L6.657 2.15a.5.5 0 0 1 .707 0l1.414 1.414-1.414 1.414a.5.5 0 0 0 .707.707l1.414-1.414 1.414 1.414a.5.5 0 0 0 .707-.707L9.05.435z"/></svg></button>
+                </div>
+            </div>
+            <div id="conversation-list"></div>
+        </div>
+        <div class="chat-main">
+            <div id="chat-welcome-screen">
+                <img src="logo3.png" alt="Nexiflow Logo">
+                <h2>Benvenuto nella Chat di Nexiflow</h2>
+                <p>Seleziona una conversazione per iniziare a chattare.</p>
+            </div>
+            <div id="chat-window">
+                <div class="chat-header">
+                    <div class="chat-recipient-info">
+                        <img id="chatRecipientPic" class="profile-pic" />
+                        <h3 id="chatRecipientName"></h3>
+                    </div>
+                    <div id="chatOptionsContainer" class="hidden">
+                        <button id="chat-options-btn" onclick="toggleChatOptions()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg></button>
+                        <div id="chat-options-menu" class="dropdown-menu">
+                            <button id="block-user-btn" onclick="blockAndReportUser()">Blocca Utente</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-body" id="chatMessageHistory"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatMessageInput" class="chat-input" placeholder="Scrivi un messaggio..." />
+                    <button class="send-chat-btn" onclick="sendMessage()">Invia</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="statusPage" class="main-content hidden">
+        <div class="post-header">
+            <button class="nav-button" onclick="showMainContent()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg> Torna alla bacheca</button>
+            <h3>Stati recenti</h3>
+            <label for="statusUploadInput" class="nav-button primary"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/></svg> Aggiungi Stato</label>
+            <input type="file" id="statusUploadInput" accept="video/*" class="hidden">
+        </div>
+        <div id="status-list" style="display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 0;">
+            </div>
+    </div>
+    
+    <div id="userProfilePage" class="main-content hidden">
+    <button class="nav-button" onclick="showMainContent()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg> Torna alla bacheca</button>
+    <div id="profileInfo" class="user-info"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+    <div>
+    <h3>Post di questo utente:</h3>
+    <div class="posts" id="userPostsContainer"></div>
+    </div>
+    <div>
+    <h3>Video di questo utente:</h3>
+    <div class="posts" id="userVideosContainer"></div>
+    </div>
+    </div>
+    </div>
+    <div id="settingsPage" class="main-content hidden">
+    <button class="nav-button" onclick="showMainContent()"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/></svg> Torna alla bacheca</button>
+    <div class="auth-card" style="margin-top: 2rem;">
+    <h3>Modifica Profilo</h3>
+    <div class="auth-form">
+    <label>Nome:</label>
+    <input type="text" id="editName" class="auth-input" />
+    <label>Immagine Profilo (opzioni rapide):</label>
+    <div class="profile-pic-selector" id="editProfilePicSelector">
+    <img src="profilo1.png" class="profile-pic-option" data-value="profilo1.png" onclick="selectProfilePic(this, 'settings')">
+    <img src="profilo2.png" class="profile-pic-option" data-value="profilo2.png" onclick="selectProfilePic(this, 'settings')">
+    <img src="profilo3.png" class="profile-pic-option" data-value="profilo3.png" onclick="selectProfilePic(this, 'settings')">
+    <img src="profilo4.png" class="profile-pic-option" data-value="profilo4.png" onclick="selectProfilePic(this, 'settings')">
+    </div>
+    <label>...oppure carica un'immagine personalizzata:</label>
+    <input type="file" id="customProfilePicInput" class="form-input" accept="image/*">
+    <label>Bio:</label>
+    <textarea id="editBio" class="auth-input" rows="4"></textarea>
+    <button onclick="saveSettings()" class="auth-button">Salva Modifiche</button>
+    </div>
+    </div>
+    </div>
+    </div>
+    <footer>
+    © 2025 Nexiflow™ - by Nexiquar™ Corporation - Tutti i diritti riservati
+    </footer>
+</div>
+</div>
+<div id="videoModal">
+<span class="close-modal" onclick="closeModal()">×</span>
+<div class="modal-content">
+<div id="modalVideoContainer"></div>
+</div>
+</div>
+
+<div id="statusModal" class="modal-overlay" style="background: rgba(0,0,0,0.9);">
+    <div id="status-viewer" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+        </div>
+</div>
+
+<div id="addContactModal" class="modal-overlay">
+    <div class="auth-card">
+        <h3>Avvia una nuova chat</h3>
+        <p>Seleziona un utente per iniziare a chattare.</p>
+        <div id="addContactUserList" class="user-selection-list" style="margin-top: 1rem;">
+            </div>
+        <button onclick="hideAddContactModal()" class="auth-button" style="background: var(--text-tertiary); margin-top: 1rem;">Annulla</button>
+    </div>
+</div>
+<div id="createGroupModal" class="modal-overlay">
+    <div class="auth-card">
+        <h3>Crea un nuovo gruppo</h3>
+        <div class="auth-form">
+            <input type="text" id="groupNameInput" class="auth-input" placeholder="Nome del gruppo" />
+            <label>Immagine del gruppo (opzionale):</label>
+            <input type="file" id="groupPicInput" class="form-input" accept="image/*">
+            <label>Seleziona i membri:</label>
+            <div id="groupUserSelection" class="user-selection-list"></div>
+            <button onclick="createGroup()" class="auth-button">Crea Gruppo</button>
+            <button onclick="hideCreateGroupModal()" class="auth-button" style="background: var(--text-tertiary);">Annulla</button>
+        </div>
+    </div>
+</div>
+<div id="createChannelModal" class="modal-overlay">
+    <div class="auth-card">
+        <h3>Crea un nuovo canale</h3>
+        <div class="auth-form">
+            <input type="text" id="channelNameInput" class="auth-input" placeholder="Nome del canale" />
+            <label>Immagine del canale (opzionale):</label>
+            <input type="file" id="channelPicInput" class="form-input" accept="image/*">
+            <label>Seleziona i membri:</label>
+            <div id="channelUserSelection" class="user-selection-list"></div>
+            <button onclick="createChannel()" class="auth-button">Crea Canale</button>
+            <button onclick="hideCreateChannelModal()" class="auth-button" style="background: var(--text-tertiary);">Annulla</button>
+        </div>
+    </div>
+</div>
+<div id="countryModal" class="modal-overlay">
+<div class="auth-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1002;">
+<h3>Seleziona il tuo Paese</h3>
+<div class="auth-form">
+<select id="countrySelect" class="auth-input">
+<option value="">-- Scegli un Paese --</option>
+<option value="Italia">Italia</option>
+<option value="Francia">Francia</option>
+<option value="Germania">Germania</option>
+<option value="Spagna">Spagna</option>
+<option value="USA">USA</option>
+<option value="Regno Unito">Regno Unito</option>
+<option value="Canada">Canada</option>
+<option value="Australia">Australia</option>
+</select>
+<button onclick="saveCountry()" class="auth-button">Conferma</button>
+</div>
+</div>
+</div>
+<div id="setPasswordModal" class="modal-overlay">
+    <div class="auth-card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1002;">
+        <h3>Recupera il tuo account</h3>
+        <p style="text-align: center; margin-bottom: 1rem;">Abbiamo trovato dei post precedenti associati a questa email. Per completare il recupero, crea una password per il tuo account Nexiflow.</p>
+        <div class="auth-form">
+            <input type="password" id="recoveryPassword" class="auth-input" placeholder="Nuova Password" />
+            <button onclick="completeAccountRecovery()" class="auth-button">Salva Password e Accedi</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js" defer></script>
+
+</body>
+</html>
